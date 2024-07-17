@@ -23,7 +23,7 @@ public class OrdersController {
         return result;
     }
 
-    /** 상품 주문**/
+    /** 주문 취소**/
     @PutMapping(value = "/cancel/{orderId}")
     public BaseResponse cancel(@PathVariable Long orderId) {
         BaseResponse result = ordersService.cancelOrder(orderId);
