@@ -2,6 +2,7 @@ package com.team404x.greenplate.recipe.service;
 
 import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
+import com.team404x.greenplate.item.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.keyword.repository.KeywordRepository;
 import com.team404x.greenplate.recipe.item.RecipeItem;
@@ -9,6 +10,8 @@ import com.team404x.greenplate.recipe.keyword.entity.RecipeKeyword;
 import com.team404x.greenplate.recipe.model.entity.Recipe;
 import com.team404x.greenplate.recipe.model.request.RecipeCreateReq;
 import com.team404x.greenplate.recipe.model.request.RecipeUpdateReq;
+import com.team404x.greenplate.recipe.model.response.RecipeDetailsItemRes;
+import com.team404x.greenplate.recipe.model.response.RecipeDetailsRes;
 import com.team404x.greenplate.recipe.model.response.RecipeListRes;
 import com.team404x.greenplate.recipe.repository.RecipeItemRepository;
 import com.team404x.greenplate.recipe.repository.RecipeKeywordRepository;
@@ -102,7 +105,7 @@ public class RecipeService {
                         .title(recipe.getTitle())
                         .imageUrl(recipe.getImageUrl())
                         .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
-                        .id(recipe.getCompany().getId())
+                        .memberId(recipe.getCompany().getId())
                         .role("ROLE_COMPANY")
                         .build();
                 recipeListRes.add(res);
@@ -112,12 +115,55 @@ public class RecipeService {
                         .title(recipe.getTitle())
                         .imageUrl(recipe.getImageUrl())
                         .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
-                        .id(recipe.getUser().getId())
+                        .memberId(recipe.getUser().getId())
                         .role("ROLE_USER")
                         .build();
                 recipeListRes.add(res);
             }
         }
         return recipeListRes;
+    }
+
+    public RecipeDetailsRes readRecipe(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+        if (recipe == null) {
+            return null;
+        }
+        List<Item> itemList = itemRepository.findByRecipeItemsRecipeId(recipe.getId());
+        List<RecipeDetailsItemRes> recipeDetailsItemResList = new ArrayList<>();
+        for (Item item : itemList) {
+            RecipeDetailsItemRes detailsItem = RecipeDetailsItemRes.builder()
+                    .itemId(item.getId())
+                    .name(item.getName())
+                    .discountPrice(item.getDiscountPrice())
+                    .itemUrl(item.getImageUrl())
+                    .build();
+            recipeDetailsItemResList.add(detailsItem);
+        }
+        if (recipe.getUser() == null) {
+            return RecipeDetailsRes.builder()
+                    .recipeId(recipe.getId())
+                    .title(recipe.getTitle())
+                    .contents(recipe.getContents())
+                    .imageUrl(recipe.getImageUrl())
+                    .totalCalorie(recipe.getTotalCalorie())
+                    .itemList(recipeDetailsItemResList)
+                    .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
+                    .memberId(recipe.getCompany().getId())
+                    .role("ROLE_COMPANY")
+                    .build();
+        } else {
+            return RecipeDetailsRes.builder()
+                    .recipeId(recipe.getId())
+                    .title(recipe.getTitle())
+                    .contents(recipe.getContents())
+                    .imageUrl(recipe.getImageUrl())
+                    .totalCalorie(recipe.getTotalCalorie())
+                    .itemList(recipeDetailsItemResList)
+                    .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
+                    .memberId(recipe.getUser().getId())
+                    .role("ROLE_USER")
+                    .build();
+        }
     }
 }
