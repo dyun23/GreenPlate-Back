@@ -6,7 +6,7 @@ public class BaseResponse<T> {
 	private String message;
 	private T result;
 
-	public BaseResponse(T result, BaseResponseMessage baseResponseMessage) {
+	public BaseResponse(T result) {
 		//		this.success = BaseResponseMessage.REQUEST_SUCCESS.getSuccess();
 		//		this.code = BaseResponseMessage.REQUEST_SUCCESS.getCode();
 		//		this.message = BaseResponseMessage.REQUEST_SUCCESS.getMessage();
