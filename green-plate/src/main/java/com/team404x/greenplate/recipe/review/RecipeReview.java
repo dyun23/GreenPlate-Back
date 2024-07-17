@@ -1,6 +1,6 @@
 package com.team404x.greenplate.recipe.review;
 
-import com.team404x.greenplate.recipe.entity.Recipe;
+import com.team404x.greenplate.recipe.model.entity.Recipe;
 import com.team404x.greenplate.user.entity.User;
 
 import jakarta.persistence.Entity;

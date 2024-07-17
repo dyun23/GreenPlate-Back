@@ -1,7 +1,7 @@
 package com.team404x.greenplate.recipe.item;
 
 import com.team404x.greenplate.item.entity.Item;
-import com.team404x.greenplate.recipe.entity.Recipe;
+import com.team404x.greenplate.recipe.model.entity.Recipe;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

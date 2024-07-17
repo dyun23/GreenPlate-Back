@@ -1,7 +1,7 @@
 package com.team404x.greenplate.recipe.keyword.entity;
 
 import com.team404x.greenplate.keyword.entity.Keyword;
-import com.team404x.greenplate.recipe.entity.Recipe;
+import com.team404x.greenplate.recipe.model.entity.Recipe;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

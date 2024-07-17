@@ -7,18 +7,6 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
-  cloud:
-    aws:
-      s3:
-        bucket: ${BUCKET}
-      credentials:
-        access-key: ${ACCESS_KEY}
-        secret-key: ${SECRET_KEY}
-      region:
-        static: ap-northeast-2
-        auto: false
-      stack:
-        auto: false
   mail:
     host: smtp.gmail.com
     port: 587
@@ -37,10 +25,23 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create # create: ???? create, drop sql? ????? ??
+      ddl-auto: update # create: ???? create, drop sql? ????? ??
     properties:
       hibernate:
         format_sql: true
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET}
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+    region:
+      static: ${REGION_STATIC}
+      auto: false
+    stack:
+      auto: false
 
 logging:
   level:
