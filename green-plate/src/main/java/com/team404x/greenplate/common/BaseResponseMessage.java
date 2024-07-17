@@ -1,6 +1,7 @@
 package com.team404x.greenplate.common;
 
 public enum BaseResponseMessage {
+
 	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
 	COMPANY_LOGIN_SUCCESS(true, 1001, "정상적으로 로그인되었습니다."),
 	USER_SIGNUP_SUCCESS(true, 1010, "정상적으로 회원가입 되었습니다."),
@@ -13,8 +14,15 @@ public enum BaseResponseMessage {
 	USER_SIGNUP_FAIL_EXPIRED_CODE(false, 1206, "만료된 인증번호입니다."),
 	USER_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1207,"입력값을 확인해주세요."),
 	USER_LOGIN_SUCCESS(true, 1070, "정상적으로 로그인되었습니다."),
-	USER_LOGIN_FAIL_EMAIL(false, 1800, "이메일을 정확히 입력하세요.")
-	;
+	USER_LOGIN_FAIL_EMAIL(false, 1800, "이메일을 정확히 입력하세요."),
+//	5000 orders
+	ORDERS_CREATED_SUCCESS(true, 5100, "주문이 완료되었습니다."),
+	ORDERS_CANCEL_SUCCESS(true, 5110, "주문이 취소되었습니다."),
+	ORDERS_USER_FAIL_LIST(false, 5001, "주문 내역 조회에 실패하였습니다."),
+	ORDERS_SEARCH_FAIL_USER(false, 5052, "유저가 없습니다."),
+	ORDERS_CREATED_FAIL(false, 5401, "주문 실패하였습니다."),
+	ORDERS_CREATED_FAIL_STOCK(false, 5401, "상품재고가 부족합니다."),
+	ORDERS_CANCEL_FAIL_ORDERED(false, 5111, "해당주문을 찾을 수 없습니다.");
 
 	private Boolean success;
 	private Integer code;
@@ -37,4 +45,6 @@ public enum BaseResponseMessage {
 	public String getMessage() {
 		return message;
 	}
+
+
 }
