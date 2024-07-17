@@ -13,35 +13,35 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: ${EMAIL}
-#    password: ${EMAIL_PASSWORD}
-#    properties:
-#      mail:
-#        smtp:
-#          starttls:
-#            enable: true
-#            required: true
-#          auth: true
-#          connectiontimeout: 5000
-#          timeout: 5000
-#          writetimeout: 5000
-#
-#
-#cloud:
-#  aws:
-#    s3:
-#      bucket: ${BUCKET}
-#    credentials:
-#      access-key: ${ACCESS_KEY}
-#      secret-key: ${SECRET_KEY}
-#    region:
-#      static: ${REGION_STATIC}
-#      auto: false
-#    stack:
-#      auto: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET}
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+    region:
+      static: ${REGION_STATIC}
+      auto: false
+    stack:
+      auto: false
 
 logging:
   level:
