@@ -9,4 +9,5 @@ public class RecipeUpdateReq {
     private String title;
     private String contents;
     private Long[] itemList;
+    private String[] keywordList;
 }

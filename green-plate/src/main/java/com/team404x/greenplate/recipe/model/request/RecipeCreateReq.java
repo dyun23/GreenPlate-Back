@@ -11,4 +11,5 @@ public class RecipeCreateReq {
     private String title;
     private String contents;
     private Long[] itemList;
+    private String[] keywordList;
 }
