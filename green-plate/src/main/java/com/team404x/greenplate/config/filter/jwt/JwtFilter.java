@@ -7,8 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
 import jakarta.servlet.FilterChain;
@@ -51,12 +52,22 @@ public class JwtFilter extends OncePerRequestFilter {
 		String email = jwtUtil.getEmail(token);
 		String role = jwtUtil.getRole(token);
 
-		User user = User.builder()
-			.email(email)
-			.role(role)
-			.build();
+		CustomUserDetails customUserDetails = null;
 
-		CustomUserDetails customUserDetails = new CustomUserDetails(user);
+		if (role.equals("ROLE_USER")) {
+			User user = User.builder()
+				.email(email)
+				.role(role)
+				.build();
+			customUserDetails = new CustomUserDetails(user);
+		} else if (role.equals("ROLE_COMPANY")) {
+			Company company = Company.builder()
+				.email(email)
+				.role(role)
+				.build();
+			customUserDetails = new CustomUserDetails(company);
+		}
+
 
 		Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
 			customUserDetails.getAuthorities());
