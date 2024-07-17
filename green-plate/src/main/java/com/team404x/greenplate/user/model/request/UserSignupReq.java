@@ -1,4 +1,4 @@
-package com.team404x.greenplate.user.dto.request;
+package com.team404x.greenplate.user.model.request;
 
 import java.time.LocalDate;
 

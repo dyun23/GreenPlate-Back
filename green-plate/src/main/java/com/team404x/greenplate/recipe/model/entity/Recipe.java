@@ -9,12 +9,12 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import com.team404x.greenplate.company.entity.Company;
+import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.livecommerce.entity.Livecommerce;
 import com.team404x.greenplate.recipe.item.RecipeItem;
 import com.team404x.greenplate.recipe.likes.RecipeLike;
 import com.team404x.greenplate.recipe.review.RecipeReview;
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.user.model.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

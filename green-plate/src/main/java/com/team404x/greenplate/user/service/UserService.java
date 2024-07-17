@@ -6,9 +6,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.team404x.greenplate.user.dto.request.UserLoginReq;
-import com.team404x.greenplate.user.dto.request.UserSignupReq;
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.user.model.request.UserLoginReq;
+import com.team404x.greenplate.user.model.request.UserSignupReq;
+import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.repository.UserRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 

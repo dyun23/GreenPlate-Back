@@ -1,4 +1,4 @@
-package com.team404x.greenplate.user.dto.request;
+package com.team404x.greenplate.user.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

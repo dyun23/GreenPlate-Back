@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
-import com.team404x.greenplate.user.dto.request.UserLoginReq;
-import com.team404x.greenplate.user.dto.request.UserSignupReq;
+import com.team404x.greenplate.user.model.request.UserLoginReq;
+import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
