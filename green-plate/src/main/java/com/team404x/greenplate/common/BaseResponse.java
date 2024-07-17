@@ -7,9 +7,9 @@ public class BaseResponse<T> {
 	private T result;
 
 	public BaseResponse(T result, BaseResponseMessage baseResponseMessage) {
-		this.success = baseResponseMessage.getSuccess();
-		this.code = baseResponseMessage.getCode();
-		this.message = baseResponseMessage.getMessage();
+		this.success = BaseResponseMessage.REQUEST_SUCCESS.getSuccess();
+		this.code = BaseResponseMessage.REQUEST_SUCCESS.getCode();
+		this.message = BaseResponseMessage.REQUEST_SUCCESS.getMessage();
 		this.result = result;
 	}
 
