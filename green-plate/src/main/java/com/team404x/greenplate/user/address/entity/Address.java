@@ -2,7 +2,7 @@ package com.team404x.greenplate.user.address.entity;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import com.team404x.greenplate.orders.entity.Orders;
+import com.team404x.greenplate.orders.model.entity.Orders;
 import com.team404x.greenplate.user.entity.User;
 
 import jakarta.persistence.Entity;

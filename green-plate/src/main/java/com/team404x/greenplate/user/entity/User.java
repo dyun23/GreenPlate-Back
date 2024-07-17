@@ -11,7 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import com.team404x.greenplate.cart.entity.Cart;
 import com.team404x.greenplate.item.review.entity.ItemReview;
-import com.team404x.greenplate.orders.entity.Orders;
+import com.team404x.greenplate.orders.model.entity.Orders;
 import com.team404x.greenplate.recipe.entity.Recipe;
 import com.team404x.greenplate.recipe.likes.RecipeLike;
 import com.team404x.greenplate.recipe.review.RecipeReview;
