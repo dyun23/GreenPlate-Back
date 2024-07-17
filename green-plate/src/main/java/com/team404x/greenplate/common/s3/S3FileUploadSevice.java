@@ -19,6 +19,8 @@ public class S3FileUploadSevice {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+    @Value("${cloud.aws.region.static}")
+    private String staticRegion;
     private final AmazonS3 amazonS3;
 
     public String upload(String domain, Long id, MultipartFile file) {
@@ -30,8 +32,7 @@ public class S3FileUploadSevice {
         try {
             String fileName = domain + "/" + id + "/" + uploadPath + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
             amazonS3.putObject(bucketName, fileName, file.getInputStream(), metadata);
-
-            return "https://ddarahakit2024-s3.s3.ap-northeast-2.amazonaws.com/" + fileName;
+            return "https://" + bucketName + ".s3." + staticRegion + ".amazonaws.com/" + fileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

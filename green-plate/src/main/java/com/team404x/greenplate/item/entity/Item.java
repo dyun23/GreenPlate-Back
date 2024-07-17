@@ -1,6 +1,5 @@
 package com.team404x.greenplate.item.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,15 +61,15 @@ public class Item {
 
 	private String contents;
 
-	private BigDecimal price; // 왜 BigDecimal..?
+	private Integer price;
 
 	private Long stock;
 
 	private String state;
 
-	private String calorie;
+	private Integer calorie;
 
-	private String imageUrl1; // 1을 붙인 이유..?
+	private String imageUrl;
 
 	private Boolean delYn;
 
