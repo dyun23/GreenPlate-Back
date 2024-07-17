@@ -1,16 +1,17 @@
 package com.team404x.greenplate.orders.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
-import com.team404x.greenplate.orders.model.entity.OrderStatus;
+import com.team404x.greenplate.orders.model.entity.*;
+import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.repository.OrderDetailRepository;
+import com.team404x.greenplate.orders.repository.OrderQueryRepository;
 import com.team404x.greenplate.orders.repository.OrdersRepository;
-import com.team404x.greenplate.orders.model.entity.OrderDetail;
-import com.team404x.greenplate.orders.model.entity.Orders;
 import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
 
 import com.team404x.greenplate.user.model.entity.User;
@@ -37,6 +38,9 @@ public class OrdersService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final OrderQueryRepository orderQueryRepository;
+
+    JPAQueryFactory queryFactory;
 
     @Transactional
     public BaseResponse<String> createOrder(OrderCreateReq orderCreateReq) {
@@ -107,17 +111,18 @@ public class OrdersService {
 
     //사업자 주문 상품 목록 조회
     @Transactional
-    public BaseResponse<List<OrderDetail>> searchForCompany(Long companyId) {
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(Long companyId, OrderSearchReq searchReq) {
         Optional<Company> company = companyRepository.findById(companyId);
 
         if (!company.isPresent()) {
             throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
         }
-        //상품 detail에 회사 정보가 없음. item을 뒤져서 가져와야함
-        List<OrderDetail> orderDetail = null;// = orderDetailRepository.findAllByCompany(company.get());
-        return new BaseResponse<>(orderDetail);
+
+        List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq);
+        return new BaseResponse<>(ordersList);
     }
 
+    //주문취소
     public BaseResponse<String> cancelOrder(Long orderId) {
         Optional<Orders> orders = ordersRepository.findById(orderId);
 

@@ -2,6 +2,9 @@ package com.team404x.greenplate.orders.controller;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.orders.model.entity.OrderDetail;
+import com.team404x.greenplate.orders.model.entity.OrderStatus;
+import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
+import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
 import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
@@ -40,9 +43,9 @@ public class OrdersController {
     //수정중
     /** 상품 주문 내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/list/company/{adminId}")
-    public BaseResponse<List<OrderDetail>> searchForAdmin(@PathVariable Long companyId) {
-        BaseResponse<List<OrderDetail>> result = ordersService.searchForCompany(companyId);
+    @GetMapping("/list/company/{companyId}")
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
+        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
         return result;
     }
 
