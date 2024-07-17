@@ -1,4 +1,4 @@
-package com.team404x.greenplate.user.controller;
+package com.team404x.greenplate.company.controller;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,37 +7,37 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.company.model.request.CompanyLoginReq;
+import com.team404x.greenplate.company.model.request.CompanySignupReq;
+import com.team404x.greenplate.company.service.CompanyService;
 import com.team404x.greenplate.user.model.request.UserLoginReq;
 import com.team404x.greenplate.user.model.request.UserSignupReq;
-import com.team404x.greenplate.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/company")
 @RequiredArgsConstructor
-public class UserController {
-	private final UserService userService;
-	/* TODO
-	예외 로직: ControllerAdvice를 이용
-	*   */
+public class CompanyController {
+	private final CompanyService companyService;
+
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
-	public BaseResponse signup(@RequestBody UserSignupReq userSignupReq) {
+	public BaseResponse signup(@RequestBody CompanySignupReq companySignupReq) {
 		try {
-			userService.signup(userSignupReq);
-			return new BaseResponse<>(BaseResponseMessage.USER_SIGNUP_SUCCESS);
+			companyService.signup(companySignupReq);
+			return new BaseResponse<>(BaseResponseMessage.COMPANY_SIGNUP_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(null);
 		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
-	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
-		String jwtToken = userService.login(userLoginReq);
+	public BaseResponse login(@RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
+		String jwtToken = companyService.login(companyLoginReq);
 		if (jwtToken != null) {
 			response.setHeader("Authorization", "Bearer " + jwtToken);
-			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
+			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_SUCCESS);
 		}
 		return new BaseResponse(null);
 	}

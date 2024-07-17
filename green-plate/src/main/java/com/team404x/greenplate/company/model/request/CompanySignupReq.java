@@ -1,6 +1,4 @@
-package com.team404x.greenplate.user.dto.request;
-
-import java.time.LocalDate;
+package com.team404x.greenplate.company.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +7,11 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserSignupReq {
+public class CompanySignupReq {
 	String email;
 	String password;
+	String comNum;
 	String name;
-	String nickname;
-	LocalDate birthday;
+	String address;
+	String telNum;
 }

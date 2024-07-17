@@ -1,6 +1,5 @@
 package com.team404x.greenplate.orders.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.team404x.greenplate.user.address.entity.Address;
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.user.model.entity.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

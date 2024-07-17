@@ -8,7 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.team404x.greenplate.cart.entity.Cart;
-import com.team404x.greenplate.company.entity.Company;
+import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.review.entity.ItemReview;
 import com.team404x.greenplate.orders.entity.OrderDetail;
