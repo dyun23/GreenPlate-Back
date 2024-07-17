@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.user.dto.request.UserLoginReq;
 import com.team404x.greenplate.user.dto.request.UserSignupReq;
 import com.team404x.greenplate.user.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,4 +32,13 @@ public class UserController {
 		}
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "/login")
+	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
+		String jwtToken = userService.login(userLoginReq);
+		if (jwtToken != null) {
+			response.setHeader("Authorization", "Bearer " + jwtToken);
+			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
+		}
+		return new BaseResponse(null);
+	}
 }
