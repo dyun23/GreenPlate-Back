@@ -9,7 +9,9 @@ public enum BaseResponseMessage {
 	USER_SIGNUP_FAIL_EXISTING_EMAIL(false, 1204, "이미 존재하는 이메일 주소입니다"),
 	USER_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1205, "인증번호를 확인해주세요"),
 	USER_SIGNUP_FAIL_EXPIRED_CODE(false, 1206, "만료된 인증번호입니다"),
-	USER_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1207,"입력값을 확인해주세요")
+	USER_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1207,"입력값을 확인해주세요"),
+	USER_LOGIN_SUCCESS(true, 1070, "정상적으로 로그인되었습니다"),
+	USER_LOGIN_FAIL_EMAIL(false, 1800, "이메일을 정확히 입력하세요")
 	;
 
 	private Boolean success;
