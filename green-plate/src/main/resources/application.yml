@@ -1,6 +1,12 @@
 spring:
   jwt:
     secret: ${JWT_SECRET}
+  jpa:
+    hibernate:
+      ddl-auto: create # create: ???? create, drop sql? ????? ??
+    properties:
+      hibernate:
+        format_sql: true
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -23,12 +29,6 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  jpa:
-    hibernate:
-      ddl-auto: update # create: ???? create, drop sql? ????? ??
-    properties:
-      hibernate:
-        format_sql: true
 
 cloud:
   aws:

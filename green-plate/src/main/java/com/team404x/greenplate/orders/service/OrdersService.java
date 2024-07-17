@@ -1,9 +1,10 @@
 package com.team404x.greenplate.orders.service;
 
 import com.team404x.greenplate.common.BaseResponse;
-import com.team404x.greenplate.company.entity.Company;
-import com.team404x.greenplate.item.ItemRepository;
+import com.team404x.greenplate.company.model.entity.Company;
+import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.orders.model.entity.OrderStatus;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.repository.OrderDetailRepository;
@@ -11,8 +12,8 @@ import com.team404x.greenplate.orders.repository.OrdersRepository;
 import com.team404x.greenplate.orders.model.entity.OrderDetail;
 import com.team404x.greenplate.orders.model.entity.Orders;
 import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
-import com.team404x.greenplate.user.entity.User;
-import com.team404x.greenplate.company.CompanyRepository;
+
+import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
