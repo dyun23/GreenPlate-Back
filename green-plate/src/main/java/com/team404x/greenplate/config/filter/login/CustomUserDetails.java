@@ -6,13 +6,21 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.company.model.entity.Company;
+import com.team404x.greenplate.user.model.entity.User;
 
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-	private final User user;
+	private User user;
+	private Company company;
+
+	public CustomUserDetails(User user) {
+		this.user = user;
+	}
+	public CustomUserDetails(Company company) {
+		this.company = company;
+	}
+
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -41,6 +49,8 @@ public class CustomUserDetails implements UserDetails {
 		collection.add(new GrantedAuthority() {
 			@Override
 			public String getAuthority() {
+				if (user == null)
+					return "ROLE_COMPANY";
 				return "ROLE_USER";
 			}
 		});
@@ -50,11 +60,15 @@ public class CustomUserDetails implements UserDetails {
 	//
 	@Override
 	public String getPassword() {
+		if (user == null)
+			return company.getPassword();
 		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
+		if (company == null)
+			return company.getEmail();
 		return user.getEmail();
 	}
 }

@@ -10,7 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.team404x.greenplate.user.address.entity.Address;
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.user.model.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

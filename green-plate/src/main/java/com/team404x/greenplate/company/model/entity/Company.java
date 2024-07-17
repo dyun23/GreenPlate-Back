@@ -1,4 +1,4 @@
-package com.team404x.greenplate.company.entity;
+package com.team404x.greenplate.company.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,12 +7,14 @@ import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.team404x.greenplate.item.entity.Item;
 import com.team404x.greenplate.livecommerce.entity.Livecommerce;
-import com.team404x.greenplate.recipe.entity.Recipe;
+import com.team404x.greenplate.recipe.model.entity.Recipe;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Company {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

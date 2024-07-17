@@ -1,7 +1,7 @@
 package com.team404x.greenplate.item.review.entity;
 
 import com.team404x.greenplate.item.entity.Item;
-import com.team404x.greenplate.user.entity.User;
+import com.team404x.greenplate.user.model.entity.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

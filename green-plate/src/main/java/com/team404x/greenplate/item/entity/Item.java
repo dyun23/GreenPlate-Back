@@ -1,6 +1,5 @@
 package com.team404x.greenplate.item.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.team404x.greenplate.cart.entity.Cart;
-import com.team404x.greenplate.company.entity.Company;
+import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.review.entity.ItemReview;
 import com.team404x.greenplate.orders.model.entity.OrderDetail;
@@ -62,15 +61,15 @@ public class Item {
 
 	private String contents;
 
-	private BigDecimal price; // 왜 BigDecimal..?
+	private Integer price;
 
 	private int stock;
 
 	private String state;
 
-	private String calorie;
+	private Integer calorie;
 
-	private String imageUrl1; // 1을 붙인 이유..?
+	private String imageUrl;
 
 	private Boolean delYn;
 

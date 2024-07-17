@@ -9,9 +9,9 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import com.team404x.greenplate.company.entity.Company;
+import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.livecommerce.keyword.LivecommerceKeyword;
-import com.team404x.greenplate.recipe.entity.Recipe;
+import com.team404x.greenplate.recipe.model.entity.Recipe;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

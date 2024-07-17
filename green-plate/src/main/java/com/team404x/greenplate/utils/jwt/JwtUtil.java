@@ -21,9 +21,24 @@ public class JwtUtil {
 		);
 	}
 
-	public String createToken(String username, String role) {
+	public String getEmail(String token) {
+
+		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
+	}
+
+	public String getRole(String token) {
+
+		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+	}
+
+	public Boolean isExpired(String token) {
+
+		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+	}
+
+	public String createToken(String email, String role) {
 		return Jwts.builder()
-			.claim("username", username) // 토근에 담을 데이터
+			.claim("email", email) // 토근에 담을 데이터
 			.claim("role", role)
 			.issuedAt(new Date(System.currentTimeMillis())) // 언제 발행됐는지
 			.expiration(new Date(System.currentTimeMillis()+ 5*60*1000))
