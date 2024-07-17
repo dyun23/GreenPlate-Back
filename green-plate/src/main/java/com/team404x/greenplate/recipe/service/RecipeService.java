@@ -9,6 +9,7 @@ import com.team404x.greenplate.recipe.keyword.entity.RecipeKeyword;
 import com.team404x.greenplate.recipe.model.entity.Recipe;
 import com.team404x.greenplate.recipe.model.request.RecipeCreateReq;
 import com.team404x.greenplate.recipe.model.request.RecipeUpdateReq;
+import com.team404x.greenplate.recipe.model.response.RecipeListRes;
 import com.team404x.greenplate.recipe.repository.RecipeItemRepository;
 import com.team404x.greenplate.recipe.repository.RecipeKeywordRepository;
 import com.team404x.greenplate.recipe.repository.RecipeRepository;
@@ -84,5 +85,39 @@ public class RecipeService {
             recipeKeywords.add(recipeKeyword);
         }
         recipeKeywordRepository.saveAll(recipeKeywords);
+    }
+
+    public List<RecipeListRes> listRecipes(String search) {
+        List<Recipe> recipeList;
+        if (search == null || search.isEmpty()) {
+            recipeList = recipeRepository.findAll();
+        } else {
+            recipeList = recipeRepository.findByTitleContains(search);
+        }
+        List<RecipeListRes> recipeListRes = new ArrayList<>();
+        for (Recipe recipe : recipeList) {
+            if (recipe.getUser() == null) {
+                RecipeListRes res = RecipeListRes.builder()
+                        .recipeId(recipe.getId())
+                        .title(recipe.getTitle())
+                        .imageUrl(recipe.getImageUrl())
+                        .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
+                        .id(recipe.getCompany().getId())
+                        .role("ROLE_COMPANY")
+                        .build();
+                recipeListRes.add(res);
+            } else {
+                RecipeListRes res = RecipeListRes.builder()
+                        .recipeId(recipe.getId())
+                        .title(recipe.getTitle())
+                        .imageUrl(recipe.getImageUrl())
+                        .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
+                        .id(recipe.getUser().getId())
+                        .role("ROLE_USER")
+                        .build();
+                recipeListRes.add(res);
+            }
+        }
+        return recipeListRes;
     }
 }
