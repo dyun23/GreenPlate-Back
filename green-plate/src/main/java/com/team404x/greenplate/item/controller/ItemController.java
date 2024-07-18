@@ -2,6 +2,8 @@ package com.team404x.greenplate.item.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.team404x.greenplate.config.filter.login.CustomUserDetailService;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
@@ -19,10 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+
     @RequestMapping(method= RequestMethod.POST, value="/create")
     public BaseResponse create(@RequestBody ItemCreateReq itemCreateReq){
         itemService.create(itemCreateReq);
         return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
+
+
+    @RequestMapping(method= RequestMethod.POST, value="/update")
+    public BaseResponse update(@RequestBody ItemUpdateReq itemUpdateReq) {
+        itemService.update(itemUpdateReq);
+        return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
+    }
+
+
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/list")
@@ -30,4 +42,5 @@ public class ItemController {
         List<ItemRes> itemResList = itemService.list();
         return new BaseResponse(itemResList);
     }
+
 }
