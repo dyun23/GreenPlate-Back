@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
+import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
@@ -49,5 +50,16 @@ public class CompanyService {
 			return token;
 		}
 		return null;
+	}
+
+	public CompanyDetailsRes details(String email) {
+		Company company = companyRepository.findCompanyByEmail(email);
+		return CompanyDetailsRes.builder()
+			.email(company.getEmail())
+			.comNum(company.getComNum())
+			.name(company.getName())
+			.address(company.getAddress())
+			.telNum(company.getTelNum())
+			.build();
 	}
 }
