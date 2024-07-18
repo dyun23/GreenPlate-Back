@@ -1,4 +1,4 @@
-package com.team404x.greenplate.item.entity;
+package com.team404x.greenplate.item.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

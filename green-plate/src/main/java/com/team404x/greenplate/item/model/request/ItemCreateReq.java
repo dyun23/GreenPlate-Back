@@ -21,6 +21,4 @@ public class ItemCreateReq {
    private int discountPrice;
    private String mainCategory;
    private String subCategory;
-
-
 }

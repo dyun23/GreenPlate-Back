@@ -1,6 +1,6 @@
 package com.team404x.greenplate.item.repository;
 
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

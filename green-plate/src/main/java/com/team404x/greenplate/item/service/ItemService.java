@@ -1,10 +1,14 @@
 package com.team404x.greenplate.item.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.category.repository.CategoryRepository;
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
+import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,5 +33,23 @@ public class ItemService {
                 .company(Company.builder().id(itemCreateReq.getCompanyId()).build())
                 .build();
         itemRepository.save(item);
+    }
+
+    public List<ItemRes> list() {
+        List<Item> items = itemRepository.findAll();
+        List<ItemRes> itemResList = new ArrayList<>();
+        for (Item item : items) {
+            itemResList.add(
+                ItemRes.builder()
+                    .name(item.getName())
+                    .price(item.getPrice())
+                    .calorie(item.getCalorie())
+                    .imageUrl(item.getImageUrl())
+                    .discountPrice(item.getDiscountPrice())
+                    .companyName(item.getCompany().getName())
+                    .build()
+            );
+        }
+        return itemResList;
     }
 }
