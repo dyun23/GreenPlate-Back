@@ -6,6 +6,7 @@ import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
+import com.team404x.greenplate.item.model.response.ItemDetailsRes;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,11 @@ public class ItemController {
     public BaseResponse list(@PathVariable String name) {
         List<ItemRes> itemResList = itemService.list(name);
         return new BaseResponse(itemResList);
+    }
+
+	@RequestMapping(method = RequestMethod.GET, value = "/details")
+    public BaseResponse list(Long id) {
+        ItemDetailsRes itemDetailsRes = itemService.details(id);
+        return new BaseResponse(itemDetailsRes);
     }
 }
