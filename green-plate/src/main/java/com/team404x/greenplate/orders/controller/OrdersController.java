@@ -2,8 +2,10 @@ package com.team404x.greenplate.orders.controller;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
+import com.team404x.greenplate.orders.model.requset.OrderCancelReq;
 import com.team404x.greenplate.orders.model.requset.OrderInvoiceReq;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
+import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
 import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
@@ -26,20 +28,27 @@ public class OrdersController {
     }
 
     /** 주문 취소**/
-    @PutMapping(value = "/cancel/{orderId}")
-    public BaseResponse cancel(@PathVariable Long orderId) {
-        BaseResponse result = ordersService.cancelOrder(orderId);
+    @PutMapping(value = "/cancel")
+    public BaseResponse cancel(@RequestBody OrderCancelReq orderCancelReq) {
+        BaseResponse result = ordersService.cancelOrder(orderCancelReq);
         return result;
     }
 
-    /** 상품 주문 내역 조회 : 유저**/
+    /** 주문 목록 조회 : 유저**/
     @GetMapping("/list/user/{userId}")
-    public BaseResponse<List<OrderUserSearchRes>> search(@PathVariable Long userId) {
-        BaseResponse<List<OrderUserSearchRes>> result = ordersService.search(userId);
+    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@PathVariable Long userId) {
+        BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(userId);
         return result;
     }
 
-    /** 상품 주문 내역 조회 : 사업자**/
+    /** 주문 상세내역 조회 : 유저**/
+    @GetMapping("/list/user/{userId}/{ordersId}")
+    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@PathVariable Long userId,@PathVariable Long ordersId) {
+        BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(userId,ordersId);
+        return result;
+    }
+
+    /** 주문 내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list/company/{companyId}")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
@@ -47,7 +56,7 @@ public class OrdersController {
         return result;
     }
 
-    /** 상품 주문 상세내역 조회 : 사업자**/
+    /** 주문 상세내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list/company/{companyId}/{orderId}")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
@@ -55,7 +64,7 @@ public class OrdersController {
         return result;
     }
 
-    /** 상품 배송 상태 변경 : 사업자 **/
+    /** 배송 상태 변경 : 사업자 **/
 //    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/statechange")
     public BaseResponse changeDeliveryState(@RequestBody OrderSearchReq orderSearchReq) {
@@ -63,7 +72,7 @@ public class OrdersController {
         return result;
     }
 
-    /** 상품 송장 등록 : 사업자 **/
+    /** 송장 등록 : 사업자 **/
     //    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/invoice")
     public BaseResponse inputInvoice(@RequestBody OrderInvoiceReq orderInvoiceReq) {
