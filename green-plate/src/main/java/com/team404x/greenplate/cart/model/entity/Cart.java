@@ -1,4 +1,4 @@
-package com.team404x.greenplate.cart.entity;
+package com.team404x.greenplate.cart.model.entity;
 
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.user.model.entity.User;
@@ -24,7 +24,7 @@ public class Cart {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String quantity;
+	private Integer quantity;
 
 	@ManyToOne
 	@JoinColumn(name = "item_id")
