@@ -1,5 +1,9 @@
 package com.team404x.greenplate.orders.controller;
 
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
 import com.team404x.greenplate.orders.model.requset.*;
@@ -8,8 +12,10 @@ import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -17,6 +23,7 @@ import java.util.List;
 @RequestMapping(value = "/orders")
 public class OrdersController {
     private final OrdersService ordersService;
+    private final IamportClient iamportClient;
 
     /** 상품 결제방법선택**/
     @PostMapping(value = "/payment")
@@ -85,4 +92,26 @@ public class OrdersController {
         return result;
     }
 
+    //String impUid
+    /** kakao pay 결제 **/
+    @PostMapping(value = "/kakao")
+    public  ResponseEntity<String> kakao(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
+
+        System.out.println(orderCreateReq.getUserId());
+        System.out.println(orderCreateReq.getTotalPrice());
+
+        IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
+        BaseResponse result = ordersService.createOrder(orderCreateReq);
+
+        //if(resultPay) {
+            System.out.println("ok");
+
+            return ResponseEntity.ok("ok");
+        //}
+//        else {
+//            System.out.println("error");
+//            //paymentService.refund(impUid, info);
+//            return ResponseEntity.ok("error");
+//        }
+    }
 }

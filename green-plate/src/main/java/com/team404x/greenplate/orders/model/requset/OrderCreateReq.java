@@ -9,8 +9,9 @@ import java.util.List;
 public class OrderCreateReq {
     private Long userId;
     private String payment;
-    private Long totalPrice;
-    private Integer totalQuantity;
+    private String impUid; //결제 번호
+    private Long totalPrice; //총주문금액
+    private Integer totalQuantity; //총 주문수량
     private Boolean refundYn;
     private String zipCode;
     private String address;
