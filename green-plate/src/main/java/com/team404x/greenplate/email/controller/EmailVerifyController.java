@@ -20,12 +20,17 @@ public class EmailVerifyController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/verify")
 	public BaseResponse verify(String email, String uuid, String role) {
-		if (emailVerifyService.isExist(email, uuid)) {
-			if (role.equals("user")) {
-				userService.activateUser(email);
-				return new BaseResponse(BaseResponseMessage.USER_SIGNUP_SUCCESS);
+		BaseResponseMessage message = BaseResponseMessage.EMAIL_VERIFY_FAIL;
+		try {
+			if (emailVerifyService.isExist(email, uuid)) {
+				if (role.equals("user")) {
+					userService.activateUser(email);
+					message = BaseResponseMessage.EMAIL_VERIFY_SUCCESS;
+				}
 			}
+			return new BaseResponse(message);
+		} catch (Exception e) {
+			return new BaseResponse(message);
 		}
-		return null;
 	}
 }

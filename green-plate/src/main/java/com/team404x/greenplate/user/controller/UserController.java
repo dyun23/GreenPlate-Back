@@ -35,37 +35,41 @@ public class UserController {
 			userService.signup(userSignupReq);
 			return new BaseResponse<>(BaseResponseMessage.USER_SIGNUP_SUCCESS);
 		} catch (Exception e) {
-			return new BaseResponse(null);
+			return new BaseResponse(BaseResponseMessage.USER_SIGNUP_FAIL_PAYLOAD_INVALID);
 		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
-		String jwtToken = userService.login(userLoginReq);
-		if (jwtToken != null) {
+		try {
+			String jwtToken = userService.login(userLoginReq);
 			response.setHeader("Authorization", "Bearer " + jwtToken);
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.USER_LOGIN_FAIL);
 		}
-		return new BaseResponse(null);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails user) {
-		if (user != null) {
+		try {
 			String email = user.getUsername().split("_user")[0];
 			UserDetailsRes userDetailsRes = userService.details(email);
-			return new BaseResponse(userDetailsRes);
+			return new BaseResponse(BaseResponseMessage.USER_READ_DETAIL_SUCCESS, userDetailsRes);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.USER_READ_DETAIL_FAIL);
 		}
-		return null;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/address/register")
 	public BaseResponse registerAddress(@AuthenticationPrincipal CustomUserDetails user,
 		@RequestBody UserAddressRegisterReq userAddressRegisterReq) {
-		if (user != null) {
+		try {
 			Long id = user.getId();
 			userService.registerAddress(id, userAddressRegisterReq);
+			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_FAIL);
 		}
-		return null;
 	}
 }

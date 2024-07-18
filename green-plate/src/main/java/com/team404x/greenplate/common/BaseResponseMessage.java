@@ -3,17 +3,21 @@ package com.team404x.greenplate.common;
 public enum BaseResponseMessage {
 	// company signup
 	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
-	COMPANY_SIGNUP_FAIL_PASSWORD(false, 1100, "올바르게 비밀번호를 입력하세요."),
-	COMPANY_SIGNUP_FAIL_EMPTY_NICKNAME(false, 1101, "닉네임을 입력해주세요."),
-	COMPANY_SIGNUP_FAIL_EMPTY_PASSWORD(false, 1102, "패스워드를 입력해주세요."),
-	COMPANY_SIGNUP_FAIL_EXISTING_EMAIL(false, 1104, "이미 존재하는 이메일 주소입니다."),
-	COMPANY_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1105, "인증번호를 확인해주세요."),
-	COMPANY_SIGNUP_FAIL_EXPIRED_CODE(false, 1106, "만료된 인증번호입니다."),
-	COMPANY_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1107,"입력값을 확인해주세요."),
+	COMPANY_SIGNUP_FAIL_PASSWORD(false, 1001, "올바르게 비밀번호를 입력하세요."),
+	COMPANY_SIGNUP_FAIL_EMPTY_NICKNAME(false, 1002, "닉네임을 입력해주세요."),
+	COMPANY_SIGNUP_FAIL_EMPTY_PASSWORD(false, 1003, "패스워드를 입력해주세요."),
+	COMPANY_SIGNUP_FAIL_EXISTING_EMAIL(false, 1004, "이미 존재하는 이메일 주소입니다."),
+	COMPANY_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1005, "인증번호를 확인해주세요."),
+	COMPANY_SIGNUP_FAIL_EXPIRED_CODE(false, 1006, "만료된 인증번호입니다."),
+	COMPANY_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1007,"입력값을 확인해주세요."),
 	// company login
-	COMPANY_LOGIN_SUCCESS(true, 1001, "정상적으로 로그인되었습니다."),
-	COMPANY_LOGIN_FAIL_EMAIL(false, 1150, "이메일을 정확히 입력하세요."),
-	COMPANY_LOGIN_FAIL_PASSWORD(false, 1151, "비밀번호를 정확히 입력하세요."),
+	COMPANY_LOGIN_SUCCESS(true, 1050, "정상적으로 로그인되었습니다."),
+	COMPANY_LOGIN_FAIL(false, 1051, "로그인에 실패했습니다."),
+	COMPANY_LOGIN_FAIL_EMAIL(false, 1052, "이메일을 정확히 입력하세요."),
+	COMPANY_LOGIN_FAIL_PASSWORD(false, 1053, "비밀번호를 정확히 입력하세요."),
+
+	COMPANY_DETAILS_SUCCESS(true, 1100, "상세 정보를 성공적으로 불러왔습니다"),
+	COMPANY_DETAILS_FAIL(false, 1100, "상세 정보를 불러오는데 실패했습니다"),
 
 	// user signup
 	USER_SIGNUP_SUCCESS(true, 1010, "정상적으로 회원가입 되었습니다."),
@@ -28,12 +32,13 @@ public enum BaseResponseMessage {
 
 	// user login
 	USER_LOGIN_SUCCESS(true, 1070, "정상적으로 로그인되었습니다."),
-	USER_LOGIN_FAIL_EMAIL(false, 1300, "이메일을 정확히 입력하세요."),
-	USER_LOGIN_FAIL_PASSWORD(false, 1301, "비밀번호를 정확히 입력하세요."),
+	USER_LOGIN_FAIL(false, 1300, "로그인에 실패했습니다."),
+	USER_LOGIN_FAIL_EMAIL(false, 1301, "이메일을 정확히 입력하세요."),
+	USER_LOGIN_FAIL_PASSWORD(false, 1302, "비밀번호를 정확히 입력하세요."),
 
 	// user email verify
 	EMAIL_VERIFY_SUCCESS(true, 1500, "이메일 인증에 성공했습니다."),
-	EMAIL_VERIFY_PASSWORD(false, 1550, "이메일 인증에 실패했습니다."),
+	EMAIL_VERIFY_FAIL(false, 1550, "이메일 인증에 실패했습니다."),
 
 	// user address
 	USER_ADDRESS_REGISTER_SUCCESS(true, 1600, "주소 등록에 성공했습니다."),
@@ -51,8 +56,8 @@ public enum BaseResponseMessage {
 	ITEM_LIST_CATEGORY_FAIL_EMPTY_SUB(false, 3043, "하위 카테고리가 없습니다"),
 
 	ITEM_LIST_NAME_SUCCESS(true, 3080, "상품 검색을 성공했습니다"),
-	ITEM_LIST_NAME_FAIL(true, 3081, "상품 검색을 실패했습니다"),
-	ITEM_LIST_NAME_FAIL_NOT_FOUND(true, 3082, "검색에 맞는 상품이 없습니다"),
+	ITEM_LIST_NAME_FAIL(false, 3081, "상품 검색을 실패했습니다"),
+	ITEM_LIST_NAME_FAIL_NOT_FOUND(false, 3082, "검색에 맞는 상품이 없습니다"),
 
 	ITEM_DETAILS_SUCCESS(true, 3100, "선택한 상품의 정보를 성공적으로 불러왔습니다"),
 	ITEM_DETAILS_FAIL(false, 3101, "상품 상세정보를 불러오는데 실패하였습니다"),
