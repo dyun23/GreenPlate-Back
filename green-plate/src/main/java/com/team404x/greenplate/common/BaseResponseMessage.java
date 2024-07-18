@@ -1,11 +1,21 @@
 package com.team404x.greenplate.common;
 
 public enum BaseResponseMessage {
-
-
-
+	// company signup
 	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
+	COMPANY_SIGNUP_FAIL_PASSWORD(false, 1100, "올바르게 비밀번호를 입력하세요."),
+	COMPANY_SIGNUP_FAIL_EMPTY_NICKNAME(false, 1101, "닉네임을 입력해주세요."),
+	COMPANY_SIGNUP_FAIL_EMPTY_PASSWORD(false, 1102, "패스워드를 입력해주세요."),
+	COMPANY_SIGNUP_FAIL_EXISTING_EMAIL(false, 1104, "이미 존재하는 이메일 주소입니다."),
+	COMPANY_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1105, "인증번호를 확인해주세요."),
+	COMPANY_SIGNUP_FAIL_EXPIRED_CODE(false, 1106, "만료된 인증번호입니다."),
+	COMPANY_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1107,"입력값을 확인해주세요."),
+	// company login
 	COMPANY_LOGIN_SUCCESS(true, 1001, "정상적으로 로그인되었습니다."),
+	COMPANY_LOGIN_FAIL_EMAIL(false, 1150, "이메일을 정확히 입력하세요."),
+	COMPANY_LOGIN_FAIL_PASSWORD(false, 1151, "비밀번호를 정확히 입력하세요."),
+
+	// user signup
 	USER_SIGNUP_SUCCESS(true, 1010, "정상적으로 회원가입 되었습니다."),
 	USER_SIGNUP_FAIL_PASSWORD(false, 1200, "올바르게 비밀번호를 입력하세요."),
 	USER_SIGNUP_FAIL_EMPTY_NICKNAME(false, 1201, "닉네임을 입력해주세요."),
@@ -15,8 +25,43 @@ public enum BaseResponseMessage {
 	USER_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1205, "인증번호를 확인해주세요."),
 	USER_SIGNUP_FAIL_EXPIRED_CODE(false, 1206, "만료된 인증번호입니다."),
 	USER_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1207,"입력값을 확인해주세요."),
+
+	// user login
 	USER_LOGIN_SUCCESS(true, 1070, "정상적으로 로그인되었습니다."),
-	USER_LOGIN_FAIL_EMAIL(false, 1800, "이메일을 정확히 입력하세요."),
+	USER_LOGIN_FAIL_EMAIL(false, 1300, "이메일을 정확히 입력하세요."),
+	USER_LOGIN_FAIL_PASSWORD(false, 1301, "비밀번호를 정확히 입력하세요."),
+
+	// user email verify
+	EMAIL_VERIFY_SUCCESS(true, 1500, "이메일 인증에 성공했습니다."),
+	EMAIL_VERIFY_PASSWORD(false, 1550, "이메일 인증에 실패했습니다."),
+
+	// user address
+	USER_ADDRESS_REGISTER_SUCCESS(true, 1600, "주소 등록에 성공했습니다."),
+	USER_ADDRESS_REGISTER_FAIL(false, 1650, "주소 등록에 실패했습니다"),
+
+
+	// item 조회
+	ITEM_LIST_SUCCESS(true, 3000, "전체 상품 목록을 성공적으로 불러왔습니다"),
+	ITEM_LIST_FAIL_EMPTY(false, 3001, "상품 목록이 없습니다"),
+	ITEM_LIST_FAIL(false, 3002, "상품을 불러오는데 실패하였습니다"),
+
+	ITEM_LIST_CATEGORY_SUCCESS(true, 3040, "해당 카테고리 상품 목록을 성공적으로 불러왔습니다"),
+	ITEM_LIST_CATEGORY_FAIL(false, 3041, "해당 카테고리 상품 목록을 불러오는데 실패하였습니다"),
+	ITEM_LIST_CATEGORY_FAIL_EMPTY_MAIN(false, 3042, "상위 카테고리가 없습니다"),
+	ITEM_LIST_CATEGORY_FAIL_EMPTY_SUB(false, 3043, "하위 카테고리가 없습니다"),
+
+	ITEM_LIST_NAME_SUCCESS(true, 3080, "상품 검색을 성공했습니다"),
+	ITEM_LIST_NAME_FAIL(true, 3081, "상품 검색을 실패했습니다"),
+	ITEM_LIST_NAME_FAIL_NOT_FOUND(true, 3082, "검색에 맞는 상품이 없습니다"),
+
+	ITEM_DETAILS_SUCCESS(true, 3100, "선택한 상품의 정보를 성공적으로 불러왔습니다"),
+	ITEM_DETAILS_FAIL(false, 3101, "상품 상세정보를 불러오는데 실패하였습니다"),
+	ITEM_DETAILS_FAIL_SOLD_OUT(false, 3102, "품절된 상품입니다"),
+	ITEM_DETAILS_FAIL_UNAVAILABLE(false, 3103, "판매 중지된 상품입니다"),
+	ITEM_DETAILS_FAIL_NOT_FOUND(false, 3104, "존재하지 않는 상품입니다"),
+
+
+
 //	5000 orders
 	ORDERS_CREATED_SUCCESS(true, 5100, "주문이 완료되었습니다."),
 	ORDERS_CANCEL_SUCCESS(true, 5110, "주문이 취소되었습니다."),
