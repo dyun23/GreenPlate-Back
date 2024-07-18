@@ -46,7 +46,7 @@ public class JwtUtil {
 			.claim("email", email) // 토큰에 담을 데이터
 			.claim("role", role)
 			.issuedAt(new Date(System.currentTimeMillis())) // 언제 발행됐는지
-			.expiration(new Date(System.currentTimeMillis()+ 5*60*1000))
+			.expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
 			.signWith(secretKey) // 우리만 알 수 있는 secretKey를 가지고 토큰을 생성함
 			.compact();
 	}
