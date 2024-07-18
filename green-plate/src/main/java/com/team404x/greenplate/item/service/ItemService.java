@@ -14,6 +14,7 @@ import com.team404x.greenplate.item.model.response.ItemDetailsRes;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 

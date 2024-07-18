@@ -4,17 +4,18 @@ import java.util.List;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
-import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
-import com.team404x.greenplate.item.model.response.ItemCompanyListRes;
 import com.team404x.greenplate.item.model.response.ItemDetailsRes;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/item")
@@ -22,13 +23,13 @@ import org.springframework.web.bind.annotation.*;
 public class ItemController {
     private final ItemService itemService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/create")
+    @RequestMapping(method= RequestMethod.POST, value="/create")
     public BaseResponse create(@RequestBody ItemCreateReq itemCreateReq) {
         itemService.create(itemCreateReq);
         return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/update")
+    @RequestMapping(method= RequestMethod.POST, value="/update")
     public BaseResponse update(@RequestBody ItemUpdateReq itemUpdateReq) {
         itemService.update(itemUpdateReq);
         return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
@@ -53,19 +54,9 @@ public class ItemController {
         return new BaseResponse(itemResList);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/details")
+	@RequestMapping(method = RequestMethod.GET, value = "/details")
     public BaseResponse list(Long id) {
         ItemDetailsRes itemDetailsRes = itemService.details(id);
         return new BaseResponse(itemDetailsRes);
     }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/companylistAll")
-    public BaseResponse companylistAll(@AuthenticationPrincipal CustomUserDetails customUserDetails, ItemCompanyListRes itemCompanyRes) {
-        List<ItemCompanyListRes> itemCompanyListRes = itemService.getItemCompanyList(customUserDetails.getId());
-        return new BaseResponse(itemCompanyListRes);
-
-    }
-
-
-
 }
