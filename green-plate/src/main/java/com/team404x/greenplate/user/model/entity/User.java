@@ -13,7 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team404x.greenplate.cart.entity.Cart;
+import com.team404x.greenplate.cart.model.entity.Cart;
 import com.team404x.greenplate.item.review.entity.ItemReview;
 import com.team404x.greenplate.recipe.likes.RecipeLike;
 import com.team404x.greenplate.recipe.review.model.RecipeReview;
