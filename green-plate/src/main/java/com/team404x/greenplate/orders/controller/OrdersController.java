@@ -2,6 +2,7 @@ package com.team404x.greenplate.orders.controller;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
+import com.team404x.greenplate.orders.model.requset.OrderInvoiceReq;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
@@ -54,14 +55,20 @@ public class OrdersController {
         return result;
     }
 
-    /** 상품 배송 상태 변경 : 사업자**/
+    /** 상품 배송 상태 변경 : 사업자 **/
 //    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/statechange/{orderId}")
-    public BaseResponse changeDeliveryState(@PathVariable Long orderId, @RequestBody OrderSearchReq search) {
-        BaseResponse result = ordersService.changeDeliveryState(orderId, search);
+    @PutMapping("/statechange")
+    public BaseResponse changeDeliveryState(@RequestBody OrderSearchReq orderSearchReq) {
+        BaseResponse result = ordersService.changeDeliveryState(orderSearchReq);
         return result;
     }
 
-
+    /** 상품 송장 등록 : 사업자 **/
+    //    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/invoice")
+    public BaseResponse inputInvoice(@RequestBody OrderInvoiceReq orderInvoiceReq) {
+        BaseResponse result = ordersService.inputInvoice(orderInvoiceReq);
+        return result;
+    }
 
 }

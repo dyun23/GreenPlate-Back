@@ -7,6 +7,7 @@ import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.orders.model.entity.*;
+import com.team404x.greenplate.orders.model.requset.OrderInvoiceReq;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.repository.OrderDetailRepository;
@@ -148,12 +149,8 @@ public class OrdersService {
         return new BaseResponse<>(ORDERS_CANCEL_SUCCESS);
     }
 
-
-    public BaseResponse changeDeliveryState(Long orderId, OrderSearchReq orderSearchReq) {
-        Optional<Orders> orders = ordersRepository.findById(orderId);
-
-        System.out.println("status="+orderSearchReq);
-
+    //사업자 배송 상태 변경
+    public BaseResponse changeDeliveryState(OrderSearchReq orderSearchReq) {
         if(!orderSearchReq.getStatus().equals(OrderStatus.ready.toString())
             && !orderSearchReq.getStatus().equals(OrderStatus.shipped.toString())
             && !orderSearchReq.equals(OrderStatus.completed.toString()))
@@ -161,6 +158,7 @@ public class OrdersService {
             return new BaseResponse<>(ORDERS_UPDATE_FAIL_CHANGE);
         }
 
+        Optional<Orders> orders = ordersRepository.findById(orderSearchReq.getOrderId());
         if (!orders.isPresent()) {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
         }else{
@@ -170,5 +168,19 @@ public class OrdersService {
         }
 
         return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_CHANGE);
+    }
+
+    //사업자 송장 번호 입력
+    public BaseResponse inputInvoice(OrderInvoiceReq orderInvoiceReq) {
+        Optional<Orders> orders = ordersRepository.findById(orderInvoiceReq.getOrderId());
+        if (!orders.isPresent()) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
+        }else{
+            Orders orders2 = orders.get();
+            orders2.invoice(orderInvoiceReq.getInvoiceNum());
+            ordersRepository.save(orders2);
+        }
+
+        return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_INVOICE);
     }
 }

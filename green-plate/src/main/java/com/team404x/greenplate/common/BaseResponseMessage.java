@@ -22,6 +22,8 @@ public enum BaseResponseMessage {
 	ORDERS_SEARCH_FAIL_USER(false, 5052, "유저가 없습니다."),
 	ORDERS_UPDATE_SUCCESS_CHANGE(false, 5070, "주문 상태가 변경되었습니다."),
 	ORDERS_UPDATE_FAIL_CHANGE(false, 5071, "주문 상태 변경에 실패하였습니다."),
+	ORDERS_UPDATE_SUCCESS_INVOICE(false, 5080, "송장 입력이 완료되었습니다."),
+	ORDERS_UPDATE_FAIL_INVOICE(false, 5081, "송장 입력에 실패하였습니다."),
 	ORDERS_CREATED_FAIL(false, 5401, "주문 실패하였습니다."),
 	ORDERS_CREATED_FAIL_STOCK(false, 5401, "상품재고가 부족합니다."),
 	ORDERS_SEARCH_FAIL_ORDERED(false, 5111, "해당주문을 찾을 수 없습니다.");

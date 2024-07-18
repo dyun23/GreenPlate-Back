@@ -38,9 +38,6 @@ public class Address {
 	@ColumnDefault("false")
 	private Boolean defultAddr;
 
-	@OneToOne(mappedBy = "address", fetch = FetchType.LAZY)
-	private Orders orders;
-
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
