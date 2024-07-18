@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class UserDetailsAddressRes {
-	private Integer zipcode;
+	private String zipcode;
 	private String address;
 	private String addressDetail;
 }
