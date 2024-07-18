@@ -83,4 +83,8 @@ public class User {
 	private List<Address> addresses = new ArrayList<>();
 
 
+	public void activate() {
+		this.enabled = true;
+	}
+
 }

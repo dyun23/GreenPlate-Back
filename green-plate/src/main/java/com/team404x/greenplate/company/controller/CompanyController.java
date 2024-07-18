@@ -22,6 +22,10 @@ import lombok.RequiredArgsConstructor;
 public class CompanyController {
 	private final CompanyService companyService;
 
+	/*
+	TODO
+	company 이메일 인증 어떻게 할 지 정하기
+	* */
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
 	public BaseResponse signup(@RequestBody CompanySignupReq companySignupReq) {
 		try {
