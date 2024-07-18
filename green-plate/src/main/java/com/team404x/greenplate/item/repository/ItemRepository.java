@@ -12,7 +12,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("select i from Item i inner join i.recipeItems recipeItems where recipeItems.recipe.id = ?1")
     List<Item> findByRecipeItemsRecipeId(Long id);
-
-    //
-    List<Item> findByNameContaining(String name);
+    
 }
