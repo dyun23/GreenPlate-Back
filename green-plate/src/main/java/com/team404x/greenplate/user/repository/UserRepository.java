@@ -6,4 +6,5 @@ import com.team404x.greenplate.user.model.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	User findUserByEmail(String email);
+	User findUserByEmailAndEnabled(String email, boolean enabled);
 }

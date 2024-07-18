@@ -20,7 +20,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
 	/*
 	TODO
-	1. 예외처리 하기
+	1. user 존재하지 않거나 enabled = false 일때 예외처리 하기
 	2. company가 들어온 경우 처리하기
 	* */
 	@Override
@@ -28,8 +28,8 @@ public class CustomUserDetailService implements UserDetailsService {
 		String emailInput;
 		if (email.endsWith("_user")) {
 			emailInput = email.split("_user")[0];
-			User user = userRepository.findUserByEmail(emailInput);
-			return new CustomUserDetails(user);
+			User user = userRepository.findUserByEmailAndEnabled(emailInput, true);
+			return user == null ? null : new CustomUserDetails(user);
 		} else if (email.endsWith("_company")) {
 			emailInput = email.split("_company")[0];
 			Company company = companyRepository.findCompanyByEmail(emailInput);
