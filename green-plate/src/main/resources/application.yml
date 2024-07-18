@@ -42,6 +42,10 @@ cloud:
     stack:
       auto: false
 
+imp:
+  imp_key: ${IPM_KEY}
+  imp_secret: ${IPM_SECRET}
+
 logging:
   level:
     org.hibernate.SQL: debug

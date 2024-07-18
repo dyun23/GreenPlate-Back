@@ -1,6 +1,13 @@
 package com.team404x.greenplate.orders.service;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
@@ -24,10 +31,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.team404x.greenplate.common.BaseResponseMessage.*;
@@ -44,6 +52,7 @@ public class OrdersService {
     private final CompanyRepository companyRepository;
     private final OrderQueryRepository orderQueryRepository;
     private final AddressRepository addressRepository;
+    private final IamportClient iamportClient;
 
     JPAQueryFactory queryFactory;
 
@@ -253,6 +262,17 @@ public class OrdersService {
         }
 
         return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_INVOICE);
+    }
+
+    public IamportResponse<Payment> getPaymentInfo(String impUid) throws IamportResponseException, IOException {
+
+
+        return iamportClient.paymentByImpUid(impUid);
+    }
+
+    public IamportResponse refund(OrderCreateReq orderCreateReq, IamportResponse<Payment> info) throws IamportResponseException, IOException {
+        CancelData cancelData = new CancelData(orderCreateReq.getImpUid(), true, info.getResponse().getAmount());
+        return iamportClient.cancelPaymentByImpUid(cancelData);
     }
 
 }
