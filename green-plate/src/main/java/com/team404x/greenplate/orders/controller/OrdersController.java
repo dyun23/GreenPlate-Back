@@ -40,7 +40,6 @@ public class OrdersController {
         return result;
     }
 
-    //수정중
     /** 상품 주문 내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list/company/{companyId}")
@@ -48,6 +47,15 @@ public class OrdersController {
         BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
         return result;
     }
+
+    /** 상품 주문 상세내역 조회 : 사업자**/
+//    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/list/company/{companyId}/{orderId}")
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
+        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
+        return result;
+    }
+
 
 
 }
