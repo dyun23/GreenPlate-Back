@@ -35,19 +35,17 @@ public class Orders {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "address_id")
-	private Address address;
-
 	private LocalDateTime orderDate;
-
 	private Long totalPrice;
-
 	private Integer totalQuantity;
-
 	private String orderState;
-
 	private Boolean refundYn;
+	private String recipient;
+	private Integer zipCode;
+	private String address;
+	private String addressDetail;
+	private String phoneNum;
+	private String invoice;
 
 	@ColumnDefault("false")
 	private Boolean delYn;
@@ -67,5 +65,9 @@ public class Orders {
 
 	public void refundOrder(){
 		refundYn = true;
+	}
+
+	public void invoice(String invoiceNum){
+		invoice = invoiceNum;
 	}
 }
