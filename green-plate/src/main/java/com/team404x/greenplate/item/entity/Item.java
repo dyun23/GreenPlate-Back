@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -23,12 +24,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,15 +60,15 @@ public class Item {
 
 	private String contents;
 
-	private BigDecimal price; // 왜 BigDecimal..?
+	private Integer price; // 왜 BigDecimal..?
 
-	private Long stock;
+	private Integer stock; // 수정
 
 	private String state;
 
-	private String calorie;
+	private Integer calorie;
 
-	private String imageUrl1; // 1을 붙인 이유..?
+	private String imageUrl; // 1을 붙인 이유..?
 
 	private Boolean delYn;
 

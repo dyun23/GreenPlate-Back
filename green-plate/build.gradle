@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
@@ -38,7 +39,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-    implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
+    implementation group: 'org.javassist', name: 'javassist', version: '3.15.0-GA'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
