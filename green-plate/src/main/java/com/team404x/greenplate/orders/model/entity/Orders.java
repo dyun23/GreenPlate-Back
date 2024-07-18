@@ -41,7 +41,7 @@ public class Orders {
 	private String orderState;
 	private Boolean refundYn;
 	private String recipient;
-	private Integer zipCode;
+	private String zipCode;
 	private String address;
 	private String addressDetail;
 	private String phoneNum;

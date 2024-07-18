@@ -1,12 +1,12 @@
-package com.team404x.greenplate.orders.model.requset;
+package com.team404x.greenplate.orders.model.response;
 
+import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class OrderCreateReq {
+public class OrderPaymentRes {
     private Long userId;
     private String payment;
     private Long totalPrice;
@@ -16,7 +16,7 @@ public class OrderCreateReq {
     private String address;
     private String addressDetail;
     private String phoneNum;
-    private List<OrderDetailDto> orderDetailList;
+    private List<OrderCreateReq.OrderDetailDto> orderDetailList;
 
     @Data
     public static class OrderDetailDto {
@@ -26,4 +26,3 @@ public class OrderCreateReq {
         private Long price;
     }
 }
-

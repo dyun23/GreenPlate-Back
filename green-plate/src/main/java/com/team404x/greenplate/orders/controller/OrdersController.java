@@ -2,13 +2,11 @@ package com.team404x.greenplate.orders.controller;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
-import com.team404x.greenplate.orders.model.requset.OrderCancelReq;
-import com.team404x.greenplate.orders.model.requset.OrderInvoiceReq;
-import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
+import com.team404x.greenplate.orders.model.requset.*;
+import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
-import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +18,14 @@ import java.util.List;
 public class OrdersController {
     private final OrdersService ordersService;
 
-    /** 상품 주문**/
+    /** 상품 결제방법선택**/
+    @PostMapping(value = "/payment")
+    public BaseResponse<OrderPaymentRes> chosePayment(@RequestBody OrderCreateReq orderCreateReq) {
+        BaseResponse<OrderPaymentRes> result = ordersService.chosePayment(orderCreateReq);
+        return result;
+    }
+
+    /** 상품 결제**/
     @PostMapping(value = "/create")
     public BaseResponse create(@RequestBody OrderCreateReq orderCreateReq) {
         BaseResponse result = ordersService.createOrder(orderCreateReq);
