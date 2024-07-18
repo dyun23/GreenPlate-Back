@@ -2,6 +2,8 @@ package com.team404x.greenplate.common;
 
 public enum BaseResponseMessage {
 
+
+
 	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
 	COMPANY_LOGIN_SUCCESS(true, 1001, "정상적으로 로그인되었습니다."),
 	USER_SIGNUP_SUCCESS(true, 1010, "정상적으로 회원가입 되었습니다."),
@@ -66,12 +68,6 @@ public enum BaseResponseMessage {
 	USER_SEARCH_FAIL(false,3321,"상품을 불러오는데 실패하였습니다"),
 	USER_SEARCH_FAIL_ATLEAST(false,3322,"검색어를 2글자 이상 입력해주세요"),
 	USER_SEARCH_FAIL_NOTFOUND(false,3323,"검색어에 맞는 상품이 없습니다");
-
-
-
-
-
-
 
 	private Boolean success;
 	private Integer code;

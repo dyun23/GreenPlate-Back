@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ItemUpdateReq {
-    private final String companyId;
-    private final String itemId;
+
+    private final Long companyId;
+    private final Long itemId;
     private final String name;
     private final String contents;
     private final int price;

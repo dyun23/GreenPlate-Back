@@ -1,5 +1,6 @@
 package com.team404x.greenplate.item.service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +38,24 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+
+    public void update(ItemUpdateReq itemUpdateReq) {
+        Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(itemUpdateReq.getMainCategory(), itemUpdateReq.getSubCategory());
+        Item item = Item.builder()
+                .id(itemUpdateReq.getItemId())
+                .name(itemUpdateReq.getName())
+                .contents(itemUpdateReq.getContents())
+                .price(itemUpdateReq.getPrice())
+                .stock(itemUpdateReq.getStock())
+                .calorie(itemUpdateReq.getCalorie())
+                .state(itemUpdateReq.getState())
+                .imageUrl(itemUpdateReq.getImageUrl())
+                .discountPrice(itemUpdateReq.getDiscountPrice())
+                .category(category)
+                .company(Company.builder().id(itemUpdateReq.getCompanyId()).build())
+                .build();
+        itemRepository.save(item);
+    }
     public List<ItemRes> list() {
         List<Item> items = itemRepository.findAll();
         return getItemRes(items);
