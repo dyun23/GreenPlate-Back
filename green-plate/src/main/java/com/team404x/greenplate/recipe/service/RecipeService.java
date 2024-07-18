@@ -1,6 +1,6 @@
 package com.team404x.greenplate.recipe.service;
 
-//import com.team404x.greenplate.common.s3.S3FileUploadSevice;
+import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.item.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
@@ -28,7 +28,7 @@ import java.util.List;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeItemRepository recipeItemRepository;
-//    private final S3FileUploadSevice s3FileUploadSevice;
+    private final S3FileUploadSevice s3FileUploadSevice;
     private final ItemRepository itemRepository;
     private final KeywordRepository keywordRepository;
     private final RecipeKeywordRepository recipeKeywordRepository;
@@ -37,7 +37,7 @@ public class RecipeService {
         Recipe recipe = Recipe.builder()
                 .title(request.getTitle())
                 .contents(request.getContents())
-//                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
+                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
                 .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
                 .company(Company.builder().id(request.getCompanyId()).build())
                 .build();
@@ -51,7 +51,7 @@ public class RecipeService {
                 .id(request.getRecipeId())
                 .title(request.getTitle())
                 .contents(request.getContents())
-//                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
+                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
                 .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
                 .company(Company.builder().id(request.getCompanyId()).build())
                 .build();
