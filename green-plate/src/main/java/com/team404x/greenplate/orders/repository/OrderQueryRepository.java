@@ -8,6 +8,7 @@ import com.team404x.greenplate.company.model.entity.QCompany;
 import com.team404x.greenplate.item.entity.QItem;
 import com.team404x.greenplate.orders.model.entity.*;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
+import com.team404x.greenplate.user.address.entity.QAddress;
 import com.team404x.greenplate.user.model.entity.QUser;
 import org.springframework.stereotype.Repository;
 
