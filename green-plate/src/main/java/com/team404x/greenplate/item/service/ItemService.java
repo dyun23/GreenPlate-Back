@@ -37,6 +37,17 @@ public class ItemService {
 
     public List<ItemRes> list() {
         List<Item> items = itemRepository.findAll();
+        return getItemRes(items);
+    }
+
+    public List<ItemRes> list(String main, String sub) {
+        Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
+        List<Item> items = category.getItemList();
+        return getItemRes(items);
+    }
+
+
+    private List<ItemRes> getItemRes(List<Item> items) {
         List<ItemRes> itemResList = new ArrayList<>();
         for (Item item : items) {
             itemResList.add(

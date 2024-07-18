@@ -30,4 +30,10 @@ public class ItemController {
         List<ItemRes> itemResList = itemService.list();
         return new BaseResponse(itemResList);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/list/category")
+    public BaseResponse list(String main, String sub) {
+        List<ItemRes> itemResList = itemService.list(main, sub);
+        return new BaseResponse(itemResList);
+    }
 }
