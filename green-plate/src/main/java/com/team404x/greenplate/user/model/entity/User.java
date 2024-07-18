@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team404x.greenplate.cart.entity.Cart;
 import com.team404x.greenplate.item.review.entity.ItemReview;
 import com.team404x.greenplate.recipe.likes.RecipeLike;
-import com.team404x.greenplate.recipe.review.RecipeReview;
+import com.team404x.greenplate.recipe.review.model.RecipeReview;
 import com.team404x.greenplate.user.address.entity.Address;
 import com.team404x.greenplate.user.keyword.entity.UserKeyword;
 

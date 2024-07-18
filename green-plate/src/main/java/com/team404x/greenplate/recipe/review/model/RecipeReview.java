@@ -1,4 +1,4 @@
-package com.team404x.greenplate.recipe.review;
+package com.team404x.greenplate.recipe.review.model;
 
 import com.team404x.greenplate.recipe.model.entity.Recipe;
 import com.team404x.greenplate.user.model.entity.User;
@@ -26,6 +26,8 @@ public class RecipeReview {
 	private Long id;
 
 	private String contents;
+
+	private Integer rating;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
