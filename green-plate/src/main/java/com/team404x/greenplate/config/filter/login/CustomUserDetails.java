@@ -67,7 +67,7 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		if (company == null)
+		if (user == null)
 			return company.getEmail();
 		return user.getEmail();
 	}

@@ -1,5 +1,6 @@
 package com.team404x.greenplate.user.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -7,9 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.email.service.EmailVerifyService;
 import com.team404x.greenplate.user.model.request.UserLoginReq;
 import com.team404x.greenplate.user.model.request.UserSignupReq;
+import com.team404x.greenplate.user.model.response.UserDetailsRes;
 import com.team404x.greenplate.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,8 +38,6 @@ public class UserController {
 		}
 	}
 
-
-
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		String jwtToken = userService.login(userLoginReq);
@@ -45,5 +46,15 @@ public class UserController {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
 		}
 		return new BaseResponse(null);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/details")
+	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails user) {
+		if (user != null) {
+			String email = user.getUsername().split("_user")[0];
+			UserDetailsRes userDetailsRes = userService.details(email);
+			return new BaseResponse(userDetailsRes);
+		}
+		return null;
 	}
 }
