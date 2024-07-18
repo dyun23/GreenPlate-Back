@@ -1,0 +1,54 @@
+spring:
+  jwt:
+    secret: ${JWT_SECRET}
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+    hibernate:
+      ddl-auto: update # create: ???? create, drop sql? ????? ??
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+#  cloud:
+#    aws:
+#      s3:
+#        bucket: ${BUCKET}
+#      credentials:
+#        access-key: ${ACCESS_KEY}
+#        secret-key: ${SECRET_KEY}
+#      region:
+#        static: ap-northeast-2
+#        auto: false
+#      stack:
+#        auto: false
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: ${EMAIL}
+#    password: ${EMAIL_PASSWORD}
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: true
+#            required: true
+#          auth: true
+#          connectiontimeout: 5000
+#          timeout: 5000
+#          writetimeout: 5000
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
