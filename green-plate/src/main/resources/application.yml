@@ -29,7 +29,6 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-
 cloud:
   aws:
     s3:
