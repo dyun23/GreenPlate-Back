@@ -9,7 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.livecommerce.entity.Livecommerce;
 import com.team404x.greenplate.recipe.model.entity.Recipe;
 

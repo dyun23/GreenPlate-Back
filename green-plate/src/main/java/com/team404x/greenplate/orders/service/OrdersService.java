@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.orders.model.entity.*;
 import com.team404x.greenplate.orders.model.requset.OrderCancelReq;

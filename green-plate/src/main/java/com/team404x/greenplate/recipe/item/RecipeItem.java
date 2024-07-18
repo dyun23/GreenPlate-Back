@@ -1,6 +1,6 @@
 package com.team404x.greenplate.recipe.item;
 
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.recipe.model.entity.Recipe;
 
 import jakarta.persistence.Entity;
