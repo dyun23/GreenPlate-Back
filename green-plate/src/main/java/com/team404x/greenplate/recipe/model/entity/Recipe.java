@@ -13,7 +13,7 @@ import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.livecommerce.entity.Livecommerce;
 import com.team404x.greenplate.recipe.item.RecipeItem;
 import com.team404x.greenplate.recipe.likes.RecipeLike;
-import com.team404x.greenplate.recipe.review.RecipeReview;
+import com.team404x.greenplate.recipe.review.model.RecipeReview;
 import com.team404x.greenplate.user.model.entity.User;
 
 import lombok.AllArgsConstructor;
