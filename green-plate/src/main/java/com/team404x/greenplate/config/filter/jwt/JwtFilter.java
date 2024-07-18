@@ -49,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		Long id = jwtUtil.getId(token);
 		String email = jwtUtil.getEmail(token);
 		String role = jwtUtil.getRole(token);
 
@@ -56,12 +57,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		if (role.equals("ROLE_USER")) {
 			User user = User.builder()
+				.id(id)
 				.email(email)
 				.role(role)
 				.build();
 			customUserDetails = new CustomUserDetails(user);
 		} else if (role.equals("ROLE_COMPANY")) {
 			Company company = Company.builder()
+				.id(id)
 				.email(email)
 				.role(role)
 				.build();

@@ -2,13 +2,12 @@ package com.team404x.greenplate.orders.model.entity;
 
 import java.time.LocalDateTime;
 
-import com.querydsl.core.annotations.QueryProjection;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

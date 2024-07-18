@@ -17,10 +17,10 @@ public class ItemCreateReq {
    private int stock;
    private int calorie;
    private String state;
-   private String image_url;
-   private int discount_price;
-   private String main_category;
-   private String sub_category;
 
+   private String imageUrl;
+   private int discountPrice;
+   private String mainCategory;
+   private String subCategory;
 
 }

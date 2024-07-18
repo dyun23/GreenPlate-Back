@@ -2,7 +2,7 @@ package com.team404x.greenplate.recipe.service;
 
 //import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.keyword.repository.KeywordRepository;
 import com.team404x.greenplate.recipe.item.RecipeItem;

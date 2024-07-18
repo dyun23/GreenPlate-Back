@@ -1,6 +1,6 @@
 package com.team404x.greenplate.cart.entity;
 
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.user.model.entity.User;
 
 import jakarta.persistence.Entity;

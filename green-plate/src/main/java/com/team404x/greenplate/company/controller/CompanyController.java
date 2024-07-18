@@ -1,5 +1,6 @@
 package com.team404x.greenplate.company.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,9 +10,9 @@ import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
+import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
 import com.team404x.greenplate.company.service.CompanyService;
-import com.team404x.greenplate.user.model.request.UserLoginReq;
-import com.team404x.greenplate.user.model.request.UserSignupReq;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,15 @@ public class CompanyController {
 			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_SUCCESS);
 		}
 		return new BaseResponse(null);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/details")
+	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails company) {
+		if (company != null) {
+			String email = company.getUsername().split("_company")[0];
+			CompanyDetailsRes companyDetailsRes = companyService.details(email);
+			return new BaseResponse(companyDetailsRes);
+		}
+		return null;
 	}
 }

@@ -4,11 +4,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
-import com.team404x.greenplate.item.entity.Item;
+import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.orders.model.entity.*;
+import com.team404x.greenplate.orders.model.requset.OrderCancelReq;
 import com.team404x.greenplate.orders.model.requset.OrderInvoiceReq;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
+import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.repository.OrderDetailRepository;
 import com.team404x.greenplate.orders.repository.OrderQueryRepository;
@@ -88,7 +90,7 @@ public class OrdersService {
 
     //유저 주문 상품 목록 조회
     @Transactional
-    public BaseResponse<List<OrderUserSearchRes>> search(Long userId) {
+    public BaseResponse<List<OrderUserSearchRes>> searchForUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
         if (!user.isPresent()) {
@@ -102,10 +104,37 @@ public class OrdersService {
             orderUserSearchRes.setOrder_id(order.getId());
             orderUserSearchRes.setOrder_state(order.getOrderState());
             orderUserSearchRes.setTotal_price(order.getTotalPrice());
-            orderUserSearchRes.setTotal_cnt(order.getTotalPrice());
+            orderUserSearchRes.setTotal_cnt(order.getTotalQuantity());
             orderUserSearchRes.setRefund_yn(order.getRefundYn());
             orderUserSearchRes.setOrder_date(order.getOrderDate());
             orderUserSearchResList.add(orderUserSearchRes);
+        }
+        return new BaseResponse<>(orderUserSearchResList);
+    }
+
+    //유저 주문 상품 상세조회
+    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(Long userId, Long ordersId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (!user.isPresent()) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
+        }
+
+        Optional<Orders> orders = ordersRepository.findById(ordersId);
+        Orders orders2 = orders.get();
+
+        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrdersId(ordersId);
+
+        List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<OrderUserSearchDetailRes>();
+        for(OrderDetail orderDetail : orderDetailList){
+            OrderUserSearchDetailRes orderUserSearchDetailRes = new OrderUserSearchDetailRes();
+            orderUserSearchDetailRes.setOrder_id(orders2.getId());
+            orderUserSearchDetailRes.setOrder_state(orders2.getOrderState());
+            orderUserSearchDetailRes.setPrice(orderDetail.getPrice());
+            orderUserSearchDetailRes.setCnt(orderDetail.getCnt());
+            orderUserSearchDetailRes.setRefund_yn(orders2.getRefundYn());
+            orderUserSearchDetailRes.setOrder_date(orders2.getOrderDate());
+            orderUserSearchResList.add(orderUserSearchDetailRes);
         }
         return new BaseResponse<>(orderUserSearchResList);
     }
@@ -136,8 +165,8 @@ public class OrdersService {
     }
 
     //주문취소
-    public BaseResponse<String> cancelOrder(Long orderId) {
-        Optional<Orders> orders = ordersRepository.findById(orderId);
+    public BaseResponse<String> cancelOrder(OrderCancelReq orderCancelReq) {
+        Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
 
         if (!orders.isPresent()) {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
@@ -183,4 +212,6 @@ public class OrdersService {
 
         return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_INVOICE);
     }
+
+
 }

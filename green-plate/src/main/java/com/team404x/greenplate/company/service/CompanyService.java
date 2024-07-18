@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
+import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
 import com.team404x.greenplate.company.repository.CompanyRepository;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -43,11 +45,23 @@ public class CompanyService {
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
 		Authentication authentication = authenticationManager.authenticate(authToken);
 		if (authentication != null) {
+			CustomUserDetails companyDetails = (CustomUserDetails) authentication.getPrincipal();
 			var role = authentication.getAuthorities().iterator().next().getAuthority();
-			String token = jwtUtil.createToken(email, role);
+			String token = jwtUtil.createToken(companyDetails.getId(), email, role);
 			System.out.println(token);
 			return token;
 		}
 		return null;
+	}
+
+	public CompanyDetailsRes details(String email) {
+		Company company = companyRepository.findCompanyByEmail(email);
+		return CompanyDetailsRes.builder()
+			.email(company.getEmail())
+			.comNum(company.getComNum())
+			.name(company.getName())
+			.address(company.getAddress())
+			.telNum(company.getTelNum())
+			.build();
 	}
 }

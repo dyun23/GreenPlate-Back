@@ -31,14 +31,19 @@ public class JwtUtil {
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
 	}
 
+	public Long getId(String token) {
+		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("id", Long.class);
+	}
+
 	public Boolean isExpired(String token) {
 
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
 	}
 
-	public String createToken(String email, String role) {
+	public String createToken(Long id, String email, String role) {
 		return Jwts.builder()
-			.claim("email", email) // 토근에 담을 데이터
+			.claim("id", id)
+			.claim("email", email) // 토큰에 담을 데이터
 			.claim("role", role)
 			.issuedAt(new Date(System.currentTimeMillis())) // 언제 발행됐는지
 			.expiration(new Date(System.currentTimeMillis()+ 5*60*1000))

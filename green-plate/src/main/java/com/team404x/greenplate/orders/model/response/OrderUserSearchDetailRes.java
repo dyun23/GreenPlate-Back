@@ -5,11 +5,12 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class OrderUserSearchRes {
+public class OrderUserSearchDetailRes {
     private Long order_id;
+    private Long orderDetail_id;
     private LocalDateTime order_date;
-    private Long total_price;
-    private Integer total_cnt;
+    private Long price;
+    private Integer cnt;
     private String order_state;
     private boolean refund_yn;
 }

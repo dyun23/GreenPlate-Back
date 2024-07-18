@@ -30,7 +30,7 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Integer zipcode;
+	private String zipcode;
 	private String address;
 	private String addressDetail;
 	private String recipient;

@@ -5,9 +5,10 @@ import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team404x.greenplate.common.support.Querydsl4RepositorySupport;
 import com.team404x.greenplate.company.model.entity.QCompany;
-import com.team404x.greenplate.item.entity.QItem;
+import com.team404x.greenplate.item.model.entity.QItem;
 import com.team404x.greenplate.orders.model.entity.*;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
+import com.team404x.greenplate.user.model.entity.QUser;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.querydsl.core.group.GroupBy.sum;
 import static com.team404x.greenplate.company.model.entity.QCompany.company;
-import static com.team404x.greenplate.item.entity.QItem.*;
+import static com.team404x.greenplate.item.model.entity.QItem.*;
 import static com.team404x.greenplate.orders.model.entity.QOrderDetail.orderDetail;
 import static com.team404x.greenplate.orders.model.entity.QOrders.orders;
 

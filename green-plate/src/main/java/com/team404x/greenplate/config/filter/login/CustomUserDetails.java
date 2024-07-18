@@ -67,8 +67,14 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		if (company == null)
+		if (user == null)
 			return company.getEmail();
 		return user.getEmail();
+	}
+
+	public Long getId() {
+		if (user == null)
+			return company.getId();
+		return user.getId();
 	}
 }

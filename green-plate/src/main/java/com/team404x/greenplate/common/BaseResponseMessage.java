@@ -69,22 +69,6 @@ public enum BaseResponseMessage {
 	USER_SEARCH_FAIL_ATLEAST(false,3322,"검색어를 2글자 이상 입력해주세요"),
 	USER_SEARCH_FAIL_NOTFOUND(false,3323,"검색어에 맞는 상품이 없습니다");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	private Boolean success;
 	private Integer code;
 	private String message;
