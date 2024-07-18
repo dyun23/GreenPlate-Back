@@ -2,6 +2,8 @@ package com.team404x.greenplate.common;
 
 public enum BaseResponseMessage {
 
+
+
 	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
 	COMPANY_LOGIN_SUCCESS(true, 1001, "정상적으로 로그인되었습니다."),
 	USER_SIGNUP_SUCCESS(true, 1010, "정상적으로 회원가입 되었습니다."),
