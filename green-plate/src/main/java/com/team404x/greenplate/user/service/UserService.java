@@ -35,6 +35,12 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	public void activateUser(String email) {
+		User user = userRepository.findUserByEmail(email);
+		user.activate();
+		userRepository.save(user);
+	}
+
 	public String login(UserLoginReq userLoginReq) {
 		String email = userLoginReq.getEmail() + "_user";
 		String password = userLoginReq.getPassword();
