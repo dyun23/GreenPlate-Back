@@ -9,11 +9,11 @@ import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.category.repository.CategoryRepository;
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
+import com.team404x.greenplate.item.model.response.ItemCompanyListRes;
 import com.team404x.greenplate.item.model.response.ItemDetailsRes;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 
@@ -106,4 +106,28 @@ public class ItemService {
         }
         return itemResList;
     }
+    public List<ItemCompanyListRes> getItemCompanyList(Long id) {
+       List<Item> itemCompanylist = itemRepository.findAllByCompanyId(id);
+       List<ItemCompanyListRes> itemCompanyListResList = new ArrayList<>();
+       for(Item item : itemCompanylist) {
+           ItemCompanyListRes responses = ItemCompanyListRes.builder()
+                   .itemId(item.getId())
+                   .name(item.getName())
+                   .price(item.getPrice())
+                   .stock(item.getStock())
+                   .state(item.getState())
+                   .imageUrl(item.getImageUrl())
+                   .discountPrice(item.getDiscountPrice())
+                   .build();
+           itemCompanyListResList.add(responses);
+       }
+       return itemCompanyListResList;
+    }
+
+
+
+
+
+
+
 }
