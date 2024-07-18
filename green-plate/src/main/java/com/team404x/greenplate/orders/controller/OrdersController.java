@@ -1,8 +1,6 @@
 package com.team404x.greenplate.orders.controller;
 
 import com.team404x.greenplate.common.BaseResponse;
-import com.team404x.greenplate.orders.model.entity.OrderDetail;
-import com.team404x.greenplate.orders.model.entity.OrderStatus;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
@@ -53,6 +51,14 @@ public class OrdersController {
     @GetMapping("/list/company/{companyId}/{orderId}")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
         BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
+        return result;
+    }
+
+    /** 상품 배송 상태 변경 : 사업자**/
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/statechange/{orderId}")
+    public BaseResponse changeDeliveryState(@PathVariable Long orderId, @RequestBody OrderSearchReq search) {
+        BaseResponse result = ordersService.changeDeliveryState(orderId, search);
         return result;
     }
 

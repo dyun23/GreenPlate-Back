@@ -139,7 +139,7 @@ public class OrdersService {
         Optional<Orders> orders = ordersRepository.findById(orderId);
 
         if (!orders.isPresent()) {
-            return new BaseResponse<>(ORDERS_CANCEL_FAIL_ORDERED);
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
         }else{
             Orders orders2 = orders.get();
             orders2.refundOrder();
@@ -149,4 +149,26 @@ public class OrdersService {
     }
 
 
+    public BaseResponse changeDeliveryState(Long orderId, OrderSearchReq orderSearchReq) {
+        Optional<Orders> orders = ordersRepository.findById(orderId);
+
+        System.out.println("status="+orderSearchReq);
+
+        if(!orderSearchReq.getStatus().equals(OrderStatus.ready.toString())
+            && !orderSearchReq.getStatus().equals(OrderStatus.shipped.toString())
+            && !orderSearchReq.equals(OrderStatus.completed.toString()))
+        {
+            return new BaseResponse<>(ORDERS_UPDATE_FAIL_CHANGE);
+        }
+
+        if (!orders.isPresent()) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
+        }else{
+            Orders orders2 = orders.get();
+            orders2.orderState(orderSearchReq.getStatus());
+            ordersRepository.save(orders2);
+        }
+
+        return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_CHANGE);
+    }
 }

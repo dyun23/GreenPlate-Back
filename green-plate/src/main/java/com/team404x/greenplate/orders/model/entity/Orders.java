@@ -61,8 +61,8 @@ public class Orders {
 	@OneToMany(mappedBy = "orders")
 	private List<OrderDetail> orderDetails = new ArrayList<>();
 
-	public void orderState(OrderStatus orderStatus){
-		orderState = orderStatus.toString();
+	public void orderState(String orderStatus){
+		orderState = orderStatus;
 	}
 
 	public void refundOrder(){
