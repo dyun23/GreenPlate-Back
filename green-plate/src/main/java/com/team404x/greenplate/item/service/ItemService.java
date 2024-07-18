@@ -57,23 +57,23 @@ public class ItemService {
                 .build();
         itemRepository.save(item);
     }
-    public List<ItemRes> list() {
+    public List<ItemRes> list() throws Exception {
         List<Item> items = itemRepository.findAll();
         return getItemRes(items);
     }
 
-    public List<ItemRes> list(String main, String sub) {
+    public List<ItemRes> list(String main, String sub) throws Exception {
         Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
         List<Item> items = category.getItemList();
         return getItemRes(items);
     }
 
-    public List<ItemRes> list(String name) {
+    public List<ItemRes> list(String name) throws Exception {
         List<Item> items = itemRepository.findByNameContaining(name);
         return getItemRes(items);
     }
 
-    public ItemDetailsRes details(Long id) {
+    public ItemDetailsRes details(Long id) throws Exception {
         Item item = itemRepository.findById(id).orElseThrow();
         return ItemDetailsRes.builder()
             .id(item.getId())
@@ -89,7 +89,7 @@ public class ItemService {
     }
 
 
-    private List<ItemRes> getItemRes(List<Item> items) {
+    private List<ItemRes> getItemRes(List<Item> items) throws Exception {
         List<ItemRes> itemResList = new ArrayList<>();
         for (Item item : items) {
             itemResList.add(

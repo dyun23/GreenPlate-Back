@@ -38,7 +38,7 @@ public class CompanyService {
 		companyRepository.save(company);
 	}
 
-	public String login(CompanyLoginReq companyLoginReq) {
+	public String login(CompanyLoginReq companyLoginReq) throws Exception {
 		String email = companyLoginReq.getEmail() + "_company";
 		String password = companyLoginReq.getPassword();
 
@@ -54,7 +54,7 @@ public class CompanyService {
 		return null;
 	}
 
-	public CompanyDetailsRes details(String email) {
+	public CompanyDetailsRes details(String email) throws Exception {
 		Company company = companyRepository.findCompanyByEmail(email);
 		return CompanyDetailsRes.builder()
 			.email(company.getEmail())

@@ -31,29 +31,31 @@ public class CompanyController {
 	public BaseResponse signup(@RequestBody CompanySignupReq companySignupReq) {
 		try {
 			companyService.signup(companySignupReq);
-			return new BaseResponse<>(BaseResponseMessage.COMPANY_SIGNUP_SUCCESS);
+			return new BaseResponse(BaseResponseMessage.COMPANY_SIGNUP_SUCCESS);
 		} catch (Exception e) {
-			return new BaseResponse(null);
+			return new BaseResponse(BaseResponseMessage.COMPANY_SIGNUP_FAIL_PAYLOAD_INVALID);
 		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
-		String jwtToken = companyService.login(companyLoginReq);
-		if (jwtToken != null) {
+		try {
+			String jwtToken = companyService.login(companyLoginReq);
 			response.setHeader("Authorization", "Bearer " + jwtToken);
 			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_FAIL);
 		}
-		return new BaseResponse(null);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails company) {
-		if (company != null) {
+		try {
 			String email = company.getUsername().split("_company")[0];
 			CompanyDetailsRes companyDetailsRes = companyService.details(email);
-			return new BaseResponse(companyDetailsRes);
+			return new BaseResponse(BaseResponseMessage.COMPANY_DETAILS_SUCCESS, companyDetailsRes);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.COMPANY_DETAILS_FAIL);
 		}
-		return null;
 	}
 }

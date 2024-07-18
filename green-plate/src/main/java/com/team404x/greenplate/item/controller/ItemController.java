@@ -38,25 +38,43 @@ public class ItemController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/list")
     public BaseResponse list() {
-        List<ItemRes> itemResList = itemService.list();
-        return new BaseResponse(itemResList);
+        try {
+            List<ItemRes> itemResList = itemService.list();
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_FAIL);
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/list/category")
     public BaseResponse list(String main, String sub) {
-        List<ItemRes> itemResList = itemService.list(main, sub);
-        return new BaseResponse(itemResList);
+        try {
+            List<ItemRes> itemResList = itemService.list(main, sub);
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_FAIL);
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/list/{name}")
     public BaseResponse list(@PathVariable String name) {
-        List<ItemRes> itemResList = itemService.list(name);
-        return new BaseResponse(itemResList);
+        try {
+            List<ItemRes> itemResList = itemService.list(name);
+            return itemResList.size() == 0 ?
+                new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_FAIL_NOT_FOUND) :
+                new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_FAIL);
+        }
     }
 
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
     public BaseResponse list(Long id) {
-        ItemDetailsRes itemDetailsRes = itemService.details(id);
-        return new BaseResponse(itemDetailsRes);
+        try {
+            ItemDetailsRes itemDetailsRes = itemService.details(id);
+            return new BaseResponse(BaseResponseMessage.ITEM_DETAILS_SUCCESS, itemDetailsRes);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_DETAILS_FAIL);
+        }
     }
 }
