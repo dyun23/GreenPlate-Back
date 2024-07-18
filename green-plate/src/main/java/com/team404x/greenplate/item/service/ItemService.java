@@ -9,6 +9,7 @@ import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.category.repository.CategoryRepository;
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
+import com.team404x.greenplate.item.model.response.ItemDetailsRes;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
@@ -70,6 +71,21 @@ public class ItemService {
     public List<ItemRes> list(String name) {
         List<Item> items = itemRepository.findByNameContaining(name);
         return getItemRes(items);
+    }
+
+    public ItemDetailsRes details(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow();
+        return ItemDetailsRes.builder()
+            .id(item.getId())
+            .name(item.getName())
+            .price(item.getPrice())
+            .calorie(item.getCalorie())
+            .imageUrl(item.getImageUrl())
+            .discountPrice(item.getDiscountPrice())
+            .stock(item.getStock())
+            .contents(item.getContents())
+            .companyName(item.getCompany().getName())
+            .build();
     }
 
 
