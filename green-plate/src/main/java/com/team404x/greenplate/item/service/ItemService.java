@@ -1,13 +1,11 @@
 package com.team404x.greenplate.item.service;
 
 import com.team404x.greenplate.company.model.entity.Company;
-import com.team404x.greenplate.company.service.CompanyService;
-import com.team404x.greenplate.item.category.CategoryRepository;
 import com.team404x.greenplate.item.category.entity.Category;
+import com.team404x.greenplate.item.category.repository.CategoryRepository;
 import com.team404x.greenplate.item.entity.Item;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.repository.ItemRepository;
-import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
