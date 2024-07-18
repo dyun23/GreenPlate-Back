@@ -6,6 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ItemRes {
+	private Long id;
 	private String name;
 	private Integer price;
 	private Integer calorie;

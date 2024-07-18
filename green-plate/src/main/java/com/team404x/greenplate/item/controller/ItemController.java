@@ -9,6 +9,8 @@ import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +44,12 @@ public class ItemController {
     @RequestMapping(method = RequestMethod.GET, value = "/list/category")
     public BaseResponse list(String main, String sub) {
         List<ItemRes> itemResList = itemService.list(main, sub);
+        return new BaseResponse(itemResList);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/list/{name}")
+    public BaseResponse list(@PathVariable String name) {
+        List<ItemRes> itemResList = itemService.list(name);
         return new BaseResponse(itemResList);
     }
 }

@@ -67,12 +67,18 @@ public class ItemService {
         return getItemRes(items);
     }
 
+    public List<ItemRes> list(String name) {
+        List<Item> items = itemRepository.findByNameContaining(name);
+        return getItemRes(items);
+    }
+
 
     private List<ItemRes> getItemRes(List<Item> items) {
         List<ItemRes> itemResList = new ArrayList<>();
         for (Item item : items) {
             itemResList.add(
                 ItemRes.builder()
+                    .id(item.getId())
                     .name(item.getName())
                     .price(item.getPrice())
                     .calorie(item.getCalorie())
