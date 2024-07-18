@@ -10,7 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.user.address.entity.Address;
+import com.team404x.greenplate.user.address.repository.AddressRepository;
+import com.team404x.greenplate.user.model.request.UserAddressRegisterReq;
 import com.team404x.greenplate.user.model.request.UserLoginReq;
 import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.model.entity.User;
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
+	private final AddressRepository addressRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
@@ -55,9 +59,9 @@ public class UserService {
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
 		Authentication authentication = authenticationManager.authenticate(authToken);
 		if (authentication != null) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			var role = authentication.getAuthorities().iterator().next().getAuthority();
-			String token = jwtUtil.createToken(email, role);
-			System.out.println(token);
+			String token = jwtUtil.createToken(userDetails.getId(), email, role);
 			return token;
 		}
 		return null;
@@ -82,5 +86,18 @@ public class UserService {
 			.birthday(user.getBirthday())
 			.addresses(userAddresses)
 			.build();
+	}
+
+	public void registerAddress(Long id, UserAddressRegisterReq userAddressRegisterReq) {
+		Address address = Address.builder()
+			.zipcode(userAddressRegisterReq.getZipcode())
+			.address(userAddressRegisterReq.getAddress())
+			.addressDetail(userAddressRegisterReq.getAddressDetail())
+			.recipient(userAddressRegisterReq.getRecipient())
+			.phoneNum(userAddressRegisterReq.getPhoneNum())
+			.user(User.builder().id(id).build())
+			.build();
+
+		addressRepository.save(address);
 	}
 }

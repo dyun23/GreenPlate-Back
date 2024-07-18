@@ -13,8 +13,6 @@ import com.team404x.greenplate.company.model.request.CompanySignupReq;
 import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
 import com.team404x.greenplate.company.service.CompanyService;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
-import com.team404x.greenplate.user.model.request.UserLoginReq;
-import com.team404x.greenplate.user.model.request.UserSignupReq;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

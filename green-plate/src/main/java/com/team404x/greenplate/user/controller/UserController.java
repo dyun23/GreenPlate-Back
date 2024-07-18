@@ -10,6 +10,7 @@ import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.email.service.EmailVerifyService;
+import com.team404x.greenplate.user.model.request.UserAddressRegisterReq;
 import com.team404x.greenplate.user.model.request.UserLoginReq;
 import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.model.response.UserDetailsRes;
@@ -54,6 +55,16 @@ public class UserController {
 			String email = user.getUsername().split("_user")[0];
 			UserDetailsRes userDetailsRes = userService.details(email);
 			return new BaseResponse(userDetailsRes);
+		}
+		return null;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/address/register")
+	public BaseResponse registerAddress(@AuthenticationPrincipal CustomUserDetails user,
+		@RequestBody UserAddressRegisterReq userAddressRegisterReq) {
+		if (user != null) {
+			Long id = user.getId();
+			userService.registerAddress(id, userAddressRegisterReq);
 		}
 		return null;
 	}

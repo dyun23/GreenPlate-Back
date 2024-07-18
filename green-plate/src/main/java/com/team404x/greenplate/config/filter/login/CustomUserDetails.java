@@ -71,4 +71,10 @@ public class CustomUserDetails implements UserDetails {
 			return company.getEmail();
 		return user.getEmail();
 	}
+
+	public Long getId() {
+		if (user == null)
+			return company.getId();
+		return user.getId();
+	}
 }
