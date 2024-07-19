@@ -81,4 +81,16 @@ public class UserController {
 			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_FAIL);
 		}
 	}
+
+	@SecuredOperation
+	@Operation(summary = "[유저] 디폴트 배송지 설정 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/address/default")
+	public BaseResponse updateDefaultAddress(@AuthenticationPrincipal CustomUserDetails user, Long id) {
+		try {
+			userService.updateDefaultAddress(user.getId(), id);
+			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_FAIL);
+		}
+	}
 }

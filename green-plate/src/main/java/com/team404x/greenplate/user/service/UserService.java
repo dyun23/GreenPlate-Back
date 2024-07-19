@@ -95,9 +95,27 @@ public class UserService {
 			.addressDetail(userAddressRegisterReq.getAddressDetail())
 			.recipient(userAddressRegisterReq.getRecipient())
 			.phoneNum(userAddressRegisterReq.getPhoneNum())
+			.defultAddr(false)
 			.user(User.builder().id(id).build())
 			.build();
 
 		addressRepository.save(address);
+	}
+
+	public void updateDefaultAddress(Long id, Long addressId) throws Exception {
+		User user = userRepository.findById(id).orElseThrow();
+		List<Address> addresses = user.getAddresses();
+
+		for (Address address : addresses) {
+			if (address.getDefultAddr() == null) continue;
+			if (address.getDefultAddr()) {
+				address.setDefultAddr(false);
+				addressRepository.save(address);
+			}
+			if (address.getId().equals(addressId)) {
+				address.setDefultAddr(true);
+				addressRepository.save(address);
+			}
+		}
 	}
 }
