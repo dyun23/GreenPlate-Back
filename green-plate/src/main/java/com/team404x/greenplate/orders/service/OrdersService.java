@@ -1,11 +1,12 @@
 package com.team404x.greenplate.orders.service;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.JsonObject;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.AccessToken;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
@@ -30,14 +31,21 @@ import com.team404x.greenplate.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedWriter;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.team404x.greenplate.common.BaseResponseMessage.*;
 
@@ -56,6 +64,11 @@ public class OrdersService {
     private final IamportClient iamportClient;
 
     JPAQueryFactory queryFactory;
+
+    @Value("${imp.imp_key}")
+    private String impKey;
+    @Value("${imp.imp_secret}")
+    private String impSecret;
 
 
     @Transactional
@@ -109,6 +122,7 @@ public class OrdersService {
                 .addressDetail(orderCreateReq.getAddressDetail())
                 .phoneNum(orderCreateReq.getPhoneNum())
                 .refundYn(false)
+                .impUid(orderCreateReq.getImpUid())
                 .build();
         orders = ordersRepository.save(orders);
 
@@ -133,7 +147,6 @@ public class OrdersService {
 
         }
         return new BaseResponse<>(ORDERS_CREATED_SUCCESS);
-
     }
 
     //유저 주문 상품 목록 조회
@@ -148,14 +161,15 @@ public class OrdersService {
         List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<OrderUserSearchRes>();
         List<Orders> orders = ordersRepository.findAllByUser(user.get());
         for(Orders order : orders){
-            OrderUserSearchRes orderUserSearchRes = new OrderUserSearchRes();
-            orderUserSearchRes.setOrder_id(order.getId());
-            orderUserSearchRes.setOrder_state(order.getOrderState());
-            orderUserSearchRes.setTotal_price(order.getTotalPrice());
-            orderUserSearchRes.setTotal_cnt(order.getTotalQuantity());
-            orderUserSearchRes.setRefund_yn(order.getRefundYn());
-            orderUserSearchRes.setOrder_date(order.getOrderDate());
-            orderUserSearchResList.add(orderUserSearchRes);
+            OrderUserSearchRes res = OrderUserSearchRes.builder()
+                    .order_id(order.getId())
+                    .order_state(order.getOrderState())
+                    .total_price(order.getTotalPrice())
+                    .total_cnt(order.getTotalQuantity())
+                    .refund_yn(order.getRefundYn())
+                    .order_date(order.getOrderDate())
+                    .build();
+            orderUserSearchResList.add(res);
         }
         return new BaseResponse<>(orderUserSearchResList);
     }
@@ -176,14 +190,18 @@ public class OrdersService {
 
         List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<OrderUserSearchDetailRes>();
         for(OrderDetail orderDetail : orderDetailList){
-            OrderUserSearchDetailRes orderUserSearchDetailRes = new OrderUserSearchDetailRes();
-            orderUserSearchDetailRes.setOrder_id(orders2.getId());
-            orderUserSearchDetailRes.setOrder_state(orders2.getOrderState());
-            orderUserSearchDetailRes.setPrice(orderDetail.getPrice());
-            orderUserSearchDetailRes.setCnt(orderDetail.getCnt());
-            orderUserSearchDetailRes.setRefund_yn(orders2.getRefundYn());
-            orderUserSearchDetailRes.setOrder_date(orders2.getOrderDate());
-            orderUserSearchResList.add(orderUserSearchDetailRes);
+
+            OrderUserSearchDetailRes res = OrderUserSearchDetailRes.builder()
+                    .order_id(orders2.getId())
+                    .orderDetail_id(orderDetail.getId())
+                    .order_state(orders2.getOrderState())
+                    .price(orderDetail.getPrice())
+                    .cnt(orderDetail.getCnt())
+                    .refund_yn(orders2.getRefundYn())
+                    .order_date(orders2.getOrderDate())
+                    .build();
+            orderUserSearchResList.add(res);
+
         }
         return new BaseResponse<>(orderUserSearchResList);
     }
@@ -213,20 +231,7 @@ public class OrdersService {
         return new BaseResponse<>(ordersList);
     }
 
-    //주문취소
-    @Transactional
-    public BaseResponse<String> cancelOrder(OrderCancelReq orderCancelReq) {
-        Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
 
-        if (!orders.isPresent()) {
-            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
-        }else{
-            Orders orders2 = orders.get();
-            orders2.refundOrder();
-            ordersRepository.save(orders2);
-        }
-        return new BaseResponse<>(ORDERS_CANCEL_SUCCESS);
-    }
 
     //사업자 배송 상태 변경
     @Transactional
@@ -265,15 +270,117 @@ public class OrdersService {
         return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_INVOICE);
     }
 
+    //카카오페이 결제금액 체크
+    public Boolean payCheck(OrderCreateReq orderCreateReq, IamportResponse<Payment> iamportResponse) {
+        Long amount = iamportResponse.getResponse().getAmount().longValue();
+        if (amount != orderCreateReq.getTotalPrice()){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public IamportResponse<Payment> getPaymentInfo(String impUid) throws IamportResponseException, IOException {
-
-
         return iamportClient.paymentByImpUid(impUid);
     }
 
+    //카카오페이 결제중 환불
     public IamportResponse refund(OrderCreateReq orderCreateReq, IamportResponse<Payment> info) throws IamportResponseException, IOException {
         CancelData cancelData = new CancelData(orderCreateReq.getImpUid(), true, info.getResponse().getAmount());
         return iamportClient.cancelPaymentByImpUid(cancelData);
     }
+
+    //카카오페이 결제 완료 후 환불
+    public BaseResponse kakaoPayRefund(OrderCancelReq orderCancelReq) {
+        Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
+        if (!orders.isPresent()) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
+        }
+
+        String accessToken = getAccessToken();      //토큰 요청
+        if(requestsRefun(accessToken, orders.get())){ //카카오페이 결제 취소
+            cancelOrder(orderCancelReq);                //주문취소 데이터 저장
+            return new BaseResponse<>(ORDERS_CANCEL_FAIL_KAKAO);
+        };
+
+        return new BaseResponse<>(ORDERS_CANCEL_SUCCESS_KAKAO);
+    }
+
+    //카카오페이 결제 취소용 TOKEN
+    public String getAccessToken() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        headers.add(HttpHeaders.ACCEPT, "application/json");
+
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("imp_key", impKey);
+        jsonObject.addProperty("imp_secret", impSecret);
+        String jsonStr = gson.toJson(jsonObject);
+
+
+        HttpEntity<String> request = new HttpEntity<>(jsonStr, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://api.iamport.kr/users/getToken",
+                HttpMethod.POST,
+                request,
+                String.class
+        );
+
+        Map<String, Object> result = gson.fromJson(response.getBody(), Map.class);
+        Map<String, Object> data = (Map<String, Object>) result.get("response");
+        String access_token = (String) data.get("access_token");
+        return access_token;
+    }
+
+    //pg사 kakao 결제 취소 요청
+    public Boolean requestsRefun(String accessToken, Orders orders){
+        HttpHeaders headers = new HttpHeaders();
+        try{
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+            headers.add(HttpHeaders.ACCEPT, "application/json");
+            headers.add(HttpHeaders.AUTHORIZATION, accessToken);
+
+            Gson gson = new Gson();
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("reason", "결제 정보가 이상합니다.");
+            jsonObject.addProperty("imp_uid", orders.getImpUid());
+            jsonObject.addProperty("amount", orders.getTotalPrice());
+            String jsonStr = gson.toJson(jsonObject);
+
+            HttpEntity<String> request = new HttpEntity<>(jsonStr, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "https://api.iamport.kr/payments/cancel",
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+
+            Map<String, Object> result = gson.fromJson(response.getBody(), Map.class);
+            System.out.println(result);
+        }catch(Exception e){
+            return false;
+        }
+
+        return true;
+    }
+
+    //주문취소 데이터 저장
+    @Transactional
+    public BaseResponse<String> cancelOrder(OrderCancelReq orderCancelReq) {
+        Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
+
+        if (!orders.isPresent()) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
+        }else{
+            Orders orders2 = orders.get();
+            orders2.refundOrder();
+            ordersRepository.save(orders2);
+        }
+        return new BaseResponse<>(ORDERS_CANCEL_SUCCESS);
+    }
+
 
 }

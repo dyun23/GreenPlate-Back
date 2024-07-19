@@ -45,6 +45,7 @@ public class OrdersController {
     @SecuredOperation
     /** 상품 결제**/
     @Operation(summary = "[유저] 상품 결제 API")
+
     @PostMapping(value = "/create")
     public BaseResponse create(@AuthenticationPrincipal CustomUserDetails user,
         @RequestBody OrderCreateReq orderCreateReq) {
@@ -59,11 +60,41 @@ public class OrdersController {
     @SecuredOperation
     /** 주문 취소**/
     @Operation(summary = "[유저] 상품 취소 API")
+
     @PutMapping(value = "/cancel")
     public BaseResponse cancel(@RequestBody OrderCancelReq orderCancelReq) {
         BaseResponse result = ordersService.cancelOrder(orderCancelReq);
         return result;
     }
+
+
+    @GetMapping("/list/user/{userId}")
+    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@PathVariable Long userId) {
+        BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(userId);
+        return result;
+    }
+
+
+    @GetMapping("/list/user/{userId}/{ordersId}")
+    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@PathVariable Long userId,@PathVariable Long ordersId) {
+        BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(userId,ordersId);
+        return result;
+    }
+
+
+    @GetMapping("/list/company/{companyId}")
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
+        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
+        return result;
+    }
+
+
+    @GetMapping("/list/company/{companyId}/{orderId}")
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
+        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
+        return result;
+    }
+
 
     @SecuredOperation
     /** 주문 목록 조회 : 유저**/
@@ -141,6 +172,7 @@ public class OrdersController {
     /** 송장 등록 : 사업자 **/
     //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 송장 번호 등록 API")
+
     @PostMapping(value = "/invoice")
     public BaseResponse inputInvoice(@AuthenticationPrincipal CustomUserDetails company,
         @RequestBody OrderInvoiceReq orderInvoiceReq) {
@@ -152,6 +184,31 @@ public class OrdersController {
         }
     }
 
+
+    @PostMapping(value = "/kakaoPay")
+    public  ResponseEntity<String> kakaoPay(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
+        IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
+        System.out.println(orderCreateReq.getImpUid());
+        Boolean payCheck = ordersService.payCheck(orderCreateReq,info);
+        if(payCheck) {
+            System.out.println("ok");
+            BaseResponse resultPay = ordersService.createOrder(orderCreateReq);
+            return ResponseEntity.ok("ok");
+        }
+        else {
+            System.out.println("error");
+            ordersService.refund(orderCreateReq, info);
+            return ResponseEntity.ok("error");
+        }
+    }
+
+
+    @PostMapping(value = "/kakaoRefund")
+    public  BaseResponse kakaoRefund(@RequestBody OrderCancelReq orderCancelReq) throws IamportResponseException, IOException {
+        BaseResponse result = ordersService.kakaoPayRefund(orderCancelReq);
+        return result;
+    }
+  
     @SecuredOperation
     //String impUid
     /** kakao pay 결제 **/
