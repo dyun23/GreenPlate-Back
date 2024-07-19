@@ -29,18 +29,18 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-cloud:
-  aws:
-    s3:
-      bucket: ${BUCKET}
-    credentials:
-      access-key: ${ACCESS_KEY}
-      secret-key: ${SECRET_KEY}
-    region:
-      static: ${REGION_STATIC}
-      auto: false
-    stack:
-      auto: false
+#cloud:
+#  aws:
+#    s3:
+#      bucket: ${BUCKET}
+#    credentials:
+#      access-key: ${ACCESS_KEY}
+#      secret-key: ${SECRET_KEY}
+#    region:
+#      static: ${REGION_STATIC}
+#      auto: false
+#    stack:
+#      auto: false
 
 imp:
   imp_key: ${IPM_KEY}

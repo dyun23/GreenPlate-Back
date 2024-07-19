@@ -46,6 +46,7 @@ public class Orders {
 	private String addressDetail;
 	private String phoneNum;
 	private String invoice;
+	private String impUid;
 
 	@ColumnDefault("false")
 	private Boolean delYn;

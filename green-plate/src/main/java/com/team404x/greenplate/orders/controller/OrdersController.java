@@ -13,6 +13,7 @@ import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -94,24 +95,27 @@ public class OrdersController {
 
     //String impUid
     /** kakao pay 결제 **/
-    @PostMapping(value = "/kakao")
-    public  ResponseEntity<String> kakao(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
-
-        System.out.println(orderCreateReq.getUserId());
-        System.out.println(orderCreateReq.getTotalPrice());
-
+    @PostMapping(value = "/kakaoPay")
+    public  ResponseEntity<String> kakaoPay(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
         IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
-        BaseResponse result = ordersService.createOrder(orderCreateReq);
-
-        //if(resultPay) {
+        System.out.println(orderCreateReq.getImpUid());
+        Boolean payCheck = ordersService.payCheck(orderCreateReq,info);
+        if(payCheck) {
             System.out.println("ok");
-
+            BaseResponse resultPay = ordersService.createOrder(orderCreateReq);
             return ResponseEntity.ok("ok");
-        //}
-//        else {
-//            System.out.println("error");
-//            //paymentService.refund(impUid, info);
-//            return ResponseEntity.ok("error");
-//        }
+        }
+        else {
+            System.out.println("error");
+            ordersService.refund(orderCreateReq, info);
+            return ResponseEntity.ok("error");
+        }
+    }
+
+    /** kakao pay 결제 **/
+    @PostMapping(value = "/kakaoRefund")
+    public  BaseResponse kakaoRefund(@RequestBody OrderCancelReq orderCancelReq) throws IamportResponseException, IOException {
+        BaseResponse result = ordersService.kakaoPayRefund(orderCancelReq);
+        return result;
     }
 }

@@ -79,6 +79,8 @@ public enum BaseResponseMessage {
 	ORDERS_CREATED_FAIL(false, 5401, "주문 실패하였습니다."),
 	ORDERS_CREATED_FAIL_STOCK(false, 5401, "상품재고가 부족합니다."),
 	ORDERS_SEARCH_FAIL_ORDERED(false, 5111, "해당주문을 찾을 수 없습니다."),
+	ORDERS_CANCEL_SUCCESS_KAKAO(false, 5500, "카카오페이 결제 취소되었습니다."),
+	ORDERS_CANCEL_FAIL_KAKAO(false, 5501, "카카오페이 결제 취소 실패하였습니다."),
 
 	USER_CREATE_SUCCESS(true, 3200, "상품 등록이 완료되었습니다"),
 	USER_CREATE_FAIL(false,3201,"상품을 등록하는데 실패했습니다"),

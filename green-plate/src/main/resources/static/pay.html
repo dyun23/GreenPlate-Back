@@ -19,7 +19,7 @@
         IMP.request_pay(
             {
                 pg: "kakaopay.TC0ONETIME",
-                merchant_uid: "order_no_064",
+                merchant_uid: "order_no_070",
                 name: "order_test",
                 amount: 20,
                 buyer_email: "test01@test.com",
@@ -52,7 +52,7 @@
                     }
 
                     // 백엔드로 주문 생성 요청
-                    axios.post("http://localhost:8080/orders/kakao", orderCreateReq).then((response) => {
+                    axios.post("http://localhost:8080/orders/kakaoPay", orderCreateReq).then((response) => {
                         console.log(response.data);
                         if (response.data === "ok") {
                             alert('success');
