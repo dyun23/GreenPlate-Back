@@ -102,9 +102,9 @@ public class OrdersService {
     }
 
     @Transactional
-    public BaseResponse<String> createOrder(Long id, OrderCreateReq orderCreateReq) throws Exception {
+    public BaseResponse<String> createOrder(OrderCreateReq orderCreateReq) throws Exception {
 
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(orderCreateReq.getUserId());
         if (!user.isPresent()) {
             return new BaseResponse<>(ORDERS_CREATED_FAIL);
         }

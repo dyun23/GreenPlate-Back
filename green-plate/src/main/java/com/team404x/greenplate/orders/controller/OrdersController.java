@@ -50,7 +50,7 @@ public class OrdersController {
     public BaseResponse create(@AuthenticationPrincipal CustomUserDetails user,
         @RequestBody OrderCreateReq orderCreateReq) {
         try {
-            BaseResponse result = ordersService.createOrder(user.getId(), orderCreateReq);
+            BaseResponse<String> result = ordersService.createOrder(orderCreateReq);
             return result;
         } catch (Exception e) {
             return new BaseResponse<>(ORDERS_CREATED_FAIL);
@@ -185,14 +185,18 @@ public class OrdersController {
     }
 
 
+    @SecuredOperation
+    //String impUid
+    /** kakao pay 결제 **/
+    @Operation(summary = "[유저] 카카오 페이 결제 API")
     @PostMapping(value = "/kakaoPay")
-    public  ResponseEntity<String> kakaoPay(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
+    public  ResponseEntity<String> kakaoPay(@RequestBody OrderCreateReq orderCreateReq) throws Exception {
         IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
         System.out.println(orderCreateReq.getImpUid());
         Boolean payCheck = ordersService.payCheck(orderCreateReq,info);
         if(payCheck) {
             System.out.println("ok");
-            BaseResponse resultPay = ordersService.createOrder(orderCreateReq);
+            BaseResponse<String> resultPay = ordersService.createOrder(orderCreateReq);
             return ResponseEntity.ok("ok");
         }
         else {
@@ -208,21 +212,6 @@ public class OrdersController {
         BaseResponse result = ordersService.kakaoPayRefund(orderCancelReq);
         return result;
     }
-  
-    @SecuredOperation
-    //String impUid
-    /** kakao pay 결제 **/
-    @Operation(summary = "[유저] 카카오 페이 결제 API")
-    @PostMapping(value = "/kakao")
-    public  ResponseEntity<String> kakao(@AuthenticationPrincipal CustomUserDetails user,
-        @RequestBody OrderCreateReq orderCreateReq) {
-        try {
-            IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
-            BaseResponse result = ordersService.createOrder(user.getId(), orderCreateReq);
 
-            return ResponseEntity.ok("ok");
-        } catch (Exception e) {
-            return ResponseEntity.ok("실패");
-        }
-    }
+
 }
