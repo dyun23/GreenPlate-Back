@@ -5,12 +5,15 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ItemListReadRes {
+public class ItemSearchRes {
     private Long itemId;
     private String name;
     private Integer price;
     private Integer stock;
     private String state;
-    private String imageUrl;
+    private String Imageurl;
     private Integer discountPrice;
+    private String mainCategory;
+    private String subCategory;
+    private String keyword;
 }
