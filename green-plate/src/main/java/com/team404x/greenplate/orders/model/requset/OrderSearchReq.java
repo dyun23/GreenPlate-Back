@@ -7,5 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderSearchReq {
     private Long orderId;
+
     private String status;
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

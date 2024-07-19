@@ -74,21 +74,6 @@ public class OrdersController {
         return result;
     }
 
-
-    @GetMapping("/list/company/{companyId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
-        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
-        return result;
-    }
-
-
-    @GetMapping("/list/company/{companyId}/{orderId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
-        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
-        return result;
-    }
-
-
     @SecuredOperation
     @Operation(summary = "[유저] 주문 목록 조회 API")
     @GetMapping("/list/user")
