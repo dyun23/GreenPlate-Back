@@ -9,6 +9,7 @@ import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
+import com.team404x.greenplate.orders.model.entity.OrderDetailQueryProjection;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
 import com.team404x.greenplate.orders.model.requset.*;
 import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
@@ -103,10 +104,10 @@ public class OrdersController {
     @SecuredOperation
     @Operation(summary = "[사업자] 주문 상세내역 조회 API")
     @GetMapping("/list/company/{orderId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@AuthenticationPrincipal CustomUserDetails company,
-        @PathVariable Long orderId) {
+    public BaseResponse<List<OrderDetailQueryProjection>> searchForCompanyDetail(@AuthenticationPrincipal CustomUserDetails company,
+                                                                                                 @PathVariable Long orderId) {
         try {
-            BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(company.getId(), orderId);
+            BaseResponse<List<OrderDetailQueryProjection>> result = ordersService.searchForCompanyDetail(company.getId(), orderId);
             return result;
         } catch (Exception e) {
             return new BaseResponse<>(BaseResponseMessage.ORDERS_SEARCH_FAIL_ORDERED);
