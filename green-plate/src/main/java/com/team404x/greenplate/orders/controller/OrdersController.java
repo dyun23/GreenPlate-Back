@@ -61,19 +61,6 @@ public class OrdersController {
     }
 
 
-    @GetMapping("/list/user/{userId}")
-    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@PathVariable Long userId) {
-        BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(userId);
-        return result;
-    }
-
-
-    @GetMapping("/list/user/{userId}/{ordersId}")
-    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@PathVariable Long userId,@PathVariable Long ordersId) {
-        BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(userId,ordersId);
-        return result;
-    }
-
 
     @GetMapping("/list/company/{companyId}")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
