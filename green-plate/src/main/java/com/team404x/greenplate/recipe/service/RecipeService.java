@@ -2,6 +2,7 @@ package com.team404x.greenplate.recipe.service;
 
 import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.keyword.repository.KeywordRepository;
@@ -16,7 +17,9 @@ import com.team404x.greenplate.recipe.model.response.RecipeListRes;
 import com.team404x.greenplate.recipe.repository.RecipeItemRepository;
 import com.team404x.greenplate.recipe.repository.RecipeKeywordRepository;
 import com.team404x.greenplate.recipe.repository.RecipeRepository;
+import com.team404x.greenplate.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,28 +36,53 @@ public class RecipeService {
     private final KeywordRepository keywordRepository;
     private final RecipeKeywordRepository recipeKeywordRepository;
 
-    public void createRecipe(RecipeCreateReq request, MultipartFile image) {
-        Recipe recipe = Recipe.builder()
-                .title(request.getTitle())
-                .contents(request.getContents())
-                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
-                .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
-                .company(Company.builder().id(request.getCompanyId()).build())
-                .build();
+    public void createRecipe(CustomUserDetails customUserDetails, RecipeCreateReq request, MultipartFile image) {
+        Recipe recipe;
+        Long id = customUserDetails.getId();
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
+            recipe = Recipe.builder()
+                    .title(request.getTitle())
+                    .contents(request.getContents())
+                    .imageUrl(s3FileUploadSevice.upload("recipe", id, image))
+                    .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
+                    .company(Company.builder().id(id).build())
+                    .build();
+        } else {
+            recipe = Recipe.builder()
+                    .title(request.getTitle())
+                    .contents(request.getContents())
+                    .imageUrl(s3FileUploadSevice.upload("recipe", id, image))
+                    .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
+                    .user(User.builder().id(id).build())
+                    .build();
+        }
         Recipe result = recipeRepository.save(recipe);
         saveRecipeItem(result, request.getItemList());
         saveRecipeKeyword(result, request.getKeywordList());
     }
 
-    public void updateRecipe(RecipeUpdateReq request, MultipartFile image) {
-        Recipe recipe = Recipe.builder()
+    public void updateRecipe(CustomUserDetails customUserDetails, RecipeUpdateReq request, MultipartFile image) {
+        Long id = customUserDetails.getId();
+        Recipe recipe;
+        if (customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COMPANY"))) {
+            recipe = Recipe.builder()
                 .id(request.getRecipeId())
-                .title(request.getTitle())
-                .contents(request.getContents())
-                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
-                .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
-                .company(Company.builder().id(request.getCompanyId()).build())
-                .build();
+                    .title(request.getTitle())
+                    .contents(request.getContents())
+                    .imageUrl(s3FileUploadSevice.upload("recipe",id, image))
+                    .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
+                    .company(Company.builder().id(id).build())
+                    .build();
+        } else {
+            recipe = Recipe.builder()
+                    .id(request.getRecipeId())
+                    .title(request.getTitle())
+                    .contents(request.getContents())
+                    .imageUrl(s3FileUploadSevice.upload("recipe", id, image))
+                    .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
+                    .user(User.builder().id(id).build())
+                    .build();
+        }
         Recipe result = recipeRepository.save(recipe);
 
         recipeItemRepository.deleteByRecipe(result);
@@ -106,6 +134,7 @@ public class RecipeService {
                         .imageUrl(recipe.getImageUrl())
                         .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                         .memberId(recipe.getCompany().getId())
+                        .memberName(recipe.getCompany().getName())
                         .role("ROLE_COMPANY")
                         .build();
                 recipeListRes.add(res);
@@ -116,6 +145,7 @@ public class RecipeService {
                         .imageUrl(recipe.getImageUrl())
                         .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                         .memberId(recipe.getUser().getId())
+                        .memberName(recipe.getUser().getName())
                         .role("ROLE_USER")
                         .build();
                 recipeListRes.add(res);

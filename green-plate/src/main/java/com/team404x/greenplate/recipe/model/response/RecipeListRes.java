@@ -14,5 +14,6 @@ public class RecipeListRes {
     private String imageUrl;
     private List<String> keywords;
     private Long memberId;
+    private String memberName;
     private String role;
 }

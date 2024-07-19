@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ItemListFindReq {
+public class ItemFindReq {
     private Long companyId;
 }
