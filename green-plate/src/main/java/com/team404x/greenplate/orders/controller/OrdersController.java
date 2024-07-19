@@ -1,11 +1,15 @@
 package com.team404x.greenplate.orders.controller;
 
+import static com.team404x.greenplate.common.BaseResponseMessage.*;
+
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.config.SecuredOperation;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
 import com.team404x.greenplate.orders.model.requset.*;
 import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
@@ -16,6 +20,7 @@ import com.team404x.greenplate.orders.service.OrdersService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -41,9 +46,14 @@ public class OrdersController {
     /** 상품 결제**/
     @Operation(summary = "[유저] 상품 결제 API")
     @PostMapping(value = "/create")
-    public BaseResponse create(@RequestBody OrderCreateReq orderCreateReq) {
-        BaseResponse result = ordersService.createOrder(orderCreateReq);
-        return result;
+    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails user,
+        @RequestBody OrderCreateReq orderCreateReq) {
+        try {
+            BaseResponse result = ordersService.createOrder(user.getId(), orderCreateReq);
+            return result;
+        } catch (Exception e) {
+            return new BaseResponse<>(ORDERS_CREATED_FAIL);
+        }
     }
 
     @SecuredOperation
@@ -58,39 +68,58 @@ public class OrdersController {
     @SecuredOperation
     /** 주문 목록 조회 : 유저**/
     @Operation(summary = "[유저] 주문 목록 조회 API")
-    @GetMapping("/list/user/{userId}")
-    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@PathVariable Long userId) {
-        BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(userId);
-        return result;
+    @GetMapping("/list/user")
+    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@AuthenticationPrincipal CustomUserDetails user) {
+        try {
+            BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(user.getId());
+            return result;
+        } catch (Exception e) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
+        }
     }
 
     @SecuredOperation
     /** 주문 상세내역 조회 : 유저**/
     @Operation(summary = "[유저] 주문 상세 내역 조회 API")
-    @GetMapping("/list/user/{userId}/{ordersId}")
-    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@PathVariable Long userId,@PathVariable Long ordersId) {
-        BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(userId,ordersId);
-        return result;
+    @GetMapping("/list/user/{ordersId}")
+    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@AuthenticationPrincipal CustomUserDetails user,
+        @PathVariable Long ordersId) {
+        try {
+            BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(user.getId(), ordersId);
+            return result;
+        } catch (Exception e) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
+        }
     }
 
     @SecuredOperation
     /** 주문 내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 주문 내역 조회 API")
-    @GetMapping("/list/company/{companyId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
-        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
-        return result;
+    @GetMapping("/list/company")
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@AuthenticationPrincipal CustomUserDetails company,
+        OrderSearchReq search) {
+        try {
+            BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(company.getId(), search);
+            return result;
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ORDERS_SEARCH_FAIL_ORDERED);
+        }
     }
 
     @SecuredOperation
     /** 주문 상세내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 주문 상세내역 조회 API")
-    @GetMapping("/list/company/{companyId}/{orderId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
-        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
-        return result;
+    @GetMapping("/list/company/{orderId}")
+    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@AuthenticationPrincipal CustomUserDetails company,
+        @PathVariable Long orderId) {
+        try {
+            BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(company.getId(), orderId);
+            return result;
+        } catch (Exception e) {
+            return new BaseResponse<>(BaseResponseMessage.ORDERS_SEARCH_FAIL_ORDERED);
+        }
     }
 
     @SecuredOperation
@@ -98,9 +127,14 @@ public class OrdersController {
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 배송 상태 변경 API")
     @PutMapping("/statechange")
-    public BaseResponse changeDeliveryState(@RequestBody OrderSearchReq orderSearchReq) {
-        BaseResponse result = ordersService.changeDeliveryState(orderSearchReq);
-        return result;
+    public BaseResponse changeDeliveryState(@AuthenticationPrincipal CustomUserDetails company,
+        @RequestBody OrderSearchReq orderSearchReq) {
+        try {
+            BaseResponse result = ordersService.changeDeliveryState(orderSearchReq);
+            return company.getId() == null ? new BaseResponse<>(ORDERS_UPDATE_FAIL_CHANGE) : result;
+        } catch (Exception e) {
+            return new BaseResponse<>(ORDERS_UPDATE_FAIL_CHANGE);
+        }
     }
 
     @SecuredOperation
@@ -108,9 +142,14 @@ public class OrdersController {
     //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 송장 번호 등록 API")
     @PostMapping(value = "/invoice")
-    public BaseResponse inputInvoice(@RequestBody OrderInvoiceReq orderInvoiceReq) {
-        BaseResponse result = ordersService.inputInvoice(orderInvoiceReq);
-        return result;
+    public BaseResponse inputInvoice(@AuthenticationPrincipal CustomUserDetails company,
+        @RequestBody OrderInvoiceReq orderInvoiceReq) {
+        try {
+            BaseResponse result = ordersService.inputInvoice(orderInvoiceReq);
+            return company.getId() == null ? new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED) : result;
+        } catch (Exception e) {
+            return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
+        }
     }
 
     @SecuredOperation
@@ -118,23 +157,15 @@ public class OrdersController {
     /** kakao pay 결제 **/
     @Operation(summary = "[유저] 카카오 페이 결제 API")
     @PostMapping(value = "/kakao")
-    public  ResponseEntity<String> kakao(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
-
-        System.out.println(orderCreateReq.getUserId());
-        System.out.println(orderCreateReq.getTotalPrice());
-
-        IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
-        BaseResponse result = ordersService.createOrder(orderCreateReq);
-
-        //if(resultPay) {
-            System.out.println("ok");
+    public  ResponseEntity<String> kakao(@AuthenticationPrincipal CustomUserDetails user,
+        @RequestBody OrderCreateReq orderCreateReq) {
+        try {
+            IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
+            BaseResponse result = ordersService.createOrder(user.getId(), orderCreateReq);
 
             return ResponseEntity.ok("ok");
-        //}
-//        else {
-//            System.out.println("error");
-//            //paymentService.refund(impUid, info);
-//            return ResponseEntity.ok("error");
-//        }
+        } catch (Exception e) {
+            return ResponseEntity.ok("실패");
+        }
     }
 }
