@@ -11,6 +11,8 @@ import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.service.OrdersService;
+
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,7 @@ public class OrdersController {
     private final IamportClient iamportClient;
 
     /** 상품 결제방법선택**/
+    @Operation(summary = "[유저] 상품 결제 방법 선택 API")
     @PostMapping(value = "/payment")
     public BaseResponse<OrderPaymentRes> chosePayment(@RequestBody OrderCreateReq orderCreateReq) {
         BaseResponse<OrderPaymentRes> result = ordersService.chosePayment(orderCreateReq);
@@ -33,6 +36,7 @@ public class OrdersController {
     }
 
     /** 상품 결제**/
+    @Operation(summary = "[유저] 상품 결제 API")
     @PostMapping(value = "/create")
     public BaseResponse create(@RequestBody OrderCreateReq orderCreateReq) {
         BaseResponse result = ordersService.createOrder(orderCreateReq);
@@ -40,6 +44,7 @@ public class OrdersController {
     }
 
     /** 주문 취소**/
+    @Operation(summary = "[유저] 상품 취소 API")
     @PutMapping(value = "/cancel")
     public BaseResponse cancel(@RequestBody OrderCancelReq orderCancelReq) {
         BaseResponse result = ordersService.cancelOrder(orderCancelReq);
@@ -47,6 +52,7 @@ public class OrdersController {
     }
 
     /** 주문 목록 조회 : 유저**/
+    @Operation(summary = "[유저] 주문 목록 조회 API")
     @GetMapping("/list/user/{userId}")
     public BaseResponse<List<OrderUserSearchRes>> searchForUser(@PathVariable Long userId) {
         BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(userId);
@@ -54,6 +60,7 @@ public class OrdersController {
     }
 
     /** 주문 상세내역 조회 : 유저**/
+    @Operation(summary = "[유저] 주문 상세 내역 조회 API")
     @GetMapping("/list/user/{userId}/{ordersId}")
     public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@PathVariable Long userId,@PathVariable Long ordersId) {
         BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(userId,ordersId);
@@ -62,6 +69,7 @@ public class OrdersController {
 
     /** 주문 내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "[사업자] 주문 내역 조회 API")
     @GetMapping("/list/company/{companyId}")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
         BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
@@ -70,6 +78,7 @@ public class OrdersController {
 
     /** 주문 상세내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "[사업자] 주문 상세내역 조회 API")
     @GetMapping("/list/company/{companyId}/{orderId}")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
         BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
@@ -78,6 +87,7 @@ public class OrdersController {
 
     /** 배송 상태 변경 : 사업자 **/
 //    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "[사업자] 배송 상태 변경 API")
     @PutMapping("/statechange")
     public BaseResponse changeDeliveryState(@RequestBody OrderSearchReq orderSearchReq) {
         BaseResponse result = ordersService.changeDeliveryState(orderSearchReq);
@@ -86,6 +96,7 @@ public class OrdersController {
 
     /** 송장 등록 : 사업자 **/
     //    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "[사업자] 송장 번호 등록 API")
     @PostMapping(value = "/invoice")
     public BaseResponse inputInvoice(@RequestBody OrderInvoiceReq orderInvoiceReq) {
         BaseResponse result = ordersService.inputInvoice(orderInvoiceReq);
@@ -94,6 +105,7 @@ public class OrdersController {
 
     //String impUid
     /** kakao pay 결제 **/
+    @Operation(summary = "[유저] 카카오 페이 결제 API")
     @PostMapping(value = "/kakao")
     public  ResponseEntity<String> kakao(@RequestBody OrderCreateReq orderCreateReq) throws IamportResponseException, IOException {
 

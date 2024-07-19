@@ -9,6 +9,8 @@ import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import com.team404x.greenplate.item.model.response.ItemDetailsRes;
 import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.service.ItemService;
+
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,19 +25,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemController {
     private final ItemService itemService;
 
+    @Operation(summary = "[사업자] 상품 등록을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/create")
     public BaseResponse create(@RequestBody ItemCreateReq itemCreateReq) {
         itemService.create(itemCreateReq);
         return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
     }
 
+    @Operation(summary = "[사업자] 상품 수정을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/update")
     public BaseResponse update(@RequestBody ItemUpdateReq itemUpdateReq) {
         itemService.update(itemUpdateReq);
         return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
     }
 
-
+    @Operation(summary = "상품 전체 목록 조회를 위한 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list")
     public BaseResponse list() {
         try {
@@ -46,6 +50,7 @@ public class ItemController {
         }
     }
 
+    @Operation(summary = "[전체] 카테고리에 해당하는 상품 목록을 조회하는 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list/category")
     public BaseResponse list(String main, String sub) {
         try {
@@ -56,6 +61,7 @@ public class ItemController {
         }
     }
 
+    @Operation(summary = "[전체] 상품 이름으로 목록을 조회하는 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list/{name}")
     public BaseResponse list(@PathVariable String name) {
         try {
@@ -68,6 +74,7 @@ public class ItemController {
         }
     }
 
+    @Operation(summary = "[전체] 상품 상세 정보를 조회하기 위한 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
     public BaseResponse list(Long id) {
         try {
