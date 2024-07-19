@@ -39,7 +39,7 @@ public class RecipeService {
     public void createRecipe(CustomUserDetails customUserDetails, RecipeCreateReq request, MultipartFile image) {
         Recipe recipe;
         Long id = customUserDetails.getId();
-        if (customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COMPANY"))) {
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
             recipe = Recipe.builder()
                     .title(request.getTitle())
                     .contents(request.getContents())
@@ -134,6 +134,7 @@ public class RecipeService {
                         .imageUrl(recipe.getImageUrl())
                         .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                         .memberId(recipe.getCompany().getId())
+                        .memberName(recipe.getCompany().getName())
                         .role("ROLE_COMPANY")
                         .build();
                 recipeListRes.add(res);
@@ -144,6 +145,7 @@ public class RecipeService {
                         .imageUrl(recipe.getImageUrl())
                         .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                         .memberId(recipe.getUser().getId())
+                        .memberName(recipe.getUser().getName())
                         .role("ROLE_USER")
                         .build();
                 recipeListRes.add(res);
