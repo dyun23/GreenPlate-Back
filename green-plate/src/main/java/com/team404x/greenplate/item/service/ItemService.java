@@ -1,20 +1,18 @@
 package com.team404x.greenplate.item.service;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.team404x.greenplate.company.model.entity.Company;
+import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.category.repository.CategoryRepository;
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.response.*;
 import com.team404x.greenplate.item.repository.ItemRepository;
-import jakarta.persistence.metamodel.SingularAttribute;
 import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.stereotype.Service;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 
@@ -23,6 +21,8 @@ import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
+    private final CompanyRepository companyRepository;
+
     public void create(ItemCreateReq itemCreateReq) {
         Category category = categoryRepository.findCategoryBySubCategory(itemCreateReq.getSubCategory());
         Item item = Item.builder()
@@ -107,23 +107,29 @@ public class ItemService {
         }
         return itemResList;
     }
-//    public List<ItemCompanyListRes> findList(Long id) {
-//       List<Item> itemCompanylist = itemRepository.findAllByCompanyId(id);
-//       List<ItemCompanyListRes> itemCompanyListResList = new ArrayList<>();
-//       for(Item item : itemCompanylist) {
-//           ItemCompanyListRes responses = ItemCompanyListRes.builder()
-//                   .itemId(item.getId())
-//                   .name(item.getName())
-//                   .price(item.getPrice())
-//                   .stock(item.getStock())
-//                   .state(item.getState())
-//                   .imageUrl(item.getImageUrl())
-//                   .discountPrice(item.getDiscountPrice())
-//                   .build();
-//           itemCompanyListResList.add(responses);
-//       }
-//       return itemCompanyListResList;
-//    }
+
+
+    public List<ItemFindRes> listCompanyItem(Long id) throws Exception{
+        Company company = companyRepository.findById(id).orElseThrow();
+        List<Item> companyitemlist = company.getItems();
+        List<ItemFindRes> itemFindResList = new ArrayList<>();
+        for (Item item : companyitemlist) {
+            itemFindResList.add(
+                    ItemFindRes.builder()
+                            .itemId(item.getId())
+                            .name(item.getName())
+                            .price(item.getPrice())
+                            .stock(item.getStock())
+                            .state(item.getState())
+                            .imageUrl(item.getImageUrl())
+                            .discountPrice(item.getDiscountPrice())
+                            .build());
+
+        }
+        return itemFindResList;
+    }
+
+
     public List<ItemSearchRes> search(Long id) {
         List<Item> itemSearchList = itemRepository.findAllByCompanyId((id));
         List<ItemSearchRes> itemSearchResList = new ArrayList<>();

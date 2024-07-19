@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ItemListFindRes {
+public class ItemFindRes {
     private Long itemId;
     private String name;
     private Integer price;
