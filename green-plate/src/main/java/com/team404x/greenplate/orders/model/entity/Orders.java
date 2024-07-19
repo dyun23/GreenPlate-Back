@@ -36,14 +36,13 @@ public class Orders {
 	private User user;
 
 	private LocalDateTime orderDate;
-	private Long totalPrice;
+	private Integer totalPrice;
 	private Integer totalQuantity;
 	private String orderState;
 	private Boolean refundYn;
 	private String recipient;
 	private String zipCode;
 	private String address;
-	private String addressDetail;
 	private String phoneNum;
 	private String invoice;
 	private String impUid;

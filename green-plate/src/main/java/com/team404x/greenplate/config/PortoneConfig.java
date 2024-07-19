@@ -7,11 +7,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PortoneConfig {
-    @Value("[impkey]")
+    @Value("${imp.imp_key}")
     private String impKey;
-    @Value("[impSecret]")
+    @Value("${imp.imp_secret}")
     private String impSecret;
-
     @Bean
     public IamportClient iamportClient() {
         return new IamportClient(impKey, impSecret);

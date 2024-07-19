@@ -19,52 +19,36 @@
         IMP.request_pay(
             {
                 pg: "kakaopay.TC0ONETIME",
-                merchant_uid: "order_no_071",
+                merchant_uid: "order_no_085",
                 name: "order_test",
-                amount: 20,
+                amount: 2800,
                 buyer_email: "test01@test.com",
-                buyer_name: "test01"
+                buyer_name: "홍길동",
+                buyer_tel: "01042424242",
+                buyer_addr: "서울특별시 강남구 신사동",
+                buyer_postcode: "01181",
+                custom_data: {"list":[{1:3, 2:5}]}
             },
             function (rsp) {
                 console.log(rsp);
-
                 // 결제 성공 시 처리
                 if (rsp.success) {
                     console.log(rsp.imp_uid);
-
-                    // 주문 생성 요청 객체
-                    let orderCreateReq = {
-                        "userId": 1,
-                        "impUid": rsp.imp_uid,
-                        "totalPrice": 20,
-                        "totalQuantity": 2,
-                        "refundYn": false,
-                        "zipCode": "12345",
-                        "address": "서울시",
-                        "addressDetail": "강동",
-                        "phoneNum": "01012341234",
-                        "orderDetailList": [{
-                            "itemId": 1,
-                            "cnt": 2,
-                            "discountPrice": 10,
-                            "price": 11
-                        }]
-                    }
-
                     // 백엔드로 주문 생성 요청
-                    axios.post("http://localhost:8080/orders/kakaoPay", orderCreateReq).then((response) => {
+                    axios.post("http://localhost:8080/orders/kakaoPay?impUid="+rsp.imp_uid).then((response) => {
                         console.log(response.data);
-                        if (response.data === "ok") {
-                            alert('success');
-                        } else {
-                            alert('failed');
-                        }
+                        alert(response.data)
+<!--                        if (response.data === "ok") {-->
+<!--                            alert('success');-->
+<!--                        } else {-->
+<!--                            alert('failed');-->
+<!--                        }-->
                     }).catch((error) => {
                         console.error(error);
-                        alert('failed');
+                        alert("error : Bearer 토큰이 없음")
                     });
                 } else {
-                    alert("failed");
+                    alert(rsp.error_msg);
                 }
             }
         );

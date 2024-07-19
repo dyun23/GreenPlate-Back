@@ -37,7 +37,7 @@ public class OrderDetail {
 
 	private Integer cnt;
 
-	private Long price;
+	private Integer price;
 
 	private Integer refundYn;
 

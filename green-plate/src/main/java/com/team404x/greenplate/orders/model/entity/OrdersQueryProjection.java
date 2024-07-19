@@ -23,14 +23,14 @@ public class OrdersQueryProjection {
     private Long order_id;
     private Long item_id;
     private String item_name;
-    private Long price;
-    private int cnt;
+    private Integer price;
+    private Integer cnt;
     private LocalDateTime order_date;
     private String order_state;
     private boolean refund_yn;
 
     @QueryProjection
-    public OrdersQueryProjection(Long order_id, Long item_id, String item_name, Long price, int cnt, LocalDateTime order_date, String order_state, boolean refund_yn) {
+    public OrdersQueryProjection(Long order_id, Long item_id, String item_name, Integer price, Integer cnt, LocalDateTime order_date, String order_state, boolean refund_yn) {
         this.order_id = order_id;
         this.item_id = item_id;
         this.item_name = item_name;
