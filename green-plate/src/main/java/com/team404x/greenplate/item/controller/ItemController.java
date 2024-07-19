@@ -33,9 +33,9 @@ public class ItemController {
     @SecuredOperation
     @Operation(summary = "[사업자] 상품 등록을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/create")
-    public BaseResponse create(@RequestBody ItemCreateReq itemCreateReq) {
+    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails company, @RequestBody ItemCreateReq itemCreateReq) {
         try {
-            itemService.create(itemCreateReq);
+            itemService.create(company.getId(), itemCreateReq);
             return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
         } catch (Exception e) {
              if(itemCreateReq.getCompanyId() == null) {
@@ -53,9 +53,9 @@ public class ItemController {
     @SecuredOperation
     @Operation(summary = "[사업자] 상품 수정을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/update")
-    public BaseResponse update(@RequestBody ItemUpdateReq itemUpdateReq) {
+    public BaseResponse update(@AuthenticationPrincipal CustomUserDetails company, @RequestBody ItemUpdateReq itemUpdateReq) {
         try {
-            itemService.update(itemUpdateReq);
+            itemService.update(company.getId(), itemUpdateReq);
             return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
         } catch (Exception e) {
             if (itemUpdateReq.getStock() < 0 || itemUpdateReq.getPrice() < 0 ) {
