@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="payment()">pay</button>
+
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    function payment() {
+        // IMP 인스턴스 초기화
+        IMP.init("imp74464581");
+
+        // 결제 요청
+        IMP.request_pay(
+            {
+                pg: "kakaopay.TC0ONETIME",
+                merchant_uid: "order_no_064",
+                name: "order_test",
+                amount: 20,
+                buyer_email: "test01@test.com",
+                buyer_name: "test01"
+            },
+            function (rsp) {
+                console.log(rsp);
+
+                // 결제 성공 시 처리
+                if (rsp.success) {
+                    console.log(rsp.imp_uid);
+
+                    // 주문 생성 요청 객체
+                    let orderCreateReq = {
+                        "userId": 1,
+                        "impUid": rsp.imp_uid,
+                        "totalPrice": 20,
+                        "totalQuantity": 2,
+                        "refundYn": false,
+                        "zipCode": "12345",
+                        "address": "서울시",
+                        "addressDetail": "강동",
+                        "phoneNum": "01012341234",
+                        "orderDetailList": [{
+                            "itemId": 1,
+                            "cnt": 2,
+                            "discountPrice": 10,
+                            "price": 11
+                        }]
+                    }
+
+                    // 백엔드로 주문 생성 요청
+                    axios.post("http://localhost:8080/orders/kakao", orderCreateReq).then((response) => {
+                        console.log(response.data);
+                        if (response.data === "ok") {
+                            alert('success');
+                        } else {
+                            alert('failed');
+                        }
+                    }).catch((error) => {
+                        console.error(error);
+                        alert('failed');
+                    });
+                } else {
+                    alert("failed");
+                }
+            }
+        );
+    }
+</script>
+</body>
+</html>

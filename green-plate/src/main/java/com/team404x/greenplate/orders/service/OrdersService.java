@@ -1,22 +1,29 @@
 package com.team404x.greenplate.orders.service;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.orders.model.entity.*;
-import com.team404x.greenplate.orders.model.requset.OrderCancelReq;
-import com.team404x.greenplate.orders.model.requset.OrderInvoiceReq;
-import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
+import com.team404x.greenplate.orders.model.requset.*;
+import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
 import com.team404x.greenplate.orders.repository.OrderDetailRepository;
 import com.team404x.greenplate.orders.repository.OrderQueryRepository;
 import com.team404x.greenplate.orders.repository.OrdersRepository;
-import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
 
+import com.team404x.greenplate.user.address.entity.Address;
+import com.team404x.greenplate.user.address.repository.AddressRepository;
 import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,9 +31,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.team404x.greenplate.common.BaseResponseMessage.*;
@@ -42,24 +51,62 @@ public class OrdersService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final OrderQueryRepository orderQueryRepository;
+    private final AddressRepository addressRepository;
+    private final IamportClient iamportClient;
 
     JPAQueryFactory queryFactory;
+
+
+    @Transactional
+    public BaseResponse<OrderPaymentRes> chosePayment(OrderCreateReq orderCreateReq) {
+        Optional<User> user = userRepository.findById(orderCreateReq.getUserId());
+        if (!user.isPresent()) {
+            return new BaseResponse<>(ORDERS_CREATED_FAIL);
+        }
+
+        OrderPaymentRes oderPaymentRes = new OrderPaymentRes();
+        oderPaymentRes.setUserId(orderCreateReq.getUserId());
+        oderPaymentRes.setTotalPrice(orderCreateReq.getTotalPrice());
+        oderPaymentRes.setTotalQuantity(orderCreateReq.getTotalQuantity());
+        oderPaymentRes.setOrderDetailList(orderCreateReq.getOrderDetailList());
+        oderPaymentRes.setRefundYn(false);
+
+        List<Address> addressList = addressRepository.findByUserAndDefultAddrTrue(user.get());
+
+        if (addressList.size() <= 0) {
+            oderPaymentRes.setZipCode("");
+            oderPaymentRes.setAddress("");
+            oderPaymentRes.setAddressDetail("");
+            oderPaymentRes.setPhoneNum("");
+        }else{
+            oderPaymentRes.setZipCode(addressList.get(0).getZipcode());
+            oderPaymentRes.setAddress(addressList.get(0).getAddress());
+            oderPaymentRes.setAddressDetail(addressList.get(0).getAddressDetail());
+            oderPaymentRes.setPhoneNum(addressList.get(0).getPhoneNum());
+        }
+        return new BaseResponse<>(oderPaymentRes);
+    }
 
     @Transactional
     public BaseResponse<String> createOrder(OrderCreateReq orderCreateReq) {
 
         Optional<User> user = userRepository.findById(orderCreateReq.getUserId());
-
         if (!user.isPresent()) {
             return new BaseResponse<>(ORDERS_CREATED_FAIL);
         }
+        LocalDateTime now = LocalDateTime.now();
+
         //주문
         Orders orders = Orders.builder()
                 .user(user.get())
-                .orderDate(orderCreateReq.getOrderDate())
+                .orderDate(now)
                 .totalPrice(orderCreateReq.getTotalPrice())
                 .totalQuantity(orderCreateReq.getTotalQuantity())
                 .orderState(OrderStatus.ready.toString())
+                .zipCode(orderCreateReq.getZipCode())
+                .address(orderCreateReq.getAddress())
+                .addressDetail(orderCreateReq.getAddressDetail())
+                .phoneNum(orderCreateReq.getPhoneNum())
                 .refundYn(false)
                 .build();
         orders = ordersRepository.save(orders);
@@ -76,7 +123,7 @@ public class OrdersService {
                     .orders(orders)
                     .item(item)
                     .cnt(req.getCnt())
-                    .price(req.getPrice())
+                    .price(req.getDiscountPrice())
                     .build();
             orderDetailRepository.save(orderDetail);
 
@@ -113,6 +160,7 @@ public class OrdersService {
     }
 
     //유저 주문 상품 상세조회
+    @Transactional
     public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(Long userId, Long ordersId) {
         Optional<User> user = userRepository.findById(userId);
 
@@ -165,6 +213,7 @@ public class OrdersService {
     }
 
     //주문취소
+    @Transactional
     public BaseResponse<String> cancelOrder(OrderCancelReq orderCancelReq) {
         Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
 
@@ -179,6 +228,7 @@ public class OrdersService {
     }
 
     //사업자 배송 상태 변경
+    @Transactional
     public BaseResponse changeDeliveryState(OrderSearchReq orderSearchReq) {
         if(!orderSearchReq.getStatus().equals(OrderStatus.ready.toString())
             && !orderSearchReq.getStatus().equals(OrderStatus.shipped.toString())
@@ -200,6 +250,7 @@ public class OrdersService {
     }
 
     //사업자 송장 번호 입력
+    @Transactional
     public BaseResponse inputInvoice(OrderInvoiceReq orderInvoiceReq) {
         Optional<Orders> orders = ordersRepository.findById(orderInvoiceReq.getOrderId());
         if (!orders.isPresent()) {
@@ -213,5 +264,15 @@ public class OrdersService {
         return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_INVOICE);
     }
 
+    public IamportResponse<Payment> getPaymentInfo(String impUid) throws IamportResponseException, IOException {
+
+
+        return iamportClient.paymentByImpUid(impUid);
+    }
+
+    public IamportResponse refund(OrderCreateReq orderCreateReq, IamportResponse<Payment> info) throws IamportResponseException, IOException {
+        CancelData cancelData = new CancelData(orderCreateReq.getImpUid(), true, info.getResponse().getAmount());
+        return iamportClient.cancelPaymentByImpUid(cancelData);
+    }
 
 }

@@ -46,13 +46,13 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public void activateUser(String email) {
+	public void activateUser(String email) throws Exception{
 		User user = userRepository.findUserByEmail(email);
 		user.activate();
 		userRepository.save(user);
 	}
 
-	public String login(UserLoginReq userLoginReq) {
+	public String login(UserLoginReq userLoginReq) throws Exception {
 		String email = userLoginReq.getEmail() + "_user";
 		String password = userLoginReq.getPassword();
 
@@ -67,7 +67,7 @@ public class UserService {
 		return null;
 	}
 
-	public UserDetailsRes details(String email) {
+	public UserDetailsRes details(String email) throws Exception {
 		User user = userRepository.findUserByEmail(email);
 		List<Address> addresses = user.getAddresses();
 		List<UserDetailsAddressRes> userAddresses = new ArrayList<>();
@@ -88,7 +88,7 @@ public class UserService {
 			.build();
 	}
 
-	public void registerAddress(Long id, UserAddressRegisterReq userAddressRegisterReq) {
+	public void registerAddress(Long id, UserAddressRegisterReq userAddressRegisterReq) throws Exception{
 		Address address = Address.builder()
 			.zipcode(userAddressRegisterReq.getZipcode())
 			.address(userAddressRegisterReq.getAddress())
