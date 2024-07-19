@@ -1,5 +1,7 @@
 package com.team404x.greenplate.recipe.controller;
 
+import com.team404x.greenplate.config.SecuredOperation;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.recipe.model.request.RecipeCreateReq;
 import com.team404x.greenplate.recipe.model.request.RecipeUpdateReq;
 import com.team404x.greenplate.recipe.model.response.RecipeDetailsRes;
@@ -9,6 +11,7 @@ import com.team404x.greenplate.recipe.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,16 +22,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecipeController {
     private final RecipeService recipeService;
+    @SecuredOperation
     @Operation(summary = "[유저/사업자] 레시피 등록 API")
     @RequestMapping(method = RequestMethod.POST, value = "/create")
-    public ResponseEntity<String> create(@RequestPart RecipeCreateReq request, @RequestPart MultipartFile file) {
-        recipeService.createRecipe(request, file);
+    public ResponseEntity<String> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart RecipeCreateReq request, @RequestPart MultipartFile file) {
+        recipeService.createRecipe(customUserDetails, request, file);
         return ResponseEntity.ok("okay");
     }
+    @SecuredOperation
     @Operation(summary = "[유저/사업자] 레시피 수정 API")
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<String> update(@RequestPart RecipeUpdateReq request, @RequestPart MultipartFile file) {
-        recipeService.updateRecipe(request, file);
+    public ResponseEntity<String> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart RecipeUpdateReq request, @RequestPart MultipartFile file) {
+        recipeService.updateRecipe(customUserDetails, request, file);
         return ResponseEntity.ok("okay");
     }
     @Operation(summary = "[전체] 레시피 목록 조회 API")

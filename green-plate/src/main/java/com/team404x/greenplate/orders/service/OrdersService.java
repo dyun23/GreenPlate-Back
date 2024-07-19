@@ -151,15 +151,11 @@ public class OrdersService {
 
     //유저 주문 상품 목록 조회
     @Transactional
-    public BaseResponse<List<OrderUserSearchRes>> searchForUser(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-
-        if (!user.isPresent()) {
-            return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
-        }
+    public BaseResponse<List<OrderUserSearchRes>> searchForUser(Long userId) throws Exception {
+        User user = userRepository.findById(userId).get();
 
         List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<OrderUserSearchRes>();
-        List<Orders> orders = ordersRepository.findAllByUser(user.get());
+        List<Orders> orders = user.getOrders();
         for(Orders order : orders){
             OrderUserSearchRes res = OrderUserSearchRes.builder()
                     .order_id(order.getId())
@@ -176,7 +172,7 @@ public class OrdersService {
 
     //유저 주문 상품 상세조회
     @Transactional
-    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(Long userId, Long ordersId) {
+    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(Long userId, Long ordersId) throws Exception {
         Optional<User> user = userRepository.findById(userId);
 
         if (!user.isPresent()) {
@@ -214,6 +210,13 @@ public class OrdersService {
         if (!company.isPresent()) {
             throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
         }
+
+//        if(searchReq.getStatus() != OrderStatus.ready.toString()
+//            && searchReq.getStatus() != OrderStatus.shipped.toString()
+//            && searchReq.getStatus() != OrderStatus.completed.toString())
+//        {
+//            searchReq.setStatus("%");
+//        }
 
         List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq);
         return new BaseResponse<>(ordersList);
