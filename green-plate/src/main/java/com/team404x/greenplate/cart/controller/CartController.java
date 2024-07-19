@@ -28,11 +28,13 @@ public class CartController {
         cartService.createCart(customUserDetails.getId(), request);
         return ResponseEntity.ok("Success");
     }
+    @SecuredOperation
     @RequestMapping (method = RequestMethod.POST, value = "/update")
     public ResponseEntity<String> updateQuantity(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CartUpdateReq request) {
         cartService.updateCart(customUserDetails.getId(), request);
         return ResponseEntity.ok("Success");
     }
+    @SecuredOperation
     @RequestMapping (method = RequestMethod.GET, value = "/list")
     public ResponseEntity<List<CartListRes>> getCartList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(cartService.getCartList(customUserDetails));

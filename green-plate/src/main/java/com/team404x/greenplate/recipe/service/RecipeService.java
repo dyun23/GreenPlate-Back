@@ -61,15 +61,28 @@ public class RecipeService {
         saveRecipeKeyword(result, request.getKeywordList());
     }
 
-    public void updateRecipe(RecipeUpdateReq request, MultipartFile image) {
-        Recipe recipe = Recipe.builder()
+    public void updateRecipe(CustomUserDetails customUserDetails, RecipeUpdateReq request, MultipartFile image) {
+        Long id = customUserDetails.getId();
+        Recipe recipe;
+        if (customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COMPANY"))) {
+            recipe = Recipe.builder()
                 .id(request.getRecipeId())
-                .title(request.getTitle())
-                .contents(request.getContents())
-                .imageUrl(s3FileUploadSevice.upload("recipe", request.getCompanyId(), image))
-                .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
-                .company(Company.builder().id(request.getCompanyId()).build())
-                .build();
+                    .title(request.getTitle())
+                    .contents(request.getContents())
+                    .imageUrl(s3FileUploadSevice.upload("recipe",id, image))
+                    .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
+                    .company(Company.builder().id(id).build())
+                    .build();
+        } else {
+            recipe = Recipe.builder()
+                    .id(request.getRecipeId())
+                    .title(request.getTitle())
+                    .contents(request.getContents())
+                    .imageUrl(s3FileUploadSevice.upload("recipe", id, image))
+                    .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
+                    .user(User.builder().id(id).build())
+                    .build();
+        }
         Recipe result = recipeRepository.save(recipe);
 
         recipeItemRepository.deleteByRecipe(result);
