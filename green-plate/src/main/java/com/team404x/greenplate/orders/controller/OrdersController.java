@@ -5,6 +5,7 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
 import com.team404x.greenplate.orders.model.requset.*;
 import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
@@ -27,6 +28,7 @@ public class OrdersController {
     private final OrdersService ordersService;
     private final IamportClient iamportClient;
 
+    @SecuredOperation
     /** 상품 결제방법선택**/
     @Operation(summary = "[유저] 상품 결제 방법 선택 API")
     @PostMapping(value = "/payment")
@@ -35,6 +37,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 상품 결제**/
     @Operation(summary = "[유저] 상품 결제 API")
     @PostMapping(value = "/create")
@@ -43,6 +46,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 주문 취소**/
     @Operation(summary = "[유저] 상품 취소 API")
     @PutMapping(value = "/cancel")
@@ -51,6 +55,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 주문 목록 조회 : 유저**/
     @Operation(summary = "[유저] 주문 목록 조회 API")
     @GetMapping("/list/user/{userId}")
@@ -59,6 +64,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 주문 상세내역 조회 : 유저**/
     @Operation(summary = "[유저] 주문 상세 내역 조회 API")
     @GetMapping("/list/user/{userId}/{ordersId}")
@@ -67,6 +73,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 주문 내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 주문 내역 조회 API")
@@ -76,6 +83,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 주문 상세내역 조회 : 사업자**/
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 주문 상세내역 조회 API")
@@ -85,6 +93,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 배송 상태 변경 : 사업자 **/
 //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 배송 상태 변경 API")
@@ -94,6 +103,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     /** 송장 등록 : 사업자 **/
     //    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 송장 번호 등록 API")
@@ -103,6 +113,7 @@ public class OrdersController {
         return result;
     }
 
+    @SecuredOperation
     //String impUid
     /** kakao pay 결제 **/
     @Operation(summary = "[유저] 카카오 페이 결제 API")

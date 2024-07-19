@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import com.team404x.greenplate.item.model.response.ItemDetailsRes;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemController {
     private final ItemService itemService;
 
+    @SecuredOperation
     @Operation(summary = "[사업자] 상품 등록을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/create")
     public BaseResponse create(@RequestBody ItemCreateReq itemCreateReq) {
@@ -32,6 +34,7 @@ public class ItemController {
         return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
     }
 
+    @SecuredOperation
     @Operation(summary = "[사업자] 상품 수정을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/update")
     public BaseResponse update(@RequestBody ItemUpdateReq itemUpdateReq) {
@@ -39,7 +42,7 @@ public class ItemController {
         return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "상품 전체 목록 조회를 위한 API")
+    @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list")
     public BaseResponse list() {
         try {

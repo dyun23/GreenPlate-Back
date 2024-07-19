@@ -36,6 +36,10 @@ public enum BaseResponseMessage {
 	USER_LOGIN_FAIL_EMAIL(false, 1301, "이메일을 정확히 입력하세요."),
 	USER_LOGIN_FAIL_PASSWORD(false, 1302, "비밀번호를 정확히 입력하세요."),
 
+	// user details
+	USER_DETAILS_SUCCESS(true, 1400, "유저 상세 정보를 성공적으로 불러왔습니다"),
+	USER_DETAILS_FAIL(true, 1401, "유저 상세 정보를 불러오는데 실패했습니다"),
+
 	// user email verify
 	EMAIL_VERIFY_SUCCESS(true, 1500, "이메일 인증에 성공했습니다."),
 	EMAIL_VERIFY_FAIL(false, 1550, "이메일 인증에 실패했습니다."),
