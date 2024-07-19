@@ -211,6 +211,13 @@ public class OrdersService {
             throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
         }
 
+//        if(searchReq.getStatus() != OrderStatus.ready.toString()
+//            && searchReq.getStatus() != OrderStatus.shipped.toString()
+//            && searchReq.getStatus() != OrderStatus.completed.toString())
+//        {
+//            searchReq.setStatus("%");
+//        }
+
         List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq);
         return new BaseResponse<>(ordersList);
     }

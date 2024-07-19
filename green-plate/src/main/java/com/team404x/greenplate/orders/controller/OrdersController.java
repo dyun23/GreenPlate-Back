@@ -61,20 +61,18 @@ public class OrdersController {
     }
 
 
-
-    @GetMapping("/list/company/{companyId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@PathVariable Long companyId, OrderSearchReq search) {
-        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(companyId, search);
+    @GetMapping("/list/user/{userId}")
+    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@PathVariable Long userId) {
+        BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(userId);
         return result;
     }
 
 
-    @GetMapping("/list/company/{companyId}/{orderId}")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(@PathVariable Long companyId,@PathVariable Long orderId) {
-        BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompanyDetail(companyId, orderId);
+    @GetMapping("/list/user/{userId}/{ordersId}")
+    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(@PathVariable Long userId,@PathVariable Long ordersId) {
+        BaseResponse<List<OrderUserSearchDetailRes>> result = ordersService.searchForUserDetail(userId,ordersId);
         return result;
     }
-
 
     @SecuredOperation
     @Operation(summary = "[유저] 주문 목록 조회 API")
