@@ -5,6 +5,7 @@ import java.util.List;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
+import com.team404x.greenplate.item.model.request.ItemFindReq;
 import com.team404x.greenplate.item.model.request.ItemSearchReq;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import com.team404x.greenplate.item.model.response.*;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/item")
@@ -72,6 +71,7 @@ public class ItemController {
         }
     }
 
+
     @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list")
     public BaseResponse list() {
@@ -118,26 +118,34 @@ public class ItemController {
             return new BaseResponse(BaseResponseMessage.ITEM_DETAILS_FAIL);
         }
     }
-//    @RequestMapping(method=RequestMethod.GET,value="/find")
-//    public BaseResponse find(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody Long id) {
-//        try {
-//            itemService.findList(Long id);
-//            List<ItemListFindRes> itemListFindResList = itemService.findList(id);
-//            return new BaseResponse(BaseResponseMessage.USER_READ_LIST_SUCCESS,itemListFindResList);
-//        } catch (Exception e) {
-//            if (itemService.findList(id) == null){
-//                return new BaseResponse(BaseResponseMessage.USER_READ_LIST_FAIL_NULL); //해당 판매자의 상품이 없다
-//            } else {
-//                return new BaseResponse(BaseResponseMessage.USER_READ_LIST_FAIL);
-//            }
-//
-//        }
-//    }
+
+
+    @RequestMapping(method=RequestMethod.GET,value="/company")
+    public BaseResponse listCompanyItem(@AuthenticationPrincipal CustomUserDetails company){
+        try {
+           List<ItemFindRes> result  =itemService.listCompanyItem(company.getId());
+           return new BaseResponse(BaseResponseMessage.USER_READ_LIST_SUCCESS,result);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.USER_READ_LIST_FAIL);
+        }
+
+    }
+
+
 
     @RequestMapping(method=RequestMethod.GET,value="/search")
     public BaseResponse search(@RequestBody ItemSearchReq itemSearchReq) {
-        List<ItemSearchRes> itemSearchReqList = itemService.search(itemSearchReq.getCompanyId());
-        return new BaseResponse(itemSearchReqList);
+        try {
+            List<ItemSearchRes> itemSearchReqList = itemService.search(itemSearchReq.getCompanyId());
+            itemService.search(itemSearchReq.getCompanyId());
+            return new BaseResponse(BaseResponseMessage.USER_SEARCH_SUCCESS,itemSearchReqList);
+        } catch (Exception e) {
+            if(itemSearchReq.getSearch() == null){ // 검색어에 맞는 상품이 없습니다
+                return new BaseResponse(BaseResponseMessage.USER_SEARCH_FAIL_NOTFOUND);
+            } else{
+                return new BaseResponse(BaseResponseMessage.USER_SEARCH_FAIL);
+            }
+        }
     }
 
 }
