@@ -22,7 +22,7 @@ import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
-    public void create(ItemCreateReq itemCreateReq) {
+    public void create(Long id, ItemCreateReq itemCreateReq) {
         Category category = categoryRepository.findCategoryBySubCategory(itemCreateReq.getSubCategory());
         Item item = Item.builder()
                 .name(itemCreateReq.getName())
@@ -34,13 +34,13 @@ public class ItemService {
                 .imageUrl(itemCreateReq.getImageUrl())
                 .discountPrice(itemCreateReq.getDiscountPrice())
                 .category(category)
-                .company(Company.builder().id(itemCreateReq.getCompanyId()).build())
+                .company(Company.builder().id(id).build())
                 .build();
         itemRepository.save(item);
     }
 
 
-    public void update(ItemUpdateReq itemUpdateReq) {
+    public void update(Long id, ItemUpdateReq itemUpdateReq) {
         Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(itemUpdateReq.getMainCategory(), itemUpdateReq.getSubCategory());
         Item item = Item.builder()
                 .id(itemUpdateReq.getItemId())
@@ -53,7 +53,7 @@ public class ItemService {
                 .imageUrl(itemUpdateReq.getImageUrl())
                 .discountPrice(itemUpdateReq.getDiscountPrice())
                 .category(category)
-                .company(Company.builder().id(itemUpdateReq.getCompanyId()).build())
+                .company(Company.builder().id(id).build())
                 .build();
         itemRepository.save(item);
     }

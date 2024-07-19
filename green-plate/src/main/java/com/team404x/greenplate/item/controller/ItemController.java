@@ -5,6 +5,7 @@ import java.util.List;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.config.SecuredOperation;
+import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import com.team404x.greenplate.item.model.response.ItemDetailsRes;
@@ -14,6 +15,7 @@ import com.team404x.greenplate.item.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,17 +31,27 @@ public class ItemController {
     @SecuredOperation
     @Operation(summary = "[사업자] 상품 등록을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/create")
-    public BaseResponse create(@RequestBody ItemCreateReq itemCreateReq) {
-        itemService.create(itemCreateReq);
-        return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
+    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails company,
+        @RequestBody ItemCreateReq itemCreateReq) {
+        try {
+            itemService.create(company.getId(), itemCreateReq);
+            return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
+        }
+        catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL);
+        }
     }
 
     @SecuredOperation
     @Operation(summary = "[사업자] 상품 수정을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/update")
-    public BaseResponse update(@RequestBody ItemUpdateReq itemUpdateReq) {
-        itemService.update(itemUpdateReq);
-        return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
+    public BaseResponse update(@AuthenticationPrincipal CustomUserDetails company, @RequestBody ItemUpdateReq itemUpdateReq) {
+        try {
+            itemService.update(company.getId(), itemUpdateReq);
+            return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.USER_UPDATE_FAIL);
+        }
     }
 
     @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
