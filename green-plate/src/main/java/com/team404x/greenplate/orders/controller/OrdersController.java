@@ -172,24 +172,32 @@ public class OrdersController {
     @Operation(summary = "[유저] 카카오 페이 결제 API")
     @PostMapping(value = "/kakaoPay")
     public  ResponseEntity<String> kakaoPay(@RequestBody OrderCreateReq orderCreateReq) throws Exception {
-        IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
-        System.out.println(orderCreateReq.getImpUid());
-        Boolean payCheck = ordersService.payCheck(orderCreateReq,info);
-        if(payCheck) {
-            System.out.println("ok");
-            BaseResponse<String> resultPay = ordersService.createOrder(orderCreateReq);
-            return ResponseEntity.ok("ok");
-        }
-        else {
-            System.out.println("error");
-            ordersService.refund(orderCreateReq, info);
+        try{
+            IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
+            System.out.println(orderCreateReq.getImpUid());
+            Boolean payCheck = ordersService.payCheck(orderCreateReq,info);
+            if(payCheck) {
+                System.out.println("ok");
+                BaseResponse<String> resultPay = ordersService.createOrder(orderCreateReq);
+                return ResponseEntity.ok("ok");
+            }
+            else {
+                System.out.println("error");
+                ordersService.refund(orderCreateReq, info);
+                return ResponseEntity.ok("error");
+            }
+        } catch (Exception e) {
             return ResponseEntity.ok("error");
         }
     }
 
     @PostMapping(value = "/kakaoRefund")
     public  BaseResponse kakaoRefund(@RequestBody OrderCancelReq orderCancelReq) throws IamportResponseException, IOException {
-        BaseResponse result = ordersService.kakaoPayRefund(orderCancelReq);
-        return result;
+        try{
+            BaseResponse result = ordersService.kakaoPayRefund(orderCancelReq);
+            return result;
+        } catch (Exception e) {
+            return new BaseResponse<>(ORDERS_CANCEL_FAIL_KAKAO);
+        }
     }
 }
