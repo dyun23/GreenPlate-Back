@@ -12,8 +12,11 @@ import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
 import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
 import com.team404x.greenplate.company.service.CompanyService;
+import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +30,8 @@ public class CompanyController {
 	TODO
 	company 이메일 인증 어떻게 할 지 정하기
 	* */
+
+	@Operation(summary = "[전체] 사업자 회원가입 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
 	public BaseResponse signup(@RequestBody CompanySignupReq companySignupReq) {
 		try {
@@ -37,6 +42,7 @@ public class CompanyController {
 		}
 	}
 
+	@Operation(summary = "[전체] 사업자 로그인 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
 		try {
@@ -48,6 +54,8 @@ public class CompanyController {
 		}
 	}
 
+	@SecuredOperation
+	@Operation(summary = "[사업자] 사업자 상세정보 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails company) {
 		try {

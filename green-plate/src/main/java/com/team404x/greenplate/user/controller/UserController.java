@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.email.service.EmailVerifyService;
 import com.team404x.greenplate.user.model.request.UserAddressRegisterReq;
@@ -16,6 +17,7 @@ import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.model.response.UserDetailsRes;
 import com.team404x.greenplate.user.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +30,8 @@ public class UserController {
 	/* TODO
 	예외 로직: ControllerAdvice를 이용
 	*   */
+
+	@Operation(summary = "[전체] 유저 회원가입 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
 	public BaseResponse signup(@RequestBody UserSignupReq userSignupReq) {
 		try {
@@ -39,6 +43,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "[전체] 유저 로그인 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		try {
@@ -50,17 +55,21 @@ public class UserController {
 		}
 	}
 
+	@SecuredOperation
+	@Operation(summary = "[유저] 유저 상세 정보 조회 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails user) {
 		try {
 			String email = user.getUsername().split("_user")[0];
 			UserDetailsRes userDetailsRes = userService.details(email);
-			return new BaseResponse(BaseResponseMessage.USER_READ_DETAIL_SUCCESS, userDetailsRes);
+			return new BaseResponse(BaseResponseMessage.USER_DETAILS_SUCCESS, userDetailsRes);
 		} catch (Exception e) {
-			return new BaseResponse(BaseResponseMessage.USER_READ_DETAIL_FAIL);
+			return new BaseResponse(BaseResponseMessage.USER_DETAILS_FAIL);
 		}
 	}
 
+	@SecuredOperation
+	@Operation(summary = "[유저] 유저 배송지 등록 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/address/register")
 	public BaseResponse registerAddress(@AuthenticationPrincipal CustomUserDetails user,
 		@RequestBody UserAddressRegisterReq userAddressRegisterReq) {

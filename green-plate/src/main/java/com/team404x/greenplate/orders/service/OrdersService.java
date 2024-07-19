@@ -10,6 +10,7 @@ import com.siot.IamportRestClient.response.AccessToken;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.model.entity.Item;
@@ -101,9 +102,9 @@ public class OrdersService {
     }
 
     @Transactional
-    public BaseResponse<String> createOrder(OrderCreateReq orderCreateReq) {
+    public BaseResponse<String> createOrder(Long id, OrderCreateReq orderCreateReq) throws Exception {
 
-        Optional<User> user = userRepository.findById(orderCreateReq.getUserId());
+        Optional<User> user = userRepository.findById(id);
         if (!user.isPresent()) {
             return new BaseResponse<>(ORDERS_CREATED_FAIL);
         }

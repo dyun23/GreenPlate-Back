@@ -1,6 +1,7 @@
 package com.team404x.greenplate.item.service;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +10,11 @@ import com.team404x.greenplate.item.category.entity.Category;
 import com.team404x.greenplate.item.category.repository.CategoryRepository;
 import com.team404x.greenplate.item.model.entity.Item;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
-import com.team404x.greenplate.item.model.response.ItemDetailsRes;
-import com.team404x.greenplate.item.model.response.ItemRes;
+import com.team404x.greenplate.item.model.response.*;
 import com.team404x.greenplate.item.repository.ItemRepository;
+import jakarta.persistence.metamodel.SingularAttribute;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.stereotype.Service;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 
@@ -22,7 +23,7 @@ import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
-    public void create(ItemCreateReq itemCreateReq) {
+    public void create(Long id, ItemCreateReq itemCreateReq) {
         Category category = categoryRepository.findCategoryBySubCategory(itemCreateReq.getSubCategory());
         Item item = Item.builder()
                 .name(itemCreateReq.getName())
@@ -34,13 +35,13 @@ public class ItemService {
                 .imageUrl(itemCreateReq.getImageUrl())
                 .discountPrice(itemCreateReq.getDiscountPrice())
                 .category(category)
-                .company(Company.builder().id(itemCreateReq.getCompanyId()).build())
+                .company(Company.builder().id(id).build())
                 .build();
         itemRepository.save(item);
     }
 
 
-    public void update(ItemUpdateReq itemUpdateReq) {
+    public void update(Long id, ItemUpdateReq itemUpdateReq) {
         Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(itemUpdateReq.getMainCategory(), itemUpdateReq.getSubCategory());
         Item item = Item.builder()
                 .id(itemUpdateReq.getItemId())
@@ -53,7 +54,7 @@ public class ItemService {
                 .imageUrl(itemUpdateReq.getImageUrl())
                 .discountPrice(itemUpdateReq.getDiscountPrice())
                 .category(category)
-                .company(Company.builder().id(itemUpdateReq.getCompanyId()).build())
+                .company(Company.builder().id(id).build())
                 .build();
         itemRepository.save(item);
     }
@@ -105,5 +106,42 @@ public class ItemService {
             );
         }
         return itemResList;
+    }
+//    public List<ItemCompanyListRes> findList(Long id) {
+//       List<Item> itemCompanylist = itemRepository.findAllByCompanyId(id);
+//       List<ItemCompanyListRes> itemCompanyListResList = new ArrayList<>();
+//       for(Item item : itemCompanylist) {
+//           ItemCompanyListRes responses = ItemCompanyListRes.builder()
+//                   .itemId(item.getId())
+//                   .name(item.getName())
+//                   .price(item.getPrice())
+//                   .stock(item.getStock())
+//                   .state(item.getState())
+//                   .imageUrl(item.getImageUrl())
+//                   .discountPrice(item.getDiscountPrice())
+//                   .build();
+//           itemCompanyListResList.add(responses);
+//       }
+//       return itemCompanyListResList;
+//    }
+    public List<ItemSearchRes> search(Long id) {
+        List<Item> itemSearchList = itemRepository.findAllByCompanyId((id));
+        List<ItemSearchRes> itemSearchResList = new ArrayList<>();
+        for(Item item : itemSearchList) {
+            Category category = null;
+            ItemSearchRes responses = ItemSearchRes.builder()
+                    .itemId(item.getId())
+                    .name(item.getName())
+                    .price(item.getPrice())
+                    .stock(item.getStock())
+                    .state(item.getState())
+                    .Imageurl(item.getImageUrl())
+                    .discountPrice(item.getDiscountPrice())
+                    .mainCategory(item.getCategory().getMainCategory())
+                    .subCategory(item.getCategory().getSubCategory())
+                    .build();
+            itemSearchResList.add(responses);
+        }
+        return itemSearchResList;
     }
 }

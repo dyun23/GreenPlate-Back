@@ -36,6 +36,10 @@ public enum BaseResponseMessage {
 	USER_LOGIN_FAIL_EMAIL(false, 1301, "이메일을 정확히 입력하세요."),
 	USER_LOGIN_FAIL_PASSWORD(false, 1302, "비밀번호를 정확히 입력하세요."),
 
+	// user details
+	USER_DETAILS_SUCCESS(true, 1400, "유저 상세 정보를 성공적으로 불러왔습니다"),
+	USER_DETAILS_FAIL(true, 1401, "유저 상세 정보를 불러오는데 실패했습니다"),
+
 	// user email verify
 	EMAIL_VERIFY_SUCCESS(true, 1500, "이메일 인증에 성공했습니다."),
 	EMAIL_VERIFY_FAIL(false, 1550, "이메일 인증에 실패했습니다."),
@@ -92,15 +96,8 @@ public enum BaseResponseMessage {
 	USER_UPDATE_FAIL(false,3221,"상품을 등록하는데 실패했습니다"),
 	USER_UPDATE_FAIL_ISEMPTY(false,3223,"비워져 있는 값이 있습니다"),
 	USER_UPDATE_FAIL_PRICE(false,3224,"할인금액이 정가보다 큽니다"),
-	USER_UPDATE_FAIL_QUANTITYANDPRICE(false,3225,"해당 판매자의 상품이 아닙니다"),
+	USER_UPDATE_FAIL_QUANTITYANDPRICE(false,3225,"수량이나 금액이 0 이하입니다"),
 	USER_UPDATE_FAIL_NULL(false,3226,"존재하지 않는 상품입니다"),
-
-	USER_STATE_UPDATE_SUCCESS(true, 3240,"상품 상태 수정이 완료되었습니다"),
-	USER_STATE_UPDATE_FAIL(false,3241,"상품의 상태를 수정하는데 실패하였습니다"),
-	USER_STATE_UPDATE_FAIL_ISEMPITY(false,3241,"상품의 상태를 수정하는데 실패하였습니다"),
-	USER_STATE_UPDATE_FAIL_QUANTITY(false,3242,"수량이 0인 제품은 판매를 할 수 없습니다"),
-	USER_STATE_UPDATE_FAIL_NOTSELLER(false,3243,"해당 판매자의 상품이 아닙니다"),
-	USER_STATE_UPDATE_FAIL_NULL(false,3244,"상품이 존재하지 않습니다"),
 
 	USER_DELETE_SUCCESS(true,3260,"상품 삭제에 성공하였습니다"),
 	USER_DELETE_FAIL(false,3261,"상품을 삭제하는데 실패했습니다"),
