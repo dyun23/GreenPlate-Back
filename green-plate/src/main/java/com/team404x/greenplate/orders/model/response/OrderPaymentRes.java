@@ -9,7 +9,7 @@ import java.util.List;
 public class OrderPaymentRes {
     private Long userId;
     private String payment;
-    private Long totalPrice;
+    private Integer totalPrice;
     private Integer totalQuantity;
     private Boolean refundYn;
     private String zipCode;

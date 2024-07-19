@@ -2,6 +2,7 @@ package com.team404x.greenplate.orders.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -29,6 +30,7 @@ import com.team404x.greenplate.user.address.repository.AddressRepository;
 import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +38,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -102,7 +106,9 @@ public class OrdersService {
     }
 
     @Transactional
-    public BaseResponse<String> createOrder(OrderCreateReq orderCreateReq) throws Exception {
+    public BaseResponse<String> createOrder(OrderCreateReq orderCreateReq, String impUid) throws Exception {
+        if(orderCreateReq == null)
+            return new BaseResponse<>(ORDERS_CREATED_FAIL);
 
         Optional<User> user = userRepository.findById(orderCreateReq.getUserId());
         if (!user.isPresent()) {
@@ -110,14 +116,6 @@ public class OrdersService {
         }
 
         List<OrderCreateReq.OrderDetailDto> orderDetailReq = orderCreateReq.getOrderDetailList();
-
-        //재고 확인
-        for (OrderCreateReq.OrderDetailDto req : orderDetailReq) {
-            Item item = itemRepository.findById(req.getItemId()).get();
-            if (item.getStock() <= req.getCnt())
-                return new BaseResponse<>(ORDERS_CREATED_FAIL_STOCK);
-        }
-
 
         LocalDateTime now = LocalDateTime.now();
         //주문
@@ -129,10 +127,9 @@ public class OrdersService {
                 .orderState(OrderStatus.ready.toString())
                 .zipCode(orderCreateReq.getZipCode())
                 .address(orderCreateReq.getAddress())
-                .addressDetail(orderCreateReq.getAddressDetail())
                 .phoneNum(orderCreateReq.getPhoneNum())
                 .refundYn(false)
-                .impUid(orderCreateReq.getImpUid())
+                .impUid(impUid)
                 .build();
         orders = ordersRepository.save(orders);
 
@@ -222,12 +219,6 @@ public class OrdersService {
             throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
         }
 
-//        if(searchReq.getStatus() != OrderStatus.ready.toString()
-//            && searchReq.getStatus() != OrderStatus.shipped.toString()
-//            && searchReq.getStatus() != OrderStatus.completed.toString())
-//        {
-//            searchReq.setStatus("%");
-//        }
         List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq);
         return new BaseResponse<>(ordersList);
     }
@@ -283,23 +274,13 @@ public class OrdersService {
         return new BaseResponse<>(ORDERS_UPDATE_SUCCESS_INVOICE);
     }
 
-    //카카오페이 결제금액 체크
-    public Boolean payCheck(OrderCreateReq orderCreateReq, IamportResponse<Payment> iamportResponse) {
-        Long amount = iamportResponse.getResponse().getAmount().longValue();
-        if (amount != orderCreateReq.getTotalPrice()){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
     public IamportResponse<Payment> getPaymentInfo(String impUid) throws IamportResponseException, IOException {
         return iamportClient.paymentByImpUid(impUid);
     }
 
     //카카오페이 결제중 환불
-    public IamportResponse refund(OrderCreateReq orderCreateReq, IamportResponse<Payment> info) throws IamportResponseException, IOException {
-        CancelData cancelData = new CancelData(orderCreateReq.getImpUid(), true, info.getResponse().getAmount());
+    public IamportResponse refund(String impUid, IamportResponse<Payment> info) throws IamportResponseException, IOException {
+        CancelData cancelData = new CancelData(impUid, true, info.getResponse().getAmount());
         return iamportClient.cancelPaymentByImpUid(cancelData);
     }
 
@@ -308,15 +289,19 @@ public class OrdersService {
         Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
         if (!orders.isPresent()) {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
+        }else if (orders.get().getRefundYn()) {
+            return new BaseResponse<>(ORDERS_CANCEL_FAIL_ALREADY);
+        }else if(orders.get().getImpUid() == null){
+            return new BaseResponse<>(ORDERS_CANCEL_FAIL_NONIMPUID);
         }
 
         String accessToken = getAccessToken();      //토큰 요청
         if(requestsRefun(accessToken, orders.get())){ //카카오페이 결제 취소
             cancelOrder(orderCancelReq);                //주문취소 데이터 저장
-            return new BaseResponse<>(ORDERS_CANCEL_FAIL_KAKAO);
+            return new BaseResponse<>(ORDERS_CANCEL_SUCCESS_KAKAO);
         };
 
-        return new BaseResponse<>(ORDERS_CANCEL_SUCCESS_KAKAO);
+        return new BaseResponse<>(ORDERS_CANCEL_FAIL_KAKAO);
     }
 
     //카카오페이 결제 취소용 TOKEN
@@ -395,5 +380,72 @@ public class OrdersService {
         return new BaseResponse<>(ORDERS_CANCEL_SUCCESS);
     }
 
+    //카카오 결제 정보 확인
+    public BaseResponse<String> dataCheck(IamportResponse<Payment> info, Long userId, String impUid) throws Exception {
+        List<OrderCreateReq.OrderDetailDto> orderDetailList = new ArrayList<OrderCreateReq.OrderDetailDto>();
+        int totalPrice = 0;
+        int totalCnt = 0;
 
+        Integer amount = info.getResponse().getAmount().intValue();
+        String name = info.getResponse().getBuyerName().toString();
+        String tel = info.getResponse().getBuyerTel().toString();
+        String addr = info.getResponse().getBuyerAddr().toString();
+        String postcode = info.getResponse().getBuyerPostcode().toString();
+        String customData = info.getResponse().getCustomData();
+
+        Gson gson = new Gson();
+        Map<String, List> data = gson.fromJson(customData, Map.class);
+        List list = data.get("list");
+        Map<String, Double> products = (LinkedTreeMap<String, Double>) list.get(0);
+
+        for (String key : products.keySet()) {
+            Long itemId = Long.parseLong(key);
+            Optional<Item> item = itemRepository.findById(itemId);
+
+            if (!item.isPresent()) {
+                refund(impUid, info);
+                return new BaseResponse<>(ORDERS_CREATED_FAIL_ITEM);
+            }
+
+            int cnt = products.get(key).intValue();
+            int discountPrice = item.get().getDiscountPrice();
+
+            if(item.get().getStock() < cnt){
+                refund(impUid, info);
+                return new BaseResponse<>(ORDERS_CREATED_FAIL_STOCK);
+            }
+
+            totalCnt += cnt;
+            totalPrice += discountPrice * cnt;
+
+            OrderCreateReq.OrderDetailDto orderDetailDto = OrderCreateReq.OrderDetailDto.builder()
+                    .itemId(itemId)
+                    .cnt(cnt)
+                    .discountPrice(discountPrice)
+                    .price(item.get().getPrice())
+                    .build();
+            orderDetailList.add(orderDetailDto);
+        }
+
+        OrderCreateReq orderCreateReq = OrderCreateReq.builder()
+                .userId(userId)
+                .totalPrice(amount)
+                .totalQuantity(totalCnt)
+                .zipCode(postcode)
+                .address(addr)
+                .phoneNum(tel)
+                .recipient(name)
+                .orderDetailList(orderDetailList)
+                .build();
+
+        if(amount == totalPrice) {
+            //데이터 저장
+            BaseResponse<String> resultPay = createOrder(orderCreateReq, impUid);
+            return resultPay;
+        } else {
+            //금액 불일치 시 환불
+            refund(impUid, info);
+            return new BaseResponse<>(ORDERS_CREATED_FAIL_CHECK);
+        }
+    }
 }

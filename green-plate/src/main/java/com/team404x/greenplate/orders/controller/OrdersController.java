@@ -19,8 +19,11 @@ import com.team404x.greenplate.orders.service.OrdersService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.core.ApplicationContext;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -46,7 +49,7 @@ public class OrdersController {
     public BaseResponse create(@AuthenticationPrincipal CustomUserDetails user,
         @RequestBody OrderCreateReq orderCreateReq) {
         try {
-            BaseResponse<String> result = ordersService.createOrder(orderCreateReq);
+            BaseResponse<String> result = ordersService.createOrder(orderCreateReq,"");
             return result;
         } catch (Exception e) {
             return new BaseResponse<>(ORDERS_CREATED_FAIL);
@@ -54,13 +57,13 @@ public class OrdersController {
     }
 
     @SecuredOperation
-    @Operation(summary = "[유저] 상품 취소 API")
+    @Operation(summary = "[사업자] 주문취소 API")
     @PutMapping(value = "/cancel")
-    public BaseResponse cancel(@RequestBody OrderCancelReq orderCancelReq) {
+    public BaseResponse cancel(@AuthenticationPrincipal CustomUserDetails company,
+                               @RequestBody OrderCancelReq orderCancelReq) {
         BaseResponse result = ordersService.cancelOrder(orderCancelReq);
         return result;
     }
-
 
     @SecuredOperation
     @Operation(summary = "[유저] 주문 목록 조회 API")
@@ -88,7 +91,6 @@ public class OrdersController {
     }
 
     @SecuredOperation
-//    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "[사업자] 주문 내역 조회 API")
     @GetMapping("/list/company")
     public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@AuthenticationPrincipal CustomUserDetails company,
@@ -143,28 +145,20 @@ public class OrdersController {
 
     @SecuredOperation
     @Operation(summary = "[유저] 카카오 페이 결제 API")
-    @PostMapping(value = "/kakaoPay")
-    public  ResponseEntity<String> kakaoPay(@RequestBody OrderCreateReq orderCreateReq) throws Exception {
+    @GetMapping(value = "/kakaoPay/{impUid}")
+    public  BaseResponse<String> kakaoPay(@AuthenticationPrincipal CustomUserDetails user, @PathVariable String impUid) throws Exception {
         try{
-            IamportResponse<Payment> info = ordersService.getPaymentInfo(orderCreateReq.getImpUid());
-            System.out.println(orderCreateReq.getImpUid());
-            Boolean payCheck = ordersService.payCheck(orderCreateReq,info);
-            if(payCheck) {
-                System.out.println("ok");
-                BaseResponse<String> resultPay = ordersService.createOrder(orderCreateReq);
-                return ResponseEntity.ok("ok");
-            }
-            else {
-                System.out.println("error");
-                ordersService.refund(orderCreateReq, info);
-                return ResponseEntity.ok("error");
-            }
+            IamportResponse<Payment> info = ordersService.getPaymentInfo(impUid);
+            BaseResponse<String> orderCreateReq = ordersService.dataCheck(info, user.getId(), impUid);
+            return orderCreateReq;
         } catch (Exception e) {
-            return ResponseEntity.ok("error");
+            return new BaseResponse<String>(ORDERS_SEARCH_FAIL_ORDERED);
         }
     }
 
-    @PostMapping(value = "/kakaoRefund")
+    @SecuredOperation
+    @Operation(summary = "[사업자] 카카오 페이 환불 + 주문취소")
+    @PutMapping(value = "/kakaoRefund")
     public  BaseResponse kakaoRefund(@RequestBody OrderCancelReq orderCancelReq) throws IamportResponseException, IOException {
         try{
             BaseResponse result = ordersService.kakaoPayRefund(orderCancelReq);

@@ -78,7 +78,6 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
                         orders.refundYn,
                         orders.zipCode,
                         orders.address,
-                        orders.addressDetail,
                         orders.phoneNum,
                         orders.invoice
                 ))
