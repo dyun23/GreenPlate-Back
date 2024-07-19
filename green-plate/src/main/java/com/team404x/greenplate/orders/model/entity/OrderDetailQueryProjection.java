@@ -1,16 +1,6 @@
 package com.team404x.greenplate.orders.model.entity;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.querydsl.core.types.dsl.BooleanPath;
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
-import com.team404x.greenplate.user.address.entity.Address;
-import com.team404x.greenplate.user.model.entity.User;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class OrdersQueryProjection {
+public class OrderDetailQueryProjection {
 
     private Long order_id;
     private Long item_id;
@@ -28,9 +18,14 @@ public class OrdersQueryProjection {
     private LocalDateTime order_date;
     private String order_state;
     private boolean refund_yn;
+    private String zipCode;
+    private String address;
+    private String addressDetail;
+    private String phoneNum;
+    private String invoice;
 
     @QueryProjection
-    public OrdersQueryProjection(Long order_id, Long item_id, String item_name, Long price, int cnt, LocalDateTime order_date, String order_state, boolean refund_yn) {
+    public OrderDetailQueryProjection(Long order_id, Long item_id, String item_name, Long price, int cnt, LocalDateTime order_date, String order_state, boolean refund_yn, String zipCode, String address, String addressDetail, String phoneNum, String invoice) {
         this.order_id = order_id;
         this.item_id = item_id;
         this.item_name = item_name;
@@ -39,6 +34,11 @@ public class OrdersQueryProjection {
         this.order_date = order_date;
         this.order_state = order_state;
         this.refund_yn = refund_yn;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.phoneNum = phoneNum;
+        this.invoice = invoice;
     }
 
 }

@@ -108,8 +108,18 @@ public class OrdersService {
         if (!user.isPresent()) {
             return new BaseResponse<>(ORDERS_CREATED_FAIL);
         }
-        LocalDateTime now = LocalDateTime.now();
 
+        List<OrderCreateReq.OrderDetailDto> orderDetailReq = orderCreateReq.getOrderDetailList();
+
+        //재고 확인
+        for (OrderCreateReq.OrderDetailDto req : orderDetailReq) {
+            Item item = itemRepository.findById(req.getItemId()).get();
+            if (item.getStock() <= req.getCnt())
+                return new BaseResponse<>(ORDERS_CREATED_FAIL_STOCK);
+        }
+
+
+        LocalDateTime now = LocalDateTime.now();
         //주문
         Orders orders = Orders.builder()
                 .user(user.get())
@@ -126,13 +136,10 @@ public class OrdersService {
                 .build();
         orders = ordersRepository.save(orders);
 
-        List<OrderCreateReq.OrderDetailDto> orderDetailReq = orderCreateReq.getOrderDetailList();
+
         //주문 디테일
         for (OrderCreateReq.OrderDetailDto req : orderDetailReq) {
             Item item = itemRepository.findById(req.getItemId()).get();
-            //재고 확인
-            if (item.getStock() <= req.getCnt())
-                return new BaseResponse<>(ORDERS_CREATED_FAIL_STOCK);
 
             OrderDetail orderDetail = OrderDetail.builder()
                     .orders(orders)
@@ -195,6 +202,10 @@ public class OrdersService {
                     .cnt(orderDetail.getCnt())
                     .refund_yn(orders2.getRefundYn())
                     .order_date(orders2.getOrderDate())
+                    .zipCode(orders2.getZipCode())
+                    .address(orders2.getAddress())
+                    .phoneNum(orders2.getPhoneNum())
+                    .invoice(orders2.getInvoice())
                     .build();
             orderUserSearchResList.add(res);
 
@@ -217,20 +228,19 @@ public class OrdersService {
 //        {
 //            searchReq.setStatus("%");
 //        }
-
         List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq);
         return new BaseResponse<>(ordersList);
     }
 
     //사업자 주문 상품 상세조회
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompanyDetail(Long companyId, Long orderId) {
+    public BaseResponse<List<OrderDetailQueryProjection>> searchForCompanyDetail(Long companyId, Long orderId) {
         Optional<Company> company = companyRepository.findById(companyId);
 
         if (!company.isPresent()) {
             throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
         }
 
-        List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrderDetail(companyId, orderId);
+        List<OrderDetailQueryProjection> ordersList = orderQueryRepository.getOrderDetail(companyId, orderId);
         return new BaseResponse<>(ordersList);
     }
 

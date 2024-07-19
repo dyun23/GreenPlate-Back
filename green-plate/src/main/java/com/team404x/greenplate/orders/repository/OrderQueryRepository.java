@@ -60,14 +60,14 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
                 .fetch();
     }
 
-    public List<OrdersQueryProjection> getOrderDetail(Long companyId, Long orderId) {
+    public List<OrderDetailQueryProjection> getOrderDetail(Long companyId, Long orderId) {
         QOrders orders = QOrders.orders;
         QOrderDetail orderDetail = QOrderDetail.orderDetail;
         QItem item = QItem.item;
         QCompany company = QCompany.company;
 
         return queryFactory
-                .select(new QOrdersQueryProjection(
+                .select(new QOrderDetailQueryProjection(
                         orders.id,
                         item.id,
                         item.name,
@@ -75,7 +75,12 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
                         orderDetail.cnt,
                         orders.orderDate,
                         orders.orderState,
-                        orders.refundYn
+                        orders.refundYn,
+                        orders.zipCode,
+                        orders.address,
+                        orders.addressDetail,
+                        orders.phoneNum,
+                        orders.invoice
                 ))
                 .from(orders)
                 .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))

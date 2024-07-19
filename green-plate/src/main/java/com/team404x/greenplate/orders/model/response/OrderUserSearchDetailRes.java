@@ -14,5 +14,10 @@ public class OrderUserSearchDetailRes {
     private Long price;
     private Integer cnt;
     private String order_state;
+    private String zipCode;
+    private String address;
+    private String addressDetail;
+    private String phoneNum;
+    private String invoice;
     private boolean refund_yn;
 }
