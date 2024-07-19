@@ -118,8 +118,7 @@ public class ItemController {
             return new BaseResponse(BaseResponseMessage.ITEM_DETAILS_FAIL);
         }
     }
-
-
+    @Operation(summary = "[전체] 상품 목록 정보를 조회하기 위한 API")
     @RequestMapping(method=RequestMethod.GET,value="/company")
     public BaseResponse listCompanyItem(@AuthenticationPrincipal CustomUserDetails company){
         try {
@@ -130,14 +129,11 @@ public class ItemController {
         }
 
     }
-
-
-
-    @RequestMapping(method=RequestMethod.GET,value="/search")
+    @Operation(summary = "[전체] 상품을 검색하기 위한 API")
+    @RequestMapping(method=RequestMethod.POST,value="/search")
     public BaseResponse search(@RequestBody ItemSearchReq itemSearchReq) {
         try {
             List<ItemSearchRes> itemSearchReqList = itemService.search(itemSearchReq.getCompanyId());
-            itemService.search(itemSearchReq.getCompanyId());
             return new BaseResponse(BaseResponseMessage.USER_SEARCH_SUCCESS,itemSearchReqList);
         } catch (Exception e) {
             if(itemSearchReq.getSearch() == null){ // 검색어에 맞는 상품이 없습니다

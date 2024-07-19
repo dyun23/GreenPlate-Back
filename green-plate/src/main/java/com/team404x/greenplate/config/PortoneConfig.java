@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PortoneConfig {
-    @Value("${imp.imp_key}")
+    @Value("[impkey]")
     private String impKey;
-    @Value("${imp.imp_secret}")
+    @Value("[impSecret]")
     private String impSecret;
 
     @Bean
