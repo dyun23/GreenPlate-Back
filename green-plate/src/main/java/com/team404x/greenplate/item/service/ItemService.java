@@ -22,8 +22,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
     private final CompanyRepository companyRepository;
-
-    public void create(ItemCreateReq itemCreateReq) {
+    public void create(Long id, ItemCreateReq itemCreateReq) {
         Category category = categoryRepository.findCategoryBySubCategory(itemCreateReq.getSubCategory());
         Item item = Item.builder()
                 .name(itemCreateReq.getName())
@@ -35,13 +34,13 @@ public class ItemService {
                 .imageUrl(itemCreateReq.getImageUrl())
                 .discountPrice(itemCreateReq.getDiscountPrice())
                 .category(category)
-                .company(Company.builder().id(itemCreateReq.getCompanyId()).build())
+                .company(Company.builder().id(id).build())
                 .build();
         itemRepository.save(item);
     }
 
 
-    public void update(ItemUpdateReq itemUpdateReq) {
+    public void update(Long id, ItemUpdateReq itemUpdateReq) {
         Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(itemUpdateReq.getMainCategory(), itemUpdateReq.getSubCategory());
         Item item = Item.builder()
                 .id(itemUpdateReq.getItemId())
@@ -54,27 +53,27 @@ public class ItemService {
                 .imageUrl(itemUpdateReq.getImageUrl())
                 .discountPrice(itemUpdateReq.getDiscountPrice())
                 .category(category)
-                .company(Company.builder().id(itemUpdateReq.getCompanyId()).build())
+                .company(Company.builder().id(id).build())
                 .build();
         itemRepository.save(item);
     }
-    public List<ItemRes> list() {
+    public List<ItemRes> list() throws Exception {
         List<Item> items = itemRepository.findAll();
         return getItemRes(items);
     }
 
-    public List<ItemRes> list(String main, String sub) {
+    public List<ItemRes> list(String main, String sub) throws Exception {
         Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
         List<Item> items = category.getItemList();
         return getItemRes(items);
     }
 
-    public List<ItemRes> list(String name) {
+    public List<ItemRes> list(String name) throws Exception {
         List<Item> items = itemRepository.findByNameContaining(name);
         return getItemRes(items);
     }
 
-    public ItemDetailsRes details(Long id) {
+    public ItemDetailsRes details(Long id) throws Exception {
         Item item = itemRepository.findById(id).orElseThrow();
         return ItemDetailsRes.builder()
             .id(item.getId())
@@ -90,7 +89,7 @@ public class ItemService {
     }
 
 
-    private List<ItemRes> getItemRes(List<Item> items) {
+    private List<ItemRes> getItemRes(List<Item> items) throws Exception {
         List<ItemRes> itemResList = new ArrayList<>();
         for (Item item : items) {
             itemResList.add(

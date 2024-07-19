@@ -1,23 +1,22 @@
-package com.team404x.greenplate.orders.model.requset;
+package com.team404x.greenplate.orders.model.response;
 
+import com.team404x.greenplate.orders.model.requset.OrderCreateReq;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class OrderCreateReq {
+public class OrderPaymentRes {
     private Long userId;
     private String payment;
-    private String impUid; //결제 번호
-    private Long totalPrice; //총주문금액
-    private Integer totalQuantity; //총 주문수량
+    private Long totalPrice;
+    private Integer totalQuantity;
     private Boolean refundYn;
     private String zipCode;
     private String address;
     private String addressDetail;
     private String phoneNum;
-    private List<OrderDetailDto> orderDetailList;
+    private List<OrderCreateReq.OrderDetailDto> orderDetailList;
 
     @Data
     public static class OrderDetailDto {
@@ -27,4 +26,3 @@ public class OrderCreateReq {
         private Long price;
     }
 }
-

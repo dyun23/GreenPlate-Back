@@ -9,6 +9,7 @@ import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.email.service.EmailVerifyService;
 import com.team404x.greenplate.user.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -18,14 +19,20 @@ public class EmailVerifyController {
 	private final EmailVerifyService emailVerifyService;
 	private final UserService userService;
 
+	@Operation(summary = "[전체] 이메일 유효 검증용 API 입니다")
 	@RequestMapping(method = RequestMethod.GET, value = "/verify")
 	public BaseResponse verify(String email, String uuid, String role) {
-		if (emailVerifyService.isExist(email, uuid)) {
-			if (role.equals("user")) {
-				userService.activateUser(email);
-				return new BaseResponse(BaseResponseMessage.USER_SIGNUP_SUCCESS);
+		BaseResponseMessage message = BaseResponseMessage.EMAIL_VERIFY_FAIL;
+		try {
+			if (emailVerifyService.isExist(email, uuid)) {
+				if (role.equals("user")) {
+					userService.activateUser(email);
+					message = BaseResponseMessage.EMAIL_VERIFY_SUCCESS;
+				}
 			}
+			return new BaseResponse(message);
+		} catch (Exception e) {
+			return new BaseResponse(message);
 		}
-		return null;
 	}
 }
