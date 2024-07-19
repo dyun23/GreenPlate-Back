@@ -16,6 +16,7 @@ import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.model.response.UserDetailsRes;
 import com.team404x.greenplate.user.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,8 @@ public class UserController {
 	/* TODO
 	예외 로직: ControllerAdvice를 이용
 	*   */
+
+	@Operation(summary = "[전체] 유저 회원가입 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
 	public BaseResponse signup(@RequestBody UserSignupReq userSignupReq) {
 		try {
@@ -39,6 +42,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "[전체] 유저 로그인 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		try {
@@ -50,6 +54,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "[유저] 유저 상세 정보 조회 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails user) {
 		try {
@@ -61,6 +66,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "[유저] 유저 배송지 등록 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/address/register")
 	public BaseResponse registerAddress(@AuthenticationPrincipal CustomUserDetails user,
 		@RequestBody UserAddressRegisterReq userAddressRegisterReq) {
