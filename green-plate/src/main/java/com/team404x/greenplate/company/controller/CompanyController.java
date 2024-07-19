@@ -12,9 +12,11 @@ import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
 import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
 import com.team404x.greenplate.company.service.CompanyService;
+import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -52,6 +54,7 @@ public class CompanyController {
 		}
 	}
 
+	@SecuredOperation
 	@Operation(summary = "[사업자] 사업자 상세정보 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails company) {

@@ -1,6 +1,7 @@
 package com.team404x.greenplate.keyword.controller;
 
 
+import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.keyword.service.KeywordService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,7 @@ import java.util.List;
 public class KeywordController {
     private final KeywordService keywordService;
 
+    @SecuredOperation
     @Operation(summary = "[관리자] 키워드를 생성하는 API")
     @RequestMapping(method = RequestMethod.GET, value = "/create")
     public ResponseEntity<String> createKeyword(String keyword) {
@@ -31,6 +33,7 @@ public class KeywordController {
         return ResponseEntity.ok(keywordService.getKeywords());
     }
 
+    @SecuredOperation
     @Operation(summary = "[관리자] 키워드 삭제 API")
     @RequestMapping(method = RequestMethod.GET, value = "/delete")
     public ResponseEntity<String> deleteKeyword(String keyword) {
