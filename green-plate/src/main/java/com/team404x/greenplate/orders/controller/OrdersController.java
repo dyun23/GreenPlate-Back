@@ -12,6 +12,7 @@ import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.orders.model.entity.OrderDetailQueryProjection;
 import com.team404x.greenplate.orders.model.entity.OrdersQueryProjection;
 import com.team404x.greenplate.orders.model.requset.*;
+import com.team404x.greenplate.orders.model.response.OrderCompanySearchRes;
 import com.team404x.greenplate.orders.model.response.OrderPaymentRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchDetailRes;
 import com.team404x.greenplate.orders.model.response.OrderUserSearchRes;
@@ -104,6 +105,7 @@ public class OrdersController {
             OrderSearchListReq search,
             @PageableDefault(size = 5, sort = "orderDate", direction = Sort.Direction.DESC) Pageable page) {
         try {
+            //totalpage,count, data(content) 가 없으면 프론트에서 계산 후 페이징 처리 어려움
             return ordersService.searchForCompany(company.getId(), search, page);
         } catch (Exception e) {
             return new BaseResponse<>(BaseResponseMessage.ORDERS_SEARCH_FAIL_ORDERED);
