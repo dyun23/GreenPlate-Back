@@ -3,6 +3,8 @@ package com.team404x.greenplate.orders.repository;
 import com.team404x.greenplate.orders.model.entity.Orders;
 import com.team404x.greenplate.user.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

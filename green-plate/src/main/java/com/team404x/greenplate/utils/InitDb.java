@@ -258,19 +258,23 @@ public class InitDb {
 			int price = items.get(i).getPrice() + items.get(i+1).getPrice();
 			prices.add(price);
 		}
-		for (int i = 0; i < prices.size(); i++) {
+
+		int priceSize = prices.size() - 1;
+		int usersSize = users.size() - 1;
+
+		for (int i = 0; i < 11; i++) {
 			Orders orders = Orders.builder()
 				.createdDate(LocalDateTime.now())
 				.orderDate(LocalDateTime.now())
-				.totalPrice(prices.get(i))
+				.totalPrice(prices.get(i % priceSize))
 				.totalQuantity(2)
 				.recipient("user" + (10 - i))
 				.zipCode("00101")
 				.address("address"+(i+1))
-				.phoneNum("010-" + i + i + i + i + "-" + i + i + i + i)
+				.phoneNum("010-" + "1111"+ "-" + "2222")
 				.invoice("송장번호" + (i+1))
 				.orderState("ready")
-				.user(users.get(i))
+				.user(users.get(i % usersSize))
 				.build();
 			ordersRepository.save(orders);
 		}
