@@ -1,15 +1,19 @@
 package com.team404x.greenplate.orders.repository;
 
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team404x.greenplate.common.support.Querydsl4RepositorySupport;
 import com.team404x.greenplate.company.model.entity.QCompany;
 import com.team404x.greenplate.item.model.entity.QItem;
 import com.team404x.greenplate.orders.model.entity.*;
+import com.team404x.greenplate.orders.model.requset.OrderSearchListReq;
 import com.team404x.greenplate.orders.model.requset.OrderSearchReq;
 import com.team404x.greenplate.user.address.entity.QAddress;
 import com.team404x.greenplate.user.model.entity.QUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -34,30 +38,38 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    public List<OrdersQueryProjection> getOrders(Long companyId, OrderSearchReq searchReq) {
+    public Page<OrdersQueryProjection> getOrders(Long companyId, OrderSearchListReq searchReq, Pageable pageable) {
         QOrders orders = QOrders.orders;
         QOrderDetail orderDetail = QOrderDetail.orderDetail;
         QItem item = QItem.item;
         QCompany company = QCompany.company;
 
-        return queryFactory
-                .select(new QOrdersQueryProjection(
-                        orders.id,
-                        item.id,
-                        item.name,
-                        orderDetail.price.multiply(orderDetail.cnt).sum(),
-                        orderDetail.cnt.sum(),
-                        orders.orderDate,
-                        orders.orderState,
-                        orders.refundYn
-                ))
-                .from(orders)
-                .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))
-                .leftJoin(item).on(orderDetail.item.eq(item))
-                .leftJoin(company).on(company.eq(item.company))
-                .where(company.id.eq(companyId), orders.orderState.eq(searchReq.getStatus()))
-                .groupBy(orders.id)
-                .fetch();
+        // Create dynamic conditions
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        whereBuilder.and(company.id.eq(companyId));
+        if (searchReq.getStatus() != null) {
+            whereBuilder.and(orders.orderState.eq(searchReq.getStatus()));
+        }
+
+        return applyPagination(pageable, queryFactory -> {
+            return queryFactory
+                    .select(new QOrdersQueryProjection(
+                            orders.id,
+                            item.id,
+                            item.name,
+                            orderDetail.price.multiply(orderDetail.cnt).sum(),
+                            orderDetail.cnt.sum(),
+                            orders.orderDate,
+                            orders.orderState,
+                            orders.refundYn
+                    ))
+                    .from(orders)
+                    .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))
+                    .leftJoin(item).on(orderDetail.item.eq(item))
+                    .leftJoin(company).on(company.eq(item.company))
+                    .where(whereBuilder)
+                    .groupBy(orders.id);
+        });
     }
 
     public List<OrderDetailQueryProjection> getOrderDetail(Long companyId, Long orderId) {
