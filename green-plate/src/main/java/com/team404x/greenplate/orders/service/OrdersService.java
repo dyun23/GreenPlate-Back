@@ -155,7 +155,7 @@ public class OrdersService {
 
     //유저 주문 상품 목록 조회
     @Transactional
-    public BaseResponse<List<OrderUserSearchRes>> searchForUser(Long userId) throws Exception {
+    public BaseResponse searchForUser(Long userId) throws Exception {
         User user = userRepository.findById(userId).get();
 
         List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<OrderUserSearchRes>();
@@ -171,7 +171,7 @@ public class OrdersService {
                     .build();
             orderUserSearchResList.add(res);
         }
-        return new BaseResponse<>(orderUserSearchResList);
+        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST ,orderUserSearchResList);
     }
 
     //유저 주문 상품 상세조회

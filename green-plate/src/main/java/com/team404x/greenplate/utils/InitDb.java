@@ -158,7 +158,7 @@ public class InitDb {
 		List<String> weights = List.of("[삼진제약] 그린녹차 다이어트 리턴핏", "[스키니랩] 애플페논 풋사과 다이어트", "[에버비키니] 빠질라카노 헤이즐넛향", "슬림톡 콤부차 레몬");
 
 		for (String dessertName : desserts) {
-			int price = random.nextInt(20000 - 10000 + 1) + 10000;
+			int price = (random.nextInt(200 - 100 + 1) + 100) * 100;
 			Item item = Item.builder()
 				.name(dessertName)
 				.contents("정말 맛있는 제품입니다.")
@@ -254,6 +254,7 @@ public class InitDb {
 		for (int i = 0; i < prices.size(); i++) {
 			Orders orders = Orders.builder()
 				.createdDate(LocalDateTime.now())
+				.orderDate(LocalDateTime.now())
 				.totalPrice(prices.get(i))
 				.totalQuantity(2)
 				.recipient("user" + (10 - i))
@@ -261,6 +262,7 @@ public class InitDb {
 				.address("address"+(i+1))
 				.phoneNum("010-" + i + i + i + i + "-" + i + i + i + i)
 				.invoice("송장번호" + (i+1))
+				.orderState("ready")
 				.user(users.get(i))
 				.build();
 			ordersRepository.save(orders);

@@ -39,7 +39,7 @@ public class Orders {
 	private Integer totalPrice;
 	private Integer totalQuantity;
 	private String orderState;
-	private Boolean refundYn;
+	private boolean refundYn;
 	private String recipient;
 	private String zipCode;
 	private String address;
@@ -69,5 +69,9 @@ public class Orders {
 
 	public void invoice(String invoiceNum){
 		invoice = invoiceNum;
+	}
+
+	public boolean getRefundYn() {
+		return this.refundYn;
 	}
 }

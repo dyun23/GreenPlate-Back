@@ -68,9 +68,9 @@ public class OrdersController {
     @SecuredOperation
     @Operation(summary = "[유저] 주문 목록 조회 API")
     @GetMapping("/list/user")
-    public BaseResponse<List<OrderUserSearchRes>> searchForUser(@AuthenticationPrincipal CustomUserDetails user) {
+    public BaseResponse searchForUser(@AuthenticationPrincipal CustomUserDetails user) {
         try {
-            BaseResponse<List<OrderUserSearchRes>> result = ordersService.searchForUser(user.getId());
+            BaseResponse result = ordersService.searchForUser(user.getId());
             return result;
         } catch (Exception e) {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
