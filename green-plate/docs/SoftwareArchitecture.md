@@ -8,19 +8,19 @@
 ### **2. 모놀리식 아키텍처의 장점**
 
 1. **단순한 배포**:
-    - 모든 컴포넌트가 단일 애플리케이션으로 통합되어 있어 배포와 관리가 간편합니다. 예를 들어, **사용자 관리**와 **주문 처리** 기능이 하나의 애플리케이션에서 실행됩니다.
+   - 모든 컴포넌트가 단일 애플리케이션으로 통합되어 있어 배포와 관리가 간편합니다. 예를 들어, **사용자 관리**와 **주문 처리** 기능이 하나의 애플리케이션에서 실행됩니다.
 
 2. **통합된 개발 및 테스트**:
-    - 코드베이스가 단일화되어 있어 기능 간 상호작용을 쉽게 이해하고 테스트할 수 있습니다. **사용자**와 **주문** 관련 기능이 동일한 코드베이스에서 동작하여 통합 테스트가 용이합니다.
+   - 코드베이스가 단일화되어 있어 기능 간 상호작용을 쉽게 이해하고 테스트할 수 있습니다. **사용자**와 **주문** 관련 기능이 동일한 코드베이스에서 동작하여 통합 테스트가 용이합니다.
 
 3. **데이터 일관성**:
-    - 단일 데이터베이스를 사용하여 데이터의 일관성을 유지할 수 있습니다. 예를 들어, **Order**와 **User** 정보가 같은 데이터베이스에서 관리됩니다.
+   - 단일 데이터베이스를 사용하여 데이터의 일관성을 유지할 수 있습니다. 예를 들어, **Order**와 **User** 정보가 같은 데이터베이스에서 관리됩니다.
 
 4. **성능 최적화**:
-    - 모든 기능이 단일 프로세스 내에서 실행되므로 컴포넌트 간 통신 비용이 낮아집니다. 주문 처리와 사용자 정보 조회가 동일한 프로세스 내에서 이루어집니다.
+   - 모든 기능이 단일 프로세스 내에서 실행되므로 컴포넌트 간 통신 비용이 낮아집니다. 주문 처리와 사용자 정보 조회가 동일한 프로세스 내에서 이루어집니다.
 
 5. **간편한 트랜잭션 관리**:
-    - 트랜잭션이 단일 데이터베이스에서 관리되어 트랜잭션의 일관성과 무결성을 보장할 수 있습니다. 예를 들어, 주문 생성 시 사용자 정보와 주문 상세 정보가 동일한 트랜잭션으로 처리됩니다.
+   - 트랜잭션이 단일 데이터베이스에서 관리되어 트랜잭션의 일관성과 무결성을 보장할 수 있습니다. 예를 들어, 주문 생성 시 사용자 정보와 주문 상세 정보가 동일한 트랜잭션으로 처리됩니다.
 
 ### **3. 레이어드 아키텍처의 장점**
 
@@ -83,13 +83,13 @@
 
 
 1. **명확한 책임 분리**:
-    - 각 계층이 명확한 책임을 가지므로 유지보수와 관리가 용이합니다. 예를 들어, **프레젠테이션 계층**은 사용자 인터페이스를 처리하고, **서비스 계층**은 비즈니스 로직을 처리하며, **도메인 계층**은 핵심 도메인 로직을 포함하고, **데이터 액세스 계층**은 데이터베이스와의 상호작용을 담당합니다.
+   - 각 계층이 명확한 책임을 가지므로 유지보수와 관리가 용이합니다. 예를 들어, **프레젠테이션 계층**은 사용자 인터페이스를 처리하고, **서비스 계층**은 비즈니스 로직을 처리하며, **도메인 계층**은 핵심 도메인 로직을 포함하고, **데이터 액세스 계층**은 데이터베이스와의 상호작용을 담당합니다.
 
 2. **계층 간 독립성**:
-    - 각 계층이 독립적으로 개발 및 테스트할 수 있어 시스템의 유지보수와 확장성이 향상됩니다. 예를 들어, **주문 처리** 로직을 서비스 계층에서 수정해도 프레젠테이션 계층에 영향이 없습니다.
+   - 각 계층이 독립적으로 개발 및 테스트할 수 있어 시스템의 유지보수와 확장성이 향상됩니다. 예를 들어, **주문 처리** 로직을 서비스 계층에서 수정해도 프레젠테이션 계층에 영향이 없습니다.
 
 3. **재사용성과 일관성**:
-    - 비즈니스 로직과 데이터 액세스 로직이 분리되어 코드의 재사용성과 일관성을 높입니다. **OrderService**가 주문 관련 비즈니스 로직을 처리하고, **OrderRepository**가 데이터 액세스를 담당합니다.
+   - 비즈니스 로직과 데이터 액세스 로직이 분리되어 코드의 재사용성과 일관성을 높입니다. **OrderService**가 주문 관련 비즈니스 로직을 처리하고, **OrderRepository**가 데이터 액세스를 담당합니다.
 
 ### **4. 엔티티 상세**
 
@@ -113,95 +113,43 @@
 
 **QueryDSL을 활용한 데이터 액세스**:
 
-**ItemRepository.java**:
+**OrdersRepository.java**:
 ```java
-public Page<ItemQueryProjection> getItems(Long companyId, String state, Pageable pageable) {
-    QItem item = QItem.item;
-    QCompany company = QCompany.company;
+    public Page<OrdersQueryProjection> getOrders(Long companyId, OrderSearchListReq searchReq, Pageable pageable) {
+        QOrders orders = QOrders.orders;
+        QOrderDetail orderDetail = QOrderDetail.orderDetail;
+        QItem item = QItem.item;
+        QCompany company = QCompany.company;
 
-    BooleanBuilder whereBuilder = new BooleanBuilder();
-    if (companyId != null) {
-        whereBuilder.and(item.company.id.eq(companyId));
+        // Create dynamic conditions
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        whereBuilder.and(company.id.eq(companyId));
+        if (searchReq.getStatus() != null) {
+            whereBuilder.and(orders.orderState.eq(searchReq.getStatus()));
+        }
+
+        return applyPagination(pageable, queryFactory -> {
+            return queryFactory
+                    .select(new QOrdersQueryProjection(
+                            orders.id,
+                            item.id,
+                            item.name,
+                            orderDetail.price.multiply(orderDetail.cnt).sum(),
+                            orderDetail.cnt.sum(),
+                            orders.orderDate,
+                            orders.orderState,
+                            orders.refundYn
+                    ))
+                    .from(orders)
+                    .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))
+                    .leftJoin(item).on(orderDetail.item.eq(item))
+                    .leftJoin(company).on(company.eq(item.company))
+                    .where(whereBuilder)
+                    .groupBy(orders.id);
+        });
     }
-    if (state != null) {
-        whereBuilder.and(item.state.eq(state));
-    }
-
-    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-
-    JPAQuery<ItemQueryProjection> query = queryFactory
-            .select(new QItemQueryProjection(
-                    item.id,
-                    item.name,
-                    item.price,
-                    item.stock,
-                    item.state,
-                    item.calorie,
-                    item.imageUrl,
-                    item.delYn
-            ))
-            .from(item)
-            .leftJoin(company).on(company.eq(item.company))
-            .where(whereBuilder);
-
-    List<ItemQueryProjection> results = query
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
-
-    long total = queryFactory
-            .selectFrom(item)
-            .leftJoin(company).on(company.eq(item.company))
-            .where(whereBuilder)
-            .fetchCount();
-
-    return new PageImpl<>(results, pageable, total);
-}
 ```
 
-**RecipeRepository.java**:
-```java
-public Page<RecipeQueryProjection> getRecipes(Long companyId, String title, Pageable pageable) {
-    QRecipe recipe = QRecipe.recipe;
-    QCompany company = QCompany.company;
-
-    BooleanBuilder whereBuilder = new BooleanBuilder();
-    if (companyId != null) {
-        whereBuilder.and(recipe.company.id.eq(companyId));
-    }
-    if (title != null) {
-        whereBuilder.and(recipe.title.contains(title));
-    }
-
-    JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-
-    JPAQuery<RecipeQueryProjection> query = queryFactory
-            .select(new QRecipeQueryProjection(
-                    recipe.id,
-                    recipe.title,
-                    recipe.contents,
-                    recipe.imageUrl,
-                    recipe.totalCalorie,
-                    recipe.delYn
-            ))
-            .from(recipe)
-            .leftJoin(company).on(company.eq(recipe.company))
-            .where(whereBuilder);
-
-    List<RecipeQueryProjection> results = query
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
-
-    long total = queryFactory
-            .selectFrom(recipe)
-            .leftJoin(company).on(company.eq(recipe.company))
-            .where(whereBuilder)
-            .fetchCount();
-
-    return new PageImpl<>(results, pageable, total);
-}
-```
 
 ### **6. 외부 통신 서비스**
 
