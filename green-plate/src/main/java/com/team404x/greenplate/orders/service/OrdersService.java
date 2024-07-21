@@ -156,9 +156,9 @@ public class OrdersService {
     //유저 주문 상품 목록 조회
     @Transactional
     public BaseResponse searchForUser(Long userId) throws Exception {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findUserWithOrders(userId);
 
-        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<OrderUserSearchRes>();
+        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<>();
         List<Orders> orders = user.getOrders();
         for(Orders order : orders){
             OrderUserSearchRes res = OrderUserSearchRes.builder()
@@ -176,38 +176,33 @@ public class OrdersService {
 
     //유저 주문 상품 상세조회
     @Transactional
-    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(Long userId, Long ordersId) throws Exception {
-        Optional<User> user = userRepository.findById(userId);
-
-        if (!user.isPresent()) {
+    public BaseResponse searchForUserDetail(Long userId, Long ordersId) throws Exception {
+        Optional<User> optionalUser = userRepository.findUserWithSpecificOrder(userId, ordersId);
+        if (!optionalUser.isPresent())
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
-        }
+        User user = optionalUser.get();
+        Orders orders = user.getOrders().get(0);
 
-        Optional<Orders> orders = ordersRepository.findById(ordersId);
-        Orders orders2 = orders.get();
+        List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<>();
 
-        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrdersId(ordersId);
-
-        List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<OrderUserSearchDetailRes>();
-        for(OrderDetail orderDetail : orderDetailList){
-
+        for (OrderDetail orderDetail : orders.getOrderDetails()) {
             OrderUserSearchDetailRes res = OrderUserSearchDetailRes.builder()
-                    .order_id(orders2.getId())
-                    .orderDetail_id(orderDetail.getId())
-                    .order_state(orders2.getOrderState())
-                    .price(orderDetail.getPrice())
-                    .cnt(orderDetail.getCnt())
-                    .refund_yn(orders2.isRefundYn())
-                    .order_date(orders2.getOrderDate())
-                    .zipCode(orders2.getZipCode())
-                    .address(orders2.getAddress())
-                    .phoneNum(orders2.getPhoneNum())
-                    .invoice(orders2.getInvoice())
-                    .build();
+                .order_id(orders.getId())
+                .orderDetail_id(orderDetail.getId())
+                .order_state(orders.getOrderState())
+                .price(orderDetail.getPrice())
+                .cnt(orderDetail.getCnt())
+                .refund_yn(orders.isRefundYn())
+                .order_date(orders.getOrderDate())
+                .zipCode(orders.getZipCode())
+                .address(orders.getAddress())
+                .phoneNum(orders.getPhoneNum())
+                .invoice(orders.getInvoice())
+                .build();
             orderUserSearchResList.add(res);
 
         }
-        return new BaseResponse<>(orderUserSearchResList);
+        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST, orderUserSearchResList);
     }
 
     //사업자 주문 상품 목록조회
