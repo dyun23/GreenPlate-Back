@@ -7,11 +7,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
-import com.siot.IamportRestClient.response.AccessToken;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.team404x.greenplate.common.BaseResponse;
-import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.model.entity.Item;
@@ -30,25 +28,21 @@ import com.team404x.greenplate.user.address.repository.AddressRepository;
 import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedWriter;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.io.IOException;
 import java.util.*;
@@ -157,12 +151,12 @@ public class OrdersService {
 
     //유저 주문 상품 목록 조회
     @Transactional
-    public BaseResponse searchForUser(Long userId) throws Exception {
-        User user = userRepository.findById(userId).get();
+    public BaseResponse searchForUser(Long userId, int page, int size) throws Exception {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Orders> ordersPage = ordersRepository.findOrdersByUserId(userId, pageable);
+        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<>();
 
-        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<OrderUserSearchRes>();
-        List<Orders> orders = user.getOrders();
-        for(Orders order : orders){
+        for(Orders order : ordersPage){
             OrderUserSearchRes res = OrderUserSearchRes.builder()
                     .order_id(order.getId())
                     .order_state(order.getOrderState())
@@ -178,38 +172,33 @@ public class OrdersService {
 
     //유저 주문 상품 상세조회
     @Transactional
-    public BaseResponse<List<OrderUserSearchDetailRes>> searchForUserDetail(Long userId, Long ordersId) throws Exception {
-        Optional<User> user = userRepository.findById(userId);
-
-        if (!user.isPresent()) {
+    public BaseResponse searchForUserDetail(Long userId, Long ordersId) throws Exception {
+        Optional<User> optionalUser = userRepository.findUserWithSpecificOrder(userId, ordersId);
+        if (!optionalUser.isPresent())
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
-        }
+        User user = optionalUser.get();
+        Orders orders = user.getOrders().get(0);
 
-        Optional<Orders> orders = ordersRepository.findById(ordersId);
-        Orders orders2 = orders.get();
+        List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<>();
 
-        List<OrderDetail> orderDetailList = orderDetailRepository.findAllByOrdersId(ordersId);
-
-        List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<OrderUserSearchDetailRes>();
-        for(OrderDetail orderDetail : orderDetailList){
-
+        for (OrderDetail orderDetail : orders.getOrderDetails()) {
             OrderUserSearchDetailRes res = OrderUserSearchDetailRes.builder()
-                    .order_id(orders2.getId())
-                    .orderDetail_id(orderDetail.getId())
-                    .order_state(orders2.getOrderState())
-                    .price(orderDetail.getPrice())
-                    .cnt(orderDetail.getCnt())
-                    .refund_yn(orders2.isRefundYn())
-                    .order_date(orders2.getOrderDate())
-                    .zipCode(orders2.getZipCode())
-                    .address(orders2.getAddress())
-                    .phoneNum(orders2.getPhoneNum())
-                    .invoice(orders2.getInvoice())
-                    .build();
+                .order_id(orders.getId())
+                .orderDetail_id(orderDetail.getId())
+                .order_state(orders.getOrderState())
+                .price(orderDetail.getPrice())
+                .cnt(orderDetail.getCnt())
+                .refund_yn(orders.isRefundYn())
+                .order_date(orders.getOrderDate())
+                .zipCode(orders.getZipCode())
+                .address(orders.getAddress())
+                .phoneNum(orders.getPhoneNum())
+                .invoice(orders.getInvoice())
+                .build();
             orderUserSearchResList.add(res);
 
         }
-        return new BaseResponse<>(orderUserSearchResList);
+        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST, orderUserSearchResList);
     }
 
     //사업자 주문 상품 목록조회
