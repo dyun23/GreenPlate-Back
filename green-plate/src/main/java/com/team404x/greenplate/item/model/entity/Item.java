@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.team404x.greenplate.cart.model.entity.Cart;
 import com.team404x.greenplate.company.model.entity.Company;
@@ -15,6 +17,7 @@ import com.team404x.greenplate.orders.model.entity.OrderDetail;
 import com.team404x.greenplate.recipe.item.RecipeItem;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Item {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,7 +75,7 @@ public class Item {
 
 	private String imageUrl;
 
-	private Boolean delYn;
+	private boolean delYn;
 
 	@CreatedDate
 	private LocalDateTime createdDate;

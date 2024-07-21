@@ -166,7 +166,7 @@ public class OrdersService {
                     .order_state(order.getOrderState())
                     .total_price(order.getTotalPrice())
                     .total_cnt(order.getTotalQuantity())
-                    .refund_yn(order.getRefundYn())
+                    .refund_yn(order.isRefundYn())
                     .order_date(order.getOrderDate())
                     .build();
             orderUserSearchResList.add(res);
@@ -197,7 +197,7 @@ public class OrdersService {
                     .order_state(orders2.getOrderState())
                     .price(orderDetail.getPrice())
                     .cnt(orderDetail.getCnt())
-                    .refund_yn(orders2.getRefundYn())
+                    .refund_yn(orders2.isRefundYn())
                     .order_date(orders2.getOrderDate())
                     .zipCode(orders2.getZipCode())
                     .address(orders2.getAddress())
@@ -289,7 +289,7 @@ public class OrdersService {
         Optional<Orders> orders = ordersRepository.findById(orderCancelReq.getOrderId());
         if (!orders.isPresent()) {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
-        }else if (orders.get().getRefundYn()) {
+        }else if (orders.get().isRefundYn()) {
             return new BaseResponse<>(ORDERS_CANCEL_FAIL_ALREADY);
         }else if(orders.get().getImpUid() == null){
             return new BaseResponse<>(ORDERS_CANCEL_FAIL_NONIMPUID);

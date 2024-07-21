@@ -88,6 +88,7 @@ public class InitDb {
 				.birthday(getRandomLocalDate())
 				.enabled(true)
 				.nickName("user"+i)
+				.name("user"+i)
 				.role("ROLE_USER")
 				.build();
 			userRepository.save(user);
@@ -157,10 +158,10 @@ public class InitDb {
 		List<String> desserts = List.of("[GANSIK] 두부 티라미수 4종", "[몽슈슈] 도지마롤 2종", "[오설록] 한라산 녹차 케이크", "[아우어베이커리] 더티초코 케이크");
 		List<String> weights = List.of("[삼진제약] 그린녹차 다이어트 리턴핏", "[스키니랩] 애플페논 풋사과 다이어트", "[에버비키니] 빠질라카노 헤이즐넛향", "슬림톡 콤부차 레몬");
 
-		for (String dessertName : desserts) {
+		for (int i = 0; i < desserts.size(); i++) {
 			int price = (random.nextInt(200 - 100 + 1) + 100) * 100;
 			Item item = Item.builder()
-				.name(dessertName)
+				.name(desserts.get(i))
 				.contents("정말 맛있는 제품입니다.")
 				.calorie(random.nextInt(600 - 200 + 1) + 200)
 				.price(price)
@@ -169,14 +170,17 @@ public class InitDb {
 				.discountPrice(price)
 				.imageUrl("imageUrl")
 				.category(dessert)
+				.company(Company.builder()
+					.id(Long.parseLong(String.valueOf(i + 1)))
+					.build())
 				.build();
 			itemRepository.save(item);
 		}
 
-		for (String weightName : weights) {
+		for (int i = 0; i < weights.size(); i++) {
 			int price = (random.nextInt(200 - 100 + 1) + 100) * 100;
 			Item item = Item.builder()
-				.name(weightName)
+				.name(weights.get(i))
 				.contents("정말 다이어트 제품입니다.")
 				.calorie(random.nextInt(300 - 100 + 1) + 100)
 				.price(price)
@@ -185,6 +189,9 @@ public class InitDb {
 				.discountPrice(price)
 				.imageUrl("imageUrl")
 				.category(weight)
+				.company(Company.builder()
+					.id(Long.parseLong(String.valueOf(6 + i)))
+					.build())
 				.build();
 			itemRepository.save(item);
 		}
@@ -289,9 +296,14 @@ public class InitDb {
 		List<User> users = userRepository.findAll();
 		int itemSize = items.size() - 1;
 		int userSize = users.size() - 1;
+		/*
+		TODO
+		같은 유저가 같은 상품을 담을 때 INSERT가 아닌 quantity가 UPDATE가 되도록 수정
+		* */
 
 		for (int i = 0; i < 30; i++) {
 			Cart cart = Cart.builder()
+				.quantity(1)
 				.item(items.get(i % itemSize))
 				.user(users.get(i % userSize))
 				.build();

@@ -47,8 +47,7 @@ public class Orders {
 	private String invoice;
 	private String impUid;
 
-	@ColumnDefault("false")
-	private Boolean delYn;
+	private boolean delYn;
 
 	@CreatedDate
 	private LocalDateTime createdDate;
@@ -71,7 +70,4 @@ public class Orders {
 		invoice = invoiceNum;
 	}
 
-	public boolean getRefundYn() {
-		return this.refundYn;
-	}
 }
