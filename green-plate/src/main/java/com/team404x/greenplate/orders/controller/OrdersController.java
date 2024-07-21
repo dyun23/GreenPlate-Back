@@ -20,6 +20,10 @@ import com.team404x.greenplate.orders.service.OrdersService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.core.ApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -95,13 +99,14 @@ public class OrdersController {
     @SecuredOperation
     @Operation(summary = "[사업자] 주문 내역 조회 API")
     @GetMapping("/list/company")
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(@AuthenticationPrincipal CustomUserDetails company,
-        OrderSearchReq search) {
+    public BaseResponse<Page<OrdersQueryProjection>> searchForCompany(
+            @AuthenticationPrincipal CustomUserDetails company,
+            OrderSearchListReq search,
+            @PageableDefault(size = 5, sort = "orderDate", direction = Sort.Direction.DESC) Pageable page) {
         try {
-            BaseResponse<List<OrdersQueryProjection>> result = ordersService.searchForCompany(company.getId(), search);
-            return result;
+            return ordersService.searchForCompany(company.getId(), search, page);
         } catch (Exception e) {
-            return new BaseResponse(BaseResponseMessage.ORDERS_SEARCH_FAIL_ORDERED);
+            return new BaseResponse<>(BaseResponseMessage.ORDERS_SEARCH_FAIL_ORDERED);
         }
     }
 

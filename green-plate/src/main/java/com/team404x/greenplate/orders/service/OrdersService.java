@@ -144,7 +144,7 @@ public class OrdersService {
 
             //item 재고수량 수정
             item.updateStockQuantity(item.getStock() - req.getCnt());
-
+            itemRepository.save(item);
         }
         return new BaseResponse<>(ORDERS_CREATED_SUCCESS);
     }
@@ -203,14 +203,14 @@ public class OrdersService {
 
     //사업자 주문 상품 목록조회
     @Transactional
-    public BaseResponse<List<OrdersQueryProjection>> searchForCompany(Long companyId, OrderSearchReq searchReq) {
+    public BaseResponse<Page<OrdersQueryProjection>> searchForCompany(Long companyId, OrderSearchListReq searchReq, Pageable page) {
         Optional<Company> company = companyRepository.findById(companyId);
 
         if (!company.isPresent()) {
             throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
         }
 
-        List<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq);
+        Page<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq, page);
         return new BaseResponse<>(ordersList);
     }
 

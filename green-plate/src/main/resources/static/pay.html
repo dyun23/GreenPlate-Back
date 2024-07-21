@@ -19,15 +19,15 @@
         IMP.request_pay(
             {
                 pg: "kakaopay.TC0ONETIME",
-                merchant_uid: "order_no_085",
+                merchant_uid: "order_no_089",
                 name: "order_test",
-                amount: 2800,
-                buyer_email: "test01@test.com",
+                amount: 1400,
+                buyer_email: "user1@gmail.com",
                 buyer_name: "홍길동",
                 buyer_tel: "01042424242",
                 buyer_addr: "서울특별시 강남구 신사동",
                 buyer_postcode: "01181",
-                custom_data: {"list":[{1:3, 2:5}]}
+                custom_data: {"list":[{1:1, 2:2, 3:3}]}
             },
             function (rsp) {
                 console.log(rsp);

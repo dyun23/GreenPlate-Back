@@ -64,21 +64,24 @@ public class InitDb {
 
 	@PostConstruct
 	private void execute() {
-		signupDummyUser();
-		signupDummyCompany();
-		createCategory();
-		createKeyword();
-		createItem();
-		createRecipe();
-		registerAddress();
-		createUserKeyword();;
-		createItemRecipe();
-		createOrders();
-		createOrderDetail();
-		createCart();
-		createRecipeReview();
-	}
 
+		if(userRepository.count() == 0){
+			signupDummyUser();
+			signupDummyCompany();
+			createCategory();
+			createKeyword();
+			createItem();
+			createRecipe();
+			registerAddress();
+			createUserKeyword();;
+			createItemRecipe();
+			createOrders();
+			createOrderDetail();
+			createCart();
+			createRecipeReview();
+		}
+
+	}
 
 	private void signupDummyUser() {
 		for (int i = 1; i <= 10; i++) {
@@ -159,10 +162,10 @@ public class InitDb {
 		List<String> weights = List.of("[삼진제약] 그린녹차 다이어트 리턴핏", "[스키니랩] 애플페논 풋사과 다이어트", "[에버비키니] 빠질라카노 헤이즐넛향", "슬림톡 콤부차 레몬");
 
 		for (int i = 0; i < desserts.size(); i++) {
-			int price = (random.nextInt(200 - 100 + 1) + 100) * 100;
+			int price = (i+1) * 100;
 			Item item = Item.builder()
 				.name(desserts.get(i))
-				.contents("정말 맛있는 제품입니다.")
+				.contents("정말 맛있는 제품 "+(i+1)+"번 입니다")
 				.calorie(random.nextInt(600 - 200 + 1) + 200)
 				.price(price)
 				.stock(100)
