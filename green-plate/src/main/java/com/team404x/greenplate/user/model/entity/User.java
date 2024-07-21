@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.team404x.greenplate.orders.model.entity.Orders;
 import com.team404x.greenplate.recipe.model.entity.Recipe;
+
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -58,6 +60,7 @@ public class User {
 	@LastModifiedDate
 	LocalDateTime modifiedDate;
 
+	@BatchSize(size = 5)
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Orders> orders = new ArrayList<>();
 

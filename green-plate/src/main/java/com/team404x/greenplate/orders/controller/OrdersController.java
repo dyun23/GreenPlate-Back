@@ -66,11 +66,13 @@ public class OrdersController {
     }
 
     @SecuredOperation
-    @Operation(summary = "[유저] 주문 목록 조회 API")
+    @Operation(summary = "[유저] 주문 목록 조회 API - 페이징 처리(5개)")
     @GetMapping("/list/user")
-    public BaseResponse searchForUser(@AuthenticationPrincipal CustomUserDetails user) {
+    public BaseResponse searchForUser(@AuthenticationPrincipal CustomUserDetails user,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
         try {
-            BaseResponse result = ordersService.searchForUser(user.getId());
+            BaseResponse result = ordersService.searchForUser(user.getId(), page, size);
             return result;
         } catch (Exception e) {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_USER);
