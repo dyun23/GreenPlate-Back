@@ -74,7 +74,10 @@ public enum BaseResponseMessage {
 //	5000 orders
 	ORDERS_CREATED_SUCCESS(true, 5100, "주문이 완료되었습니다."),
 	ORDERS_CANCEL_SUCCESS(true, 5110, "주문이 취소되었습니다."),
+	ORDERS_USER_SUCCESS_LIST(true, 5000, "주문 내역 조회에 성공하였습니다."),
 	ORDERS_USER_FAIL_LIST(false, 5001, "주문 내역 조회에 실패하였습니다."),
+
+	ORDERS_SEARCH_SUCCESS_USER(true, 5051, "주문 상세 조회에 성공하였습니다."),
 	ORDERS_SEARCH_FAIL_USER(false, 5052, "유저가 없습니다."),
 	ORDERS_UPDATE_SUCCESS_CHANGE(false, 5070, "주문 상태가 변경되었습니다."),
 	ORDERS_UPDATE_FAIL_CHANGE(false, 5071, "주문 상태 변경에 실패하였습니다."),
