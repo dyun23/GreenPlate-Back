@@ -260,9 +260,8 @@ public class InitDb {
 		}
 
 		int priceSize = prices.size() - 1;
-		int usersSize = users.size() - 1;
 
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 30; i++) {
 			Orders orders = Orders.builder()
 				.createdDate(LocalDateTime.now())
 				.orderDate(LocalDateTime.now())
@@ -274,7 +273,7 @@ public class InitDb {
 				.phoneNum("010-" + "1111"+ "-" + "2222")
 				.invoice("송장번호" + (i+1))
 				.orderState("ready")
-				.user(users.get(i % usersSize))
+				.user(users.get(i % 4))
 				.build();
 			ordersRepository.save(orders);
 		}
