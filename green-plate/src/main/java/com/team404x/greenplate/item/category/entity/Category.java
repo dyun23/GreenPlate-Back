@@ -7,10 +7,12 @@ import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.team404x.greenplate.item.model.entity.Item;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +36,7 @@ public class Category {
 
 	private String mainCategory;
 	private String subCategory;
-	@ColumnDefault("false")
-	private Boolean delYn;
+	private boolean delYn;
 	@CreatedDate
 	private LocalDateTime createdDate;
 	@LastModifiedDate

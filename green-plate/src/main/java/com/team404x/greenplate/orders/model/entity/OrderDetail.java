@@ -41,8 +41,7 @@ public class OrderDetail {
 
 	private Integer refundYn;
 
-	@ColumnDefault("false")
-	private Boolean delYn;
+	private boolean delYn;
 
 	@CreatedDate
 	private LocalDateTime createdDate;

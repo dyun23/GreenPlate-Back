@@ -44,8 +44,7 @@ public class Company {
 	private String name;
 	private String address;
 	private String telNum;
-	@ColumnDefault("false")
-	private Boolean delYn;
+	private boolean delYn;
 	@CreatedDate
 	private LocalDateTime createdDate;
 	@LastModifiedDate
