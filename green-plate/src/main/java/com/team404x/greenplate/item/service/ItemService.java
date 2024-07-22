@@ -4,6 +4,7 @@ package com.team404x.greenplate.item.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.category.entity.Category;
@@ -13,6 +14,9 @@ import com.team404x.greenplate.item.model.request.ItemCreateReq;
 import com.team404x.greenplate.item.model.response.*;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 
@@ -57,9 +61,18 @@ public class ItemService {
                 .build();
         itemRepository.save(item);
     }
-    public List<ItemRes> list() throws Exception {
-        List<Item> items = itemRepository.findAll();
-        return getItemRes(items);
+
+    public Page<ItemRes> list(Pageable pageable) throws Exception {
+        Page<Item> itemsPage = itemRepository.findAll(pageable);
+        return itemsPage.map(item -> ItemRes.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .price(item.getPrice())
+                .calorie(item.getCalorie())
+                .imageUrl(item.getImageUrl())
+                .discountPrice(item.getDiscountPrice())
+                .companyName(item.getCompany().getName())
+                .build());
     }
 
     public List<ItemRes> list(String main, String sub) throws Exception {
