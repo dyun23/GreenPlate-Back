@@ -33,12 +33,12 @@
 [추가 자료](https://github.com/beyond-sw-camp/be06-1st-404x-GreenPlate/wiki/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)
 
 ## 🔧 기술 스택
-백엔드
-![](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white)
+백엔드  
+![](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white)  
 DB  
-![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white) 
-클라우드 
-![aws](https://img.shields.io/badge/Amazon_AWS_s3-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)   
+클라우드  
+![aws](https://img.shields.io/badge/Amazon_AWS_s3-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)  
 협업 툴  
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)  
 
@@ -86,7 +86,7 @@ DB
 - [소프트웨어 아키텍처 위키]()
 
 ## ⌨️  코드 컨벤션
-- [코드 컨벤션 위키]("https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate.wiki.git")
+- [코드 컨벤션 위키]("https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/코드-컨벤션")
 
 ## ✍️ 성능 개선
 - [성능 개선 위키]()
