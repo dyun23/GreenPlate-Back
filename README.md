@@ -46,11 +46,11 @@ DB
 - [Swagger-Ui]()
 
 ## 📊 시퀀스 다이어그램
-- [시퀀스 다이어그램 위키](https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate.wiki.git)
+- <a href="https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/시퀀스-다이어그램">시퀀스 다이어그램 위키</a>
 
 ## ✨ 기능 테스트
 <details>
-<summary> Amazon S3 </summary>
+<summary> User </summary>
 </details>
 
 ## 🖥️ 시스템 아키텍처
@@ -83,10 +83,10 @@ DB
 </details>
 
 ## 👩‍💻 소프트웨어 아키텍처
-- [소프트웨어 아키텍처 위키]()
+- <a href="https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/소프트웨어-아키텍처">소프트웨어 아키텍처 위키</a>
 
 ## ⌨️  코드 컨벤션
-- [코드 컨벤션 위키]("https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/코드-컨벤션")
+- <a href="https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/코드-컨벤션">코드 컨벤션 위키</a>
 
 ## ✍️ 성능 개선
-- [성능 개선 위키]()
+- <a href="https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/성능-개선">성능 개선 위키</a>
