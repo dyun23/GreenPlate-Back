@@ -16,12 +16,12 @@ import com.team404x.greenplate.config.SecuredOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/item")
@@ -71,16 +71,15 @@ public class ItemController {
         }
     }
 
-
     @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
-    @RequestMapping(method = RequestMethod.GET, value = "/list")
-    public BaseResponse list() {
+    @GetMapping("/list")
+    public BaseResponse<Page<ItemRes>> list(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         try {
-            List<ItemRes> itemResList = itemService.list();
-
-            return new BaseResponse(BaseResponseMessage.ITEM_LIST_SUCCESS, itemResList);
+            Page<ItemRes> itemResPage = itemService.list(pageable);
+            return new BaseResponse<>(BaseResponseMessage.ITEM_LIST_SUCCESS, itemResPage);
         } catch (Exception e) {
-            return new BaseResponse(BaseResponseMessage.ITEM_LIST_FAIL);
+            return new BaseResponse<>(BaseResponseMessage.ITEM_LIST_FAIL, null);
         }
     }
 
@@ -143,5 +142,6 @@ public class ItemController {
             }
         }
     }
+
 
 }
