@@ -375,19 +375,20 @@ public class OrdersService {
         List list = data.get("list");
         Map<String, Double> products = (LinkedTreeMap<String, Double>) list.get(0);
 
+        List<Long> itemIdList = new ArrayList<>();
         for (String key : products.keySet()) {
             Long itemId = Long.parseLong(key);
-            Optional<Item> item = itemRepository.findById(itemId);
+            itemIdList.add(itemId);
+        }
 
-            if (!item.isPresent()) {
-                refund(impUid, info);
-                return new BaseResponse<>(ORDERS_CREATED_FAIL_ITEM);
-            }
+        List<Item> itemList = itemRepository.findAllById(itemIdList);
 
-            int cnt = products.get(key).intValue();
-            int discountPrice = item.get().getDiscountPrice();
+        for(int i = 0; i < itemList.size(); i++) {
+            Item item = itemList.get(i);
+            int cnt = products.get(item.getId().toString()).intValue();
+            int discountPrice = item.getDiscountPrice();
 
-            if(item.get().getStock() < cnt){
+            if(item.getStock() < cnt){
                 refund(impUid, info);
                 return new BaseResponse<>(ORDERS_CREATED_FAIL_STOCK);
             }
@@ -396,10 +397,10 @@ public class OrdersService {
             totalPrice += discountPrice * cnt;
 
             OrderCreateReq.OrderDetailDto orderDetailDto = OrderCreateReq.OrderDetailDto.builder()
-                    .itemId(itemId)
+                    .itemId(item.getId())
                     .cnt(cnt)
                     .discountPrice(discountPrice)
-                    .price(item.get().getPrice())
+                    .price(item.getPrice())
                     .build();
             orderDetailList.add(orderDetailDto);
         }
