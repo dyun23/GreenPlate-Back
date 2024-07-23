@@ -204,29 +204,15 @@ public class OrdersService {
     //사업자 주문 상품 목록조회
     @Transactional
     public BaseResponse<Page<OrdersQueryProjection>> searchForCompany(Long companyId, OrderSearchListReq searchReq, Pageable page) {
-        Optional<Company> company = companyRepository.findById(companyId);
-
-        if (!company.isPresent()) {
-            throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
-        }
-
         Page<OrdersQueryProjection> ordersList = orderQueryRepository.getOrders(companyId, searchReq, page);
         return new BaseResponse<>(ordersList);
     }
 
     //사업자 주문 상품 상세조회
     public BaseResponse<List<OrderDetailQueryProjection>> searchForCompanyDetail(Long companyId, Long orderId) {
-        Optional<Company> company = companyRepository.findById(companyId);
-
-        if (!company.isPresent()) {
-            throw new RuntimeException(new EntityNotFoundException("회사가 없음"));
-        }
-
         List<OrderDetailQueryProjection> ordersList = orderQueryRepository.getOrderDetail(companyId, orderId);
         return new BaseResponse<>(ordersList);
     }
-
-
 
     //사업자 배송 상태 변경
     @Transactional
