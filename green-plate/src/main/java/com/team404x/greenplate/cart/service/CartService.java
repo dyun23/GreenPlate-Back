@@ -28,7 +28,7 @@ public class CartService {
                         .build());
     }
 
-    public void updateCart(Long id, CartUpdateReq request) {
+    public void updateCart(Long id, CartUpdateReq request) throws Exception {
         Optional<Cart> result = cartRepository.findById(request.getCartId());
         if (result.isPresent()) {
             Cart cart = result.get();
@@ -41,12 +41,16 @@ public class CartService {
                                 .quantity(request.getQuantity())
                                 .build()
                 );
+            } else {
+                throw new Exception("본인아님");
             }
+        } else {
+            throw new Exception("없음");
         }
     }
 
     public List<CartListRes> getCartList(CustomUserDetails customUserDetails) {
-        List<Cart> cartList = cartRepository.findAllByUserId(customUserDetails.getId());
+        List<Cart> cartList = cartRepository.findByUserWithItems(User.builder().id(customUserDetails.getId()).build());
         List<CartListRes> cartListRes = new ArrayList<>();
         for (Cart cart : cartList) {
             CartListRes res = CartListRes.builder()

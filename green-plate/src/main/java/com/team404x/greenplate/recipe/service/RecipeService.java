@@ -19,7 +19,9 @@ import com.team404x.greenplate.recipe.repository.RecipeKeywordRepository;
 import com.team404x.greenplate.recipe.repository.RecipeRepository;
 import com.team404x.greenplate.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +38,10 @@ public class RecipeService {
     private final KeywordRepository keywordRepository;
     private final RecipeKeywordRepository recipeKeywordRepository;
 
-    public void createRecipe(CustomUserDetails customUserDetails, RecipeCreateReq request, MultipartFile image) {
+    public void createRecipe(CustomUserDetails customUserDetails, RecipeCreateReq request, MultipartFile image) throws Exception {
+        if (request.getTitle() == null || request.getTitle().isEmpty() || request.getItemList().length == 0 || request.getContents() == null || request.getContents().isEmpty()) {
+            throw new Exception("필수값");
+        }
         Recipe recipe;
         Long id = customUserDetails.getId();
         if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
@@ -54,6 +59,7 @@ public class RecipeService {
                     .imageUrl(s3FileUploadSevice.upload("recipe", id, image))
                     .totalCalorie(itemRepository.getCalorieSum(request.getItemList()))
                     .user(User.builder().id(id).build())
+                    .delYn(false)
                     .build();
         }
         Recipe result = recipeRepository.save(recipe);
@@ -61,10 +67,16 @@ public class RecipeService {
         saveRecipeKeyword(result, request.getKeywordList());
     }
 
-    public void updateRecipe(CustomUserDetails customUserDetails, RecipeUpdateReq request, MultipartFile image) {
+    public void updateRecipe(CustomUserDetails customUserDetails, RecipeUpdateReq request, MultipartFile image) throws Exception {
+        if (request.getTitle() == null || request.getTitle().isEmpty() || request.getItemList().length == 0 || request.getContents() == null || request.getContents().isEmpty()) {
+            throw new Exception("필수값");
+        }
         Long id = customUserDetails.getId();
         Recipe recipe;
-        if (customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COMPANY"))) {
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
+            if (!recipeRepository.findById(request.getRecipeId()).get().getCompany().getId().equals(id)) {
+                throw new Exception("본인아님");
+            }
             recipe = Recipe.builder()
                 .id(request.getRecipeId())
                     .title(request.getTitle())
@@ -95,13 +107,11 @@ public class RecipeService {
     void saveRecipeItem(Recipe recipe, Long[] items) {
         List<RecipeItem> recipeItems = new ArrayList<>();
         for (Long itemId : items) {
-            itemRepository.findById(itemId).ifPresent(item -> {
                 RecipeItem recipeItem = RecipeItem.builder()
-                        .item(item)
+                        .item(Item.builder().id(itemId).build())
                         .recipe(recipe)
                         .build();
                 recipeItems.add(recipeItem);
-            });
         }
         recipeItemRepository.saveAll(recipeItems);
     }
@@ -118,38 +128,43 @@ public class RecipeService {
         recipeKeywordRepository.saveAll(recipeKeywords);
     }
 
-    public List<RecipeListRes> listRecipes(String search) {
-        List<Recipe> recipeList;
+    public List<RecipeListRes> listRecipes(int page, int size, String search) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Recipe> recipeList;
         if (search == null || search.isEmpty()) {
-            recipeList = recipeRepository.findAll();
+            recipeList = recipeRepository.findAllWithKeywordsAndUserCompany(pageable);
         } else {
-            recipeList = recipeRepository.findByTitleContains(search);
+            recipeList = recipeRepository.findByTitleContainsWithKeywords(pageable, search);
         }
         List<RecipeListRes> recipeListRes = new ArrayList<>();
         for (Recipe recipe : recipeList) {
+            List<String> keywordNames = new ArrayList<>();
+            for (RecipeKeyword keyword : recipe.getRecipeKeywords()) {
+                keywordNames.add(keyword.getKeyword().getName());
+            }
+            RecipeListRes res;
             if (recipe.getUser() == null) {
-                RecipeListRes res = RecipeListRes.builder()
+                res = RecipeListRes.builder()
                         .recipeId(recipe.getId())
                         .title(recipe.getTitle())
                         .imageUrl(recipe.getImageUrl())
-                        .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
+                        .keywords(keywordNames)
                         .memberId(recipe.getCompany().getId())
                         .memberName(recipe.getCompany().getName())
                         .role("ROLE_COMPANY")
                         .build();
-                recipeListRes.add(res);
             } else {
-                RecipeListRes res = RecipeListRes.builder()
+                res = RecipeListRes.builder()
                         .recipeId(recipe.getId())
                         .title(recipe.getTitle())
                         .imageUrl(recipe.getImageUrl())
-                        .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
+                        .keywords(keywordNames)
                         .memberId(recipe.getUser().getId())
                         .memberName(recipe.getUser().getName())
                         .role("ROLE_USER")
                         .build();
-                recipeListRes.add(res);
             }
+            recipeListRes.add(res);
         }
         return recipeListRes;
     }

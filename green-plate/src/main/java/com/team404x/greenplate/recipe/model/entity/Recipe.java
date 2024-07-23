@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.team404x.greenplate.recipe.keyword.entity.RecipeKeyword;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -43,17 +43,19 @@ public class Recipe {
 	private Company company;
 
 	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
-	private List<RecipeItem> recipeItems = new ArrayList<>();
-
-	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
 	private List<RecipeLike> recipeLikes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
 	private List<RecipeReview> recipeReviews = new ArrayList<>();
 
 	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
-	private List<Livecommerce> livecommerces = new ArrayList<>();
+	private List<RecipeItem> recipeItems;
 
+	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+	private List<RecipeKeyword> recipeKeywords;
+
+	@OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+	private List<Livecommerce> livecommerces = new ArrayList<>();
 
 	private String title;
 
@@ -63,8 +65,8 @@ public class Recipe {
 
 	private Integer totalCalorie;
 
-	@ColumnDefault("false")
-	private boolean delYn;
+	@Builder.Default
+	private boolean delYn = false;
 
 	@CreatedDate
 	private LocalDateTime createdDate;
