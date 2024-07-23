@@ -1,5 +1,6 @@
 package com.team404x.greenplate.common;
 
+
 public enum BaseResponseMessage {
 	// company signup
 	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
@@ -124,7 +125,44 @@ public enum BaseResponseMessage {
 	USER_SEARCH_SUCCESS(true,3320,"상품 검색에 성공했습니다"),
 	USER_SEARCH_FAIL(false,3321,"상품을 불러오는데 실패하였습니다"),
 	USER_SEARCH_FAIL_ATLEAST(false,3322,"검색어를 2글자 이상 입력해주세요"),
-	USER_SEARCH_FAIL_NOTFOUND(false,3323,"검색어에 맞는 상품이 없습니다");
+	USER_SEARCH_FAIL_NOTFOUND(false,3323,"검색어에 맞는 상품이 없습니다"),
+
+
+	// 레시피 응답
+	RECIPE_CREATE_SUCCESS(true, 6000, "레시피 작성이 완료되었습니다."),
+	RECIPE_CREATE_FAIL(false, 6001, "레시피 작성에 실패하였습니다."),
+	RECIPE_CREATE_FAIL_HAS_NULL(false, 6002, "필수 값을 모두 입력해주세요"),
+
+	RECIPE_UPDATE_SUCCESS(true, 6020, "레시피 수정이 완료되었습니다"),
+	RECIPE_UPDATE_FAIL(false, 6021, "레시피 수정에 실패하였습니다"),
+	RECIPE_UPDATE_FAIL_NOT_MEMBER(false, 6022, "본인이 작성한 레시피만 수정할 수 있습니다"),
+	RECIPE_UPDATE_FAIL_HAS_NULL(false, 6023, "필수 값을 모두 입력해주세요"),
+
+	RECIPE_LIST_SUCCESS(true,6040, "레시피 목록을 불러오는데 성공했습니다"),
+	RECIPE_LIST_FAIL(false, 6041, "레시피 목록을 불러오는데 실패했습니다"),
+
+	RECIPE_DETAILS_SUCCESS(true, 6060, "레시피 상세 정보를 불러오는데 성공했습니다"),
+	RECIPE_DETAILS_FAIL(false, 6061, "레시피 상세 정보를 불러오는데 실패했습니다"),
+
+	// 레시피 리뷰 응답
+	RECIPE_REVIEW_CREATE_SUCCESS(true, 6100, "레시피 리뷰 등록에 성공했습니다"),
+	RECIPE_REVIEW_CREATE_FAIL(false, 6101, "레시피 리뷰 등록에 실패했습니다"),
+
+	RECIPE_REVIEW_LIST_SUCCESS(true, 6120, "레시피 리뷰 불러오기에 성공했습니다"),
+	RECIPE_REVIEW_LIST_FAIL(false, 6121, "레시피 리뷰 불러오기에 실패했습니다"),
+
+	// 장바구니 응답
+	CART_ADD_SUCCESS(true, 3500, "장바구니 등록에 성공했습니다"),
+	CART_ADD_FAIL(false, 3501, "장바구니 등록에 실패했습니다"),
+
+	CART_UPDATE_SUCCESS(true, 3520, "수량 수정에 성공했습니다"),
+	CART_UPDATE_FAIL(false, 3521, "수량 수정에 실패했습니다"),
+	CART_UPDATE_FAIL_NULL(false, 3522, "장바구니에 해당 상품이 없습니다"),
+	CART_UPDATE_FAIL_NOT_USER(false, 3522, "본인의 장바구니만 수정할 수 있습니다"),
+
+	CART_LIST_SUCCESS(true, 3540, "장바구니에 상품을 불러오는데에 성공했습니다"),
+	CART_LIST_FAIL(false, 3541, "장바구니에서 상품을 불러오는데 실패했습니다");
+
 
 	private Boolean success;
 	private Integer code;

@@ -5,7 +5,6 @@ import java.util.List;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.item.model.request.ItemCreateReq;
-import com.team404x.greenplate.item.model.request.ItemFindReq;
 import com.team404x.greenplate.item.model.request.ItemSearchReq;
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 import com.team404x.greenplate.item.model.response.*;
@@ -121,14 +120,14 @@ public class ItemController {
     @RequestMapping(method=RequestMethod.GET,value="/company")
     public BaseResponse listCompanyItem(@AuthenticationPrincipal CustomUserDetails company){
         try {
-           List<ItemFindRes> result  =itemService.listCompanyItem(company.getId());
+           List<ItemFindRes> result = itemService.listCompanyItem(company.getId());
            return new BaseResponse(BaseResponseMessage.USER_READ_LIST_SUCCESS,result);
         } catch (Exception e) {
             return new BaseResponse(BaseResponseMessage.USER_READ_LIST_FAIL);
         }
 
     }
-    @Operation(summary = "[전체] 상품을 검색하기 위한 API")
+    @Operation(summary = "[사업자] 상품을 검색하기 위한 API")
     @RequestMapping(method=RequestMethod.POST,value="/search")
     public BaseResponse search(@RequestBody ItemSearchReq itemSearchReq) {
         try {

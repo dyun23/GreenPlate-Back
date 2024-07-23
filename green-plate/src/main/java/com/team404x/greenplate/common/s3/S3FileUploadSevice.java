@@ -17,9 +17,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3FileUploadSevice {
 
-    @Value("db20240625")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
-    @Value("ap-northeast-2")
+    @Value("${cloud.aws.region.static}")
     private String staticRegion;
     private final AmazonS3 amazonS3;
 

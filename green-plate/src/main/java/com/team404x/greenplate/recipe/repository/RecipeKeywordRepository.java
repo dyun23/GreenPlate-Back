@@ -13,4 +13,7 @@ public interface RecipeKeywordRepository extends JpaRepository<RecipeKeyword, Lo
     @Modifying
     @Query("delete from RecipeKeyword r where r.recipe = ?1")
     void deleteByRecipe(Recipe recipe);
+//
+//    @Query("select rk from RecipeKeyword rk join fetch rk.recipe join fetch rk.keyword where rk.recipe=:recipe")
+//    List<RecipeKeyword> findByRecipe(Recipe recipe);
 }
