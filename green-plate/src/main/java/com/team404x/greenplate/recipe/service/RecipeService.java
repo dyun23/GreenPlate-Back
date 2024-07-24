@@ -131,7 +131,7 @@ public class RecipeService {
     public List<RecipeListRes> listRecipes(int page, int size, String search) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Recipe> recipeList;
-        if (search == null || search.isEmpty()) {
+        if (search == null || search.isEmpty() || search.equals(" ")) {
             recipeList = recipeRepository.findAllWithKeywordsAndUserCompany(pageable);
         } else {
             recipeList = recipeRepository.findByTitleContainsWithKeywords(pageable, search);

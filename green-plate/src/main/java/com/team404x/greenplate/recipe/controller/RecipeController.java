@@ -12,7 +12,9 @@ import com.team404x.greenplate.recipe.service.RecipeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,10 +28,10 @@ public class RecipeController {
     private final RecipeService recipeService;
     @SecuredOperation
     @Operation(summary = "[유저/사업자] 레시피 등록 API")
-    @RequestMapping(method = RequestMethod.POST, value = "/create", produces = "application/json", consumes = "multipart/form-data")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<String> create(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                       @Parameter(name = "request") @ModelAttribute RecipeCreateReq request,
-                                       @Parameter(name = "file") @RequestParam(value = "file") MultipartFile file) {
+                                       @Parameter(name = "request") @RequestPart(value = "request") RecipeCreateReq request,
+                                       @Parameter(name = "file") @RequestPart(value = "file") MultipartFile file) {
         try {
             recipeService.createRecipe(customUserDetails, request, file);
         }
@@ -43,9 +45,9 @@ public class RecipeController {
 
     @SecuredOperation
     @Operation(summary = "[유저/사업자] 레시피 수정 API")
-    @RequestMapping(method = RequestMethod.POST, value = "/update", produces = "application/json", consumes = "multipart/form-data")
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<String> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                       @Parameter(name = "request") @ModelAttribute RecipeUpdateReq request,
+                                       @Parameter(name = "request") @RequestPart(value = "request") RecipeUpdateReq request,
                                        @Parameter(name = "file") @RequestParam(value = "file") MultipartFile file) {
         try {
             recipeService.updateRecipe(customUserDetails, request, file);
