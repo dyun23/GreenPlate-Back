@@ -51,6 +51,47 @@ DB
 ## ✨ 기능 테스트
 <details>
 <summary> User </summary>
+
+### 회원가입
+![](./img/기능%20구현/유저-회원가입.gif)
+### 로그인
+![](./img/기능%20구현/유저-로그인.gif)
+### 배송지 등록
+![](./img/기능%20구현/유저-배송지등록.gif)
+### 마이페이지
+![](./img/기능%20구현/유저-상세조회.gif)
+</details>
+<details>
+<summary> Item </summary>
+
+### 사업자 상품 등록
+![](/img/기능%20구현/상품-등록.gif)
+### 유저 상품 목록 조회
+![](/img/기능%20구현/상품%20-%20조회.gif)
+</details>
+<details>
+<summary> Cart </summary>
+
+### 장바구니에 등록
+![](/img/기능%20구현/장바구니-등록.gif)
+### 장바구니 조회
+![](/img/기능%20구현/장바구니-조회.gif)
+</details>
+<details>
+<summary> Order </summary>
+
+### 결제
+![](./img/기능%20구현/결제.gif)
+### 주문 저장
+![](./img/기능%20구현/주문%20저장.gif)
+</details>
+<details>
+<summary> Recipe </summary>
+
+### 레시피 등록
+![](/img/기능%20구현/레시피-등록.gif)
+### 레시피 목록
+![](/img/기능%20구현/레시피-조회.gif)
 </details>
 
 ## 🖥️ 시스템 아키텍처
