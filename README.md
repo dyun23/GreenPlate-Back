@@ -43,7 +43,7 @@ DB
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)  
 
 ## 📄 API 명세서
-- [Swagger-Ui](http://ec2-3-35-141-18.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html)
+- [Swagger-Ui](http://www.greenplate.p-e.kr:8080/swagger-ui/index.html)
 
 ## 📊 시퀀스 다이어그램
 - <a href="https://github.com/beyond-sw-camp/be06-2nd-404x-GreenPlate/wiki/시퀀스-다이어그램">시퀀스 다이어그램 위키</a>
