@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.email.service.EmailVerifyService;
@@ -35,7 +36,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
 	public BaseResponse signup(@RequestBody UserSignupReq userSignupReq) {
 		try {
-			emailVerifyService.sendEmail(userSignupReq.getEmail(), "user");
+			emailVerifyService.sendEmail(userSignupReq.getEmail(), GlobalMessage.EMAIL_ROLE_USER.getMessage());
 			userService.signup(userSignupReq);
 			return new BaseResponse<>(BaseResponseMessage.USER_SIGNUP_SUCCESS);
 		} catch (Exception e) {
@@ -48,7 +49,7 @@ public class UserController {
 	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		try {
 			String jwtToken = userService.login(userLoginReq);
-			response.setHeader("Authorization", "Bearer " + jwtToken);
+			response.setHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage(), GlobalMessage.AUTHORIZATION_VALUE.getMessage() + jwtToken);
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_FAIL);
@@ -60,7 +61,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails user) {
 		try {
-			String email = user.getUsername().split("_user")[0];
+			String email = user.getUsername().split(GlobalMessage.USER_SUFFIX.getMessage())[0];
 			UserDetailsRes userDetailsRes = userService.details(email);
 			return new BaseResponse(BaseResponseMessage.USER_DETAILS_SUCCESS, userDetailsRes);
 		} catch (Exception e) {

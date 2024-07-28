@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.team404x.greenplate.cart.model.entity.Cart;
 import com.team404x.greenplate.cart.repository.CartRepository;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.category.entity.Category;
@@ -92,7 +93,7 @@ public class InitDb {
 				.enabled(true)
 				.nickName("user"+i)
 				.name("user"+i)
-				.role("ROLE_USER")
+				.role(GlobalMessage.ROLE_USER.getMessage())
 				.build();
 			userRepository.save(user);
 		}
@@ -107,7 +108,7 @@ public class InitDb {
 				.name("company" + i)
 				.comNum("comNum" + i)
 				.telNum("010-" + (i-1) + (i-1) + (i-1) + (i-1) + "-" + (i-1) + (i-1) + (i-1) + (i-1))
-				.role("ROLE_COMPANY")
+				.role(GlobalMessage.ROLE_COMPANY.getMessage())
 				.build();
 			companyRepository.save(company);
 		}

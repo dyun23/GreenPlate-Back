@@ -1,5 +1,6 @@
 package com.team404x.greenplate.recipe.service;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
@@ -44,7 +45,7 @@ public class RecipeService {
         }
         Recipe recipe;
         Long id = customUserDetails.getId();
-        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals(GlobalMessage.ROLE_COMPANY.getMessage())) {
             recipe = Recipe.builder()
                     .title(request.getTitle())
                     .contents(request.getContents())
@@ -73,7 +74,7 @@ public class RecipeService {
         }
         Long id = customUserDetails.getId();
         Recipe recipe;
-        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals(GlobalMessage.ROLE_COMPANY.getMessage())) {
             if (!recipeRepository.findById(request.getRecipeId()).get().getCompany().getId().equals(id)) {
                 throw new Exception("본인아님");
             }
@@ -151,7 +152,7 @@ public class RecipeService {
                         .keywords(keywordNames)
                         .memberId(recipe.getCompany().getId())
                         .memberName(recipe.getCompany().getName())
-                        .role("ROLE_COMPANY")
+                        .role(GlobalMessage.ROLE_COMPANY.getMessage())
                         .build();
             } else {
                 res = RecipeListRes.builder()
@@ -161,7 +162,7 @@ public class RecipeService {
                         .keywords(keywordNames)
                         .memberId(recipe.getUser().getId())
                         .memberName(recipe.getUser().getName())
-                        .role("ROLE_USER")
+                        .role(GlobalMessage.ROLE_USER.getMessage())
                         .build();
             }
             recipeListRes.add(res);
@@ -195,7 +196,7 @@ public class RecipeService {
                     .itemList(recipeDetailsItemResList)
                     .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                     .memberId(recipe.getCompany().getId())
-                    .role("ROLE_COMPANY")
+                    .role(GlobalMessage.ROLE_COMPANY.getMessage())
                     .build();
         } else {
             return RecipeDetailsRes.builder()
@@ -207,7 +208,7 @@ public class RecipeService {
                     .itemList(recipeDetailsItemResList)
                     .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                     .memberId(recipe.getUser().getId())
-                    .role("ROLE_USER")
+                    .role(GlobalMessage.ROLE_USER.getMessage())
                     .build();
         }
     }

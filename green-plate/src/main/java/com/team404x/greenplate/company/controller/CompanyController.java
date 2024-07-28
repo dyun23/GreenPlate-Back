@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
 import com.team404x.greenplate.company.model.response.CompanyDetailsRes;
@@ -47,7 +48,7 @@ public class CompanyController {
 	public BaseResponse login(@RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
 		try {
 			String jwtToken = companyService.login(companyLoginReq);
-			response.setHeader("Authorization", "Bearer " + jwtToken);
+			response.setHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage(), GlobalMessage.AUTHORIZATION_VALUE + jwtToken);
 			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_FAIL);
@@ -59,7 +60,7 @@ public class CompanyController {
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails company) {
 		try {
-			String email = company.getUsername().split("_company")[0];
+			String email = company.getUsername().split(GlobalMessage.COMPANY_SUFFIX.getMessage())[0];
 			CompanyDetailsRes companyDetailsRes = companyService.details(email);
 			return new BaseResponse(BaseResponseMessage.COMPANY_DETAILS_SUCCESS, companyDetailsRes);
 		} catch (Exception e) {

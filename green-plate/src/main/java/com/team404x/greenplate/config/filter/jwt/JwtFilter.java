@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.user.model.entity.User;
@@ -32,10 +33,9 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws
 		ServletException,
 		IOException {
-		String authorization = request.getHeader("Authorization");
+		String authorization = request.getHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage());
 
-		if (authorization == null || !authorization.startsWith("Bearer ")) {
-			System.out.println("Bearer 토큰이 없음");
+		if (authorization == null || !authorization.startsWith(GlobalMessage.AUTHORIZATION_VALUE.getMessage())) {
 			filterChain.doFilter(request, response);
 
 			return;
@@ -44,7 +44,6 @@ public class JwtFilter extends OncePerRequestFilter {
 		String token = authorization.split(" ")[1];
 
 		if (jwtUtil.isExpired(token)) {
-			System.out.println("토큰 만료됨");
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -55,14 +54,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		CustomUserDetails customUserDetails = null;
 
-		if (role.equals("ROLE_USER")) {
+		if (role.equals(GlobalMessage.ROLE_USER.getMessage())) {
 			User user = User.builder()
 				.id(id)
 				.email(email)
 				.role(role)
 				.build();
 			customUserDetails = new CustomUserDetails(user);
-		} else if (role.equals("ROLE_COMPANY")) {
+		} else if (role.equals(GlobalMessage.ROLE_COMPANY.getMessage())) {
 			Company company = Company.builder()
 				.id(id)
 				.email(email)

@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.email.model.entity.EmailVerify;
 import com.team404x.greenplate.email.repository.EmailVerifyRepository;
 
@@ -22,10 +23,10 @@ public class EmailVerifyService {
 	public void sendEmail(String email, String role) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(email);
-		message.setSubject("[내 사이트] 가입 환영");
+		message.setSubject(GlobalMessage.EMAIL_TITLE.getMessage());
 		String uuid = UUID.randomUUID().toString();
 		save(email, uuid);
-		message.setText("http://localhost:8080/email/verify?email="+email+"&uuid="+uuid+"&role="+role);
+		message.setText(GlobalMessage.EMAIL_URL_TEMPLATE.formatUrl(email, uuid, role));
 		emailSender.send(message);
 	}
 

@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.user.model.entity.User;
 
@@ -50,8 +51,8 @@ public class CustomUserDetails implements UserDetails {
 			@Override
 			public String getAuthority() {
 				if (user == null)
-					return "ROLE_COMPANY";
-				return "ROLE_USER";
+					return GlobalMessage.ROLE_COMPANY.getMessage();
+				return GlobalMessage.ROLE_USER.getMessage();
 			}
 		});
 		return collection;
