@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.user.address.entity.Address;
 import com.team404x.greenplate.user.address.repository.AddressRepository;
@@ -37,7 +38,7 @@ public class UserService {
 		User user = User.builder()
 			.email(userSignupReq.getEmail())
 			.password(passwordEncoder.encode(userSignupReq.getPassword()))
-			.role("ROLE_USER")
+			.role(GlobalMessage.ROLE_USER.getMessage())
 			.name(userSignupReq.getName())
 			.nickName(userSignupReq.getNickname())
 			.birthday(userSignupReq.getBirthday())
@@ -53,7 +54,7 @@ public class UserService {
 	}
 
 	public String login(UserLoginReq userLoginReq) throws Exception {
-		String email = userLoginReq.getEmail() + "_user";
+		String email = userLoginReq.getEmail() + GlobalMessage.USER_SUFFIX.getMessage();
 		String password = userLoginReq.getPassword();
 
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);

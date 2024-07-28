@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
@@ -29,7 +30,7 @@ public class CompanyService {
 			.email(companySignupReq.getEmail())
 			.password(passwordEncoder.encode(companySignupReq.getPassword()))
 			.comNum(companySignupReq.getComNum())
-			.role("ROLE_COMPANY")
+			.role(GlobalMessage.ROLE_COMPANY.getMessage())
 			.name(companySignupReq.getName())
 			.address(companySignupReq.getAddress())
 			.telNum(companySignupReq.getTelNum())
@@ -39,7 +40,7 @@ public class CompanyService {
 	}
 
 	public String login(CompanyLoginReq companyLoginReq) throws Exception {
-		String email = companyLoginReq.getEmail() + "_company";
+		String email = companyLoginReq.getEmail() + GlobalMessage.COMPANY_SUFFIX.getMessage();
 		String password = companyLoginReq.getPassword();
 
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
