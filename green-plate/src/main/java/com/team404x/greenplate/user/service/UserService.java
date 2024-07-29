@@ -23,6 +23,7 @@ import com.team404x.greenplate.user.model.response.UserDetailsRes;
 import com.team404x.greenplate.user.repository.UserRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,7 +54,7 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public String login(UserLoginReq userLoginReq) throws Exception {
+	public Cookie login(UserLoginReq userLoginReq) throws Exception {
 		String email = userLoginReq.getEmail() + GlobalMessage.USER_SUFFIX.getMessage();
 		String password = userLoginReq.getPassword();
 
@@ -63,7 +64,7 @@ public class UserService {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			var role = authentication.getAuthorities().iterator().next().getAuthority();
 			String token = jwtUtil.createToken(userDetails.getId(), email, role);
-			return token;
+			return jwtUtil.createCookie(token);
 		}
 		return null;
 	}

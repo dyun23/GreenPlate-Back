@@ -15,6 +15,7 @@ import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,7 +40,7 @@ public class CompanyService {
 		companyRepository.save(company);
 	}
 
-	public String login(CompanyLoginReq companyLoginReq) throws Exception {
+	public Cookie login(CompanyLoginReq companyLoginReq) throws Exception {
 		String email = companyLoginReq.getEmail() + GlobalMessage.COMPANY_SUFFIX.getMessage();
 		String password = companyLoginReq.getPassword();
 
@@ -49,8 +50,7 @@ public class CompanyService {
 			CustomUserDetails companyDetails = (CustomUserDetails) authentication.getPrincipal();
 			var role = authentication.getAuthorities().iterator().next().getAuthority();
 			String token = jwtUtil.createToken(companyDetails.getId(), email, role);
-			System.out.println(token);
-			return token;
+			return jwtUtil.createCookie(token);
 		}
 		return null;
 	}

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.team404x.greenplate.common.GlobalMessage;
 
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 
 @Component
 public class JwtUtil {
@@ -51,5 +52,13 @@ public class JwtUtil {
 			.expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
 			.signWith(secretKey) // 우리만 알 수 있는 secretKey를 가지고 토큰을 생성함
 			.compact();
+	}
+
+	public Cookie createCookie(String token) {
+		Cookie cookie = new Cookie(GlobalMessage.ACCESS_TOKEN.getMessage(), token);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		cookie.setPath("/");
+		return cookie;
 	}
 }

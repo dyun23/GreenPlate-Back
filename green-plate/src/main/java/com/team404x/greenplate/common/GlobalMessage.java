@@ -6,8 +6,9 @@ public enum GlobalMessage {
 	ROLE_USER("ROLE_USER"),
 	COMPANY_SUFFIX("_company"),
 	ROLE_COMPANY("ROLE_COMPANY"),
-	AUTHORIZATION_HEADER("Authorization"),
-	AUTHORIZATION_VALUE("Bearer "),
+	ACCESS_TOKEN("ATOKEN"),
+	// AUTHORIZATION_HEADER("Authorization"),
+	// AUTHORIZATION_VALUE("Bearer "),
 
 	// 이메일 인증 관련 메세지
 	EMAIL_TITLE("[Green Plate] 인증 메세지"),
