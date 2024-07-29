@@ -19,6 +19,7 @@ import com.team404x.greenplate.user.model.response.UserDetailsRes;
 import com.team404x.greenplate.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -48,8 +49,9 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		try {
-			String jwtToken = userService.login(userLoginReq);
-			response.setHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage(), GlobalMessage.AUTHORIZATION_VALUE.getMessage() + jwtToken);
+			Cookie jwtCookie = userService.login(userLoginReq);
+			response.addCookie(jwtCookie);
+			// response.setHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage(), GlobalMessage.AUTHORIZATION_VALUE.getMessage() + jwtToken);
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_FAIL);

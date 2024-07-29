@@ -18,6 +18,7 @@ import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -47,8 +48,8 @@ public class CompanyController {
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public BaseResponse login(@RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
 		try {
-			String jwtToken = companyService.login(companyLoginReq);
-			response.setHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage(), GlobalMessage.AUTHORIZATION_VALUE + jwtToken);
+			Cookie jwtCookie = companyService.login(companyLoginReq);
+			response.addCookie(jwtCookie);
 			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.COMPANY_LOGIN_FAIL);

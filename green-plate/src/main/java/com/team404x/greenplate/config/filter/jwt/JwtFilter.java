@@ -15,6 +15,7 @@ import com.team404x.greenplate.utils.jwt.JwtUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -33,24 +34,29 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws
 		ServletException,
 		IOException {
-		String authorization = request.getHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage());
 
-		if (authorization == null || !authorization.startsWith(GlobalMessage.AUTHORIZATION_VALUE.getMessage())) {
+		String authorization = null;
+		if (request.getCookies() != null) {
+			for (Cookie cookie : request.getCookies()) {
+				if (cookie.getName().equals(GlobalMessage.ACCESS_TOKEN.getMessage())) {
+					authorization = cookie.getValue();
+				}
+			}
+		}
+
+		if (authorization == null) {
 			filterChain.doFilter(request, response);
-
 			return;
 		}
 
-		String token = authorization.split(" ")[1];
-
-		if (jwtUtil.isExpired(token)) {
+		if (jwtUtil.isExpired(authorization)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		Long id = jwtUtil.getId(token);
-		String email = jwtUtil.getEmail(token);
-		String role = jwtUtil.getRole(token);
+		Long id = jwtUtil.getId(authorization);
+		String email = jwtUtil.getEmail(authorization);
+		String role = jwtUtil.getRole(authorization);
 
 		CustomUserDetails customUserDetails = null;
 
