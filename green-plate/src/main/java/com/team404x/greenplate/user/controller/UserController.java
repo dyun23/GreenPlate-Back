@@ -21,6 +21,7 @@ import com.team404x.greenplate.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +36,7 @@ public class UserController {
 
 	@Operation(summary = "[전체] 유저 회원가입 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
-	public BaseResponse signup(@RequestBody UserSignupReq userSignupReq) {
+	public BaseResponse signup(@Valid @RequestBody UserSignupReq userSignupReq) {
 		try {
 			emailVerifyService.sendEmail(userSignupReq.getEmail(), GlobalMessage.EMAIL_ROLE_USER.getMessage());
 			userService.signup(userSignupReq);
@@ -47,11 +48,10 @@ public class UserController {
 
 	@Operation(summary = "[전체] 유저 로그인 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
-	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
+	public BaseResponse login(@Valid @RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		try {
 			Cookie jwtCookie = userService.login(userLoginReq);
 			response.addCookie(jwtCookie);
-			// response.setHeader(GlobalMessage.AUTHORIZATION_HEADER.getMessage(), GlobalMessage.AUTHORIZATION_VALUE.getMessage() + jwtToken);
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_FAIL);
