@@ -17,9 +17,9 @@ import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -46,7 +46,7 @@ public class CompanyController {
 
 	@Operation(summary = "[전체] 사업자 로그인 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
-	public BaseResponse login(@RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
+	public BaseResponse login(@Valid @RequestBody CompanyLoginReq companyLoginReq, HttpServletResponse response) {
 		try {
 			Cookie jwtCookie = companyService.login(companyLoginReq);
 			response.addCookie(jwtCookie);
