@@ -38,7 +38,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
 	public BaseResponse signup(@Valid @RequestBody UserSignupReq userSignupReq) {
 		try {
-			emailVerifyService.sendEmail(userSignupReq.getEmail(), GlobalMessage.EMAIL_ROLE_USER.getMessage());
+			emailVerifyService.saveEmail(userSignupReq.getEmail(), GlobalMessage.EMAIL_ROLE_USER.getMessage());
 			userService.signup(userSignupReq);
 			return new BaseResponse<>(BaseResponseMessage.USER_SIGNUP_SUCCESS);
 		} catch (Exception e) {

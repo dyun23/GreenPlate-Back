@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.email.service.EmailVerifyService;
 import com.team404x.greenplate.user.service.UserService;
 
@@ -24,8 +25,8 @@ public class EmailVerifyController {
 	public BaseResponse verify(String email, String uuid, String role) {
 		BaseResponseMessage message = BaseResponseMessage.EMAIL_VERIFY_FAIL;
 		try {
-			if (emailVerifyService.isExist(email, uuid)) {
-				if (role.equals("user")) {
+			if (emailVerifyService.isExistEmail(email, uuid)) {
+				if (role.equals(GlobalMessage.EMAIL_ROLE_USER.getMessage())) {
 					userService.activateUser(email);
 					message = BaseResponseMessage.EMAIL_VERIFY_SUCCESS;
 				}
