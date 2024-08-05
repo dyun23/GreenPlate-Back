@@ -151,23 +151,26 @@ public class OrdersService {
 
     //유저 주문 상품 목록 조회
     @Transactional
-    public BaseResponse searchForUser(Long userId, int page, int size) throws Exception {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Orders> ordersPage = ordersRepository.findOrdersByUserId(userId, pageable);
-        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<>();
+    public BaseResponse searchForUser(Long userId, Pageable page) throws Exception {
 
-        for(Orders order : ordersPage){
-            OrderUserSearchRes res = OrderUserSearchRes.builder()
-                    .order_id(order.getId())
-                    .order_state(order.getOrderState())
-                    .total_price(order.getTotalPrice())
-                    .total_cnt(order.getTotalQuantity())
-                    .refund_yn(order.isRefundYn())
-                    .order_date(order.getOrderDate())
-                    .build();
-            orderUserSearchResList.add(res);
-        }
-        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST ,orderUserSearchResList);
+        Page<OrdersQueryProjection> ordersList = orderQueryRepository.getOrdersUser(userId, page);
+        return new BaseResponse<>(ordersList);
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+//        Page<Orders> ordersPage = ordersRepository.findOrdersByUserId(userId, pageable);
+//        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<>();
+//
+//        for(Orders order : ordersPage){
+//            OrderUserSearchRes res = OrderUserSearchRes.builder()
+//                    .order_id(order.getId())
+//                    .order_state(order.getOrderState())
+//                    .total_price(order.getTotalPrice())
+//                    .total_cnt(order.getTotalQuantity())
+//                    .refund_yn(order.isRefundYn())
+//                    .order_date(order.getOrderDate())
+//                    .build();
+//            orderUserSearchResList.add(res);
+//        }
+//        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST ,orderUserSearchResList);
     }
 
     //유저 주문 상품 상세조회

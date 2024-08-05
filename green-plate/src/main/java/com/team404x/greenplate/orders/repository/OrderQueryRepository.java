@@ -37,6 +37,62 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
         this.queryFactory = queryFactory;
     }
 
+    public Page<OrdersQueryProjection> getOrdersUser(Long userId, Pageable pageable) {
+        QOrders orders = QOrders.orders;
+        QOrderDetail orderDetail = QOrderDetail.orderDetail;
+        QItem item = QItem.item;
+        QUser user = QUser.user;
+
+        // Create dynamic conditions
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        whereBuilder.and(user.id.eq(userId));
+
+        return applyPagination(pageable, queryFactory -> {
+            return queryFactory
+                    .select(new QOrdersQueryProjection(
+                            orders.id,
+                            item.id,
+                            item.name,
+                            orderDetail.price.multiply(orderDetail.cnt).sum(),
+                            orderDetail.cnt.sum(),
+                            orders.orderDate,
+                            orders.orderState,
+                            orders.refundYn
+                    ))
+                    .from(orders)
+                    .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))
+                    .leftJoin(item).on(orderDetail.item.eq(item))
+                    .where(whereBuilder)
+                    .groupBy(orders.id);
+        });
+    }
+
+    public List<OrderDetailQueryProjection> getOrderDetailUser(Long orderId) {
+        QOrders orders = QOrders.orders;
+        QOrderDetail orderDetail = QOrderDetail.orderDetail;
+        QItem item = QItem.item;
+
+        return queryFactory
+                .select(new QOrderDetailQueryProjection(
+                        orders.id,
+                        item.id,
+                        item.name,
+                        orderDetail.price,
+                        orderDetail.cnt,
+                        orders.orderDate,
+                        orders.orderState,
+                        orders.refundYn,
+                        orders.zipCode,
+                        orders.address,
+                        orders.phoneNum,
+                        orders.invoice
+                ))
+                .from(orders)
+                .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))
+                .leftJoin(item).on(orderDetail.item.eq(item))
+                .where(orders.id.eq(orderId))
+                .fetch();
+    }
 
     public Page<OrdersQueryProjection> getOrders(Long companyId, OrderSearchListReq searchReq, Pageable pageable) {
         QOrders orders = QOrders.orders;
