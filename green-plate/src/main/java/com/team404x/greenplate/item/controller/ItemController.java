@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/item")
@@ -31,16 +32,17 @@ public class ItemController {
     @SecuredOperation
     @Operation(summary = "[사업자] 상품 등록을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/create")
-    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails company, @RequestBody ItemCreateReq itemCreateReq) {
+    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails company, @RequestPart ItemCreateReq request,
+        @RequestPart MultipartFile file) {
         try {
-            itemService.create(company.getId(), itemCreateReq);
+            itemService.create(company.getId(), request, file);
             return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
         } catch (Exception e) {
-             if(itemCreateReq.getCompanyId() == null) {
+             if(request.getCompanyId() == null) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_ISEMPTY);
-            } else if (itemCreateReq.getDiscountPrice() > itemCreateReq.getPrice()) {
+            } else if (request.getDiscountPrice() > request.getPrice()) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_PRICE);
-            } else if (itemCreateReq.getStock() <= 0 || itemCreateReq.getPrice() <= 0) {
+            } else if (request.getStock() <= 0 || request.getPrice() <= 0) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_QUANTITYANDPRICE);
             } else {
                  return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
