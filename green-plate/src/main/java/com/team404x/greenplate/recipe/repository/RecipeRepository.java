@@ -20,4 +20,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 //    @Query("select r from Recipe r where r.title like concat('%', ?1, '%')")
     List<Recipe> findByTitleContains(String title);
 
+
 }

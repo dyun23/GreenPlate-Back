@@ -5,6 +5,7 @@ import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.item.model.entity.Item;
+import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.keyword.repository.KeywordRepository;
 import com.team404x.greenplate.recipe.item.RecipeItem;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -168,6 +170,25 @@ public class RecipeService {
             recipeListRes.add(res);
         }
         return recipeListRes;
+    }
+
+    public Page<RecipeListRes> list (Pageable pageable) {
+        Page<Recipe> recipeList = recipeRepository.findAll(pageable);
+        // 함수 마저 만들기
+        return recipeList.map(recipe -> {
+            List<String> keywordNames = recipe.getRecipeKeywords().stream()
+                .map(recipeKeyword -> recipeKeyword.getKeyword().getName())
+                .toList();
+
+            return RecipeListRes.builder()
+                .recipeId(recipe.getId())
+                .title(recipe.getTitle())
+                .imageUrl(recipe.getImageUrl())
+                .keywords(keywordNames)
+                .memberId(recipe.getUser().getId())
+                .memberName(recipe.getUser().getName())
+                .build();
+        });
     }
 
     public RecipeDetailsRes readRecipe(Long recipeId) {

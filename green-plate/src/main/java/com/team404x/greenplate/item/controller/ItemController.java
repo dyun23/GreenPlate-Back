@@ -75,7 +75,7 @@ public class ItemController {
     @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
     @GetMapping("/list")
     public BaseResponse<Page<ItemRes>> list(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         try {
             Page<ItemRes> itemResPage = itemService.list(pageable);
             return new BaseResponse<>(BaseResponseMessage.ITEM_LIST_SUCCESS, itemResPage);
