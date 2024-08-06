@@ -38,6 +38,21 @@ public class S3FileUploadSevice {
         }
     }
 
+    public String upload(MultipartFile file) {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+
+        String uploadPath = makeFolder();
+        try {
+            String fileName = "summernote/" + uploadPath + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+            amazonS3.putObject(bucketName, fileName, file.getInputStream(), metadata);
+            return "https://" + bucketName + ".s3." + staticRegion + ".amazonaws.com/" + fileName;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String makeFolder() {
         String folderPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         File uploadPathFolder = new File(folderPath);
