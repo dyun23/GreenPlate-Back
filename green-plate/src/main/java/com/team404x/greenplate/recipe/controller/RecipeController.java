@@ -4,6 +4,7 @@ import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
 import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
+import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.recipe.model.request.RecipeCreateReq;
 import com.team404x.greenplate.recipe.model.request.RecipeUpdateReq;
 import com.team404x.greenplate.recipe.model.response.RecipeDetailsRes;
@@ -14,6 +15,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -72,6 +78,17 @@ public class RecipeController {
             return new BaseResponse<>(BaseResponseMessage.RECIPE_LIST_FAIL);
         }
         return new BaseResponse<>(BaseResponseMessage.RECIPE_LIST_SUCCESS, result);
+    }
+
+    @Operation(summary = "[전체] 레시피 페이징 조회 API")
+    @RequestMapping(method = RequestMethod.GET, value = "/list")
+    public BaseResponse<Page<RecipeListRes>> list(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            Page<RecipeListRes> recipeResPage = recipeService.list(pageable);
+            return new BaseResponse<>(BaseResponseMessage.RECIPE_LIST_SUCCESS, recipeResPage);
+        } catch (Exception e) {
+            return new BaseResponse<>(BaseResponseMessage.RECIPE_LIST_FAIL);
+        }
     }
 
     @Operation(summary = "[전체] 레시피 상세 정보 조회 API")
