@@ -167,8 +167,11 @@ public enum BaseResponseMessage {
 	CART_UPDATE_FAIL_NOT_USER(false, 3522, "본인의 장바구니만 수정할 수 있습니다"),
 
 	CART_LIST_SUCCESS(true, 3540, "장바구니에 상품을 불러오는데에 성공했습니다"),
-	CART_LIST_FAIL(false, 3541, "장바구니에서 상품을 불러오는데 실패했습니다");
+	CART_LIST_FAIL(false, 3541, "장바구니에서 상품을 불러오는데 실패했습니다"),
 
+	IMAGE_UPLOAD_SUCCESS(true, 8000, "이미지 업로드에 성공했습니다"),
+
+	CATEGORY_LIST_SUCCESS(true, 9000, "카테고리를 불러오는데 성공했습니다");
 
 	private Boolean success;
 	private Integer code;
