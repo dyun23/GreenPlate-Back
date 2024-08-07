@@ -86,6 +86,26 @@ public class ItemService {
         return getItemRes(items);
     }
 
+
+    public Page<ItemRes> getCategoryPage(String main, String sub, Pageable pageable) throws Exception {
+        Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
+
+        Page<Item> itemsPage = itemRepository.findByCategory(category, pageable);
+
+        Page<ItemRes> itemResPage = itemsPage.map(item -> ItemRes.builder()
+            .id(item.getId())
+            .name(item.getName())
+            .price(item.getPrice())
+            .calorie(item.getCalorie())
+            .imageUrl(item.getImageUrl())
+            .discountPrice(item.getDiscountPrice())
+            .companyName(item.getCompany().getName())
+            .build());
+
+        return itemResPage;
+    }
+
+
     public List<ItemRes> list(String name) throws Exception {
         List<Item> items = itemRepository.findByNameContaining(name);
         return getItemRes(items);
