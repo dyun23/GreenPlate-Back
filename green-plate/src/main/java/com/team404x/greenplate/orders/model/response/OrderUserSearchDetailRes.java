@@ -10,7 +10,10 @@ import java.time.LocalDateTime;
 public class OrderUserSearchDetailRes {
     private Long order_id;
     private Long orderDetail_id;
+    private int order_totalPrice;
     private LocalDateTime order_date;
+    private String itemName;
+    private String itemImageUrl;
     private Integer price;
     private Integer cnt;
     private String order_state;

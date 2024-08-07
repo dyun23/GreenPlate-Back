@@ -183,12 +183,14 @@ public class OrdersService {
         Orders orders = user.getOrders().get(0);
 
         List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<>();
-
         for (OrderDetail orderDetail : orders.getOrderDetails()) {
             OrderUserSearchDetailRes res = OrderUserSearchDetailRes.builder()
                 .order_id(orders.getId())
                 .orderDetail_id(orderDetail.getId())
+                .order_totalPrice(orders.getTotalPrice())
                 .order_state(orders.getOrderState())
+                .itemName(orderDetail.getItem().getName())
+                .itemImageUrl(orderDetail.getItem().getImageUrl())
                 .price(orderDetail.getPrice())
                 .cnt(orderDetail.getCnt())
                 .refund_yn(orders.isRefundYn())
@@ -199,7 +201,6 @@ public class OrdersService {
                 .invoice(orders.getInvoice())
                 .build();
             orderUserSearchResList.add(res);
-
         }
         return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST, orderUserSearchResList);
     }
