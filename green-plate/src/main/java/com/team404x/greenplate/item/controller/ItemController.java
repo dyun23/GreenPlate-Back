@@ -86,9 +86,20 @@ public class ItemController {
 
     @Operation(summary = "[전체] 카테고리에 해당하는 상품 목록을 조회하는 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list/category")
-    public BaseResponse<Page<ItemRes>> list(String main, String sub, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public BaseResponse<List<ItemRes>> list(String main, String sub) {
         try {
-            Page<ItemRes> itemResList = itemService.list(main, sub, pageable);
+            List<ItemRes> itemResList = itemService.list(main, sub);
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_FAIL);
+        }
+    }
+
+    @Operation(summary = "[전체] 카테고리에 해당하는 상품 목록을 조회하는 API")
+    @RequestMapping(method = RequestMethod.GET, value = "/category")
+    public BaseResponse<Page<ItemRes>> getCategoryPage(String main, String sub, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            Page<ItemRes> itemResList = itemService.getCategoryPage(main, sub, pageable);
             return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_SUCCESS, itemResList);
         } catch (Exception e) {
             return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_FAIL);

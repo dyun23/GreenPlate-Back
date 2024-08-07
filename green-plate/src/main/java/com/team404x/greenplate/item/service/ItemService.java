@@ -80,7 +80,14 @@ public class ItemService {
                 .build());
     }
 
-    public Page<ItemRes> list(String main, String sub, Pageable pageable) throws Exception {
+    public List<ItemRes> list(String main, String sub) throws Exception {
+        Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
+        List<Item> items = category.getItemList();
+        return getItemRes(items);
+    }
+
+
+    public Page<ItemRes> getCategoryPage(String main, String sub, Pageable pageable) throws Exception {
         Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
 
         Page<Item> itemsPage = itemRepository.findByCategory(category, pageable);
