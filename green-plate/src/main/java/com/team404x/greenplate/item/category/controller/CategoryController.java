@@ -16,8 +16,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+
     @GetMapping("/list")
     public BaseResponse<List<CategoryListRes>> list() {
         return new BaseResponse<>(BaseResponseMessage.CATEGORY_LIST_SUCCESS, categoryService.getAllCategories());
+    }
+
+    @GetMapping("/search")
+    public BaseResponse<CategoryListRes> list(String main) {
+        try {
+            CategoryListRes categoryListRes = categoryService.getSubCategories(main);
+            return new BaseResponse<>(BaseResponseMessage.CATEGORY_LIST_SUCCESS, categoryListRes);
+        } catch (Exception e) {
+            return new BaseResponse<>(BaseResponseMessage.REQUEST_FAIL);
+        }
     }
 }
