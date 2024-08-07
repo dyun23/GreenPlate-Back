@@ -33,4 +33,16 @@ public class CategoryService {
         }
         return responses;
     }
+
+    public CategoryListRes getSubCategories(String main) throws Exception {
+        List<Category> categories = categoryRepository.findAllByMainCategory(main);
+        List<String> subs = new ArrayList<>();
+        for (Category category : categories) {
+            subs.add(category.getSubCategory());
+        }
+        return CategoryListRes.builder()
+            .main(main)
+            .subList(subs)
+            .build();
+    }
 }
