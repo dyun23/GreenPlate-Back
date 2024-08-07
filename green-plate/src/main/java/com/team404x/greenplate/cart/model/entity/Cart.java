@@ -29,4 +29,7 @@ public class Cart {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 }

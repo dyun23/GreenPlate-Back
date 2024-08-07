@@ -20,6 +20,17 @@ import java.util.Optional;
 public class CartService {
     private final CartRepository cartRepository;
     public void createCart(Long id, CartAddReq request) {
+        List<Cart> cartList = cartRepository.findByUserWithItems(User.builder().id(id).build());
+        for(Cart Onecart : cartList){
+            if(Onecart.getItem().getId().equals(request.getItemId()))
+            {
+                Optional<Cart> cart = cartRepository.findById(Onecart.getId());
+                cart.get().setQuantity(Onecart.getQuantity()+1);
+                cartRepository.save(cart.get());
+                return;
+            }
+        }
+
         cartRepository.save(
                 Cart.builder()
                         .user(User.builder().id(id).build())
