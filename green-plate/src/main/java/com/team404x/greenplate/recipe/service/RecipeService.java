@@ -5,7 +5,6 @@ import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.item.model.entity.Item;
-import com.team404x.greenplate.item.model.response.ItemRes;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import com.team404x.greenplate.keyword.repository.KeywordRepository;
 import com.team404x.greenplate.recipe.item.RecipeItem;
@@ -27,9 +26,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -198,6 +197,7 @@ public class RecipeService {
         }
         List<Item> itemList = itemRepository.findByRecipeItemsRecipeId(recipe.getId());
         List<RecipeDetailsItemRes> recipeDetailsItemResList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         for (Item item : itemList) {
             RecipeDetailsItemRes detailsItem = RecipeDetailsItemRes.builder()
                     .itemId(item.getId())
@@ -213,10 +213,12 @@ public class RecipeService {
                     .title(recipe.getTitle())
                     .contents(recipe.getContents())
                     .imageUrl(recipe.getImageUrl())
+                    .date(recipe.getCreatedDate().format(formatter))
                     .totalCalorie(recipe.getTotalCalorie())
                     .itemList(recipeDetailsItemResList)
                     .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                     .memberId(recipe.getCompany().getId())
+                    .memberName(recipe.getCompany().getName())
                     .role(GlobalMessage.ROLE_COMPANY.getMessage())
                     .build();
         } else {
@@ -225,10 +227,12 @@ public class RecipeService {
                     .title(recipe.getTitle())
                     .contents(recipe.getContents())
                     .imageUrl(recipe.getImageUrl())
+                    .date(recipe.getCreatedDate().format(formatter))
                     .totalCalorie(recipe.getTotalCalorie())
                     .itemList(recipeDetailsItemResList)
                     .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                     .memberId(recipe.getUser().getId())
+                    .memberName(recipe.getUser().getName())
                     .role(GlobalMessage.ROLE_USER.getMessage())
                     .build();
         }
