@@ -1,5 +1,7 @@
 package com.team404x.greenplate.user.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +38,22 @@ public class UserService {
 	private final JwtUtil jwtUtil;
 
 	public void signup(UserSignupReq userSignupReq) throws Exception {
+
+		String birthYear = userSignupReq.getBirthYear();
+		String birthMonth = userSignupReq.getBirthMonth();
+		String birthDay = userSignupReq.getBirthday();
+
+		String birthDateStr = birthYear + "-" + birthMonth + "-" + birthDay;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate birthdayFormat = LocalDate.parse(birthDateStr, formatter);
+
 		User user = User.builder()
 			.email(userSignupReq.getEmail())
 			.password(passwordEncoder.encode(userSignupReq.getPassword()))
 			.role(GlobalMessage.ROLE_USER.getMessage())
 			.name(userSignupReq.getName())
 			.nickName(userSignupReq.getNickname())
-			.birthday(userSignupReq.getBirthday())
+			.birthday(birthdayFormat)
 			.build();
 
 		userRepository.save(user);

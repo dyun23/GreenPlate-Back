@@ -26,6 +26,8 @@ public class UserSignupReq {
 	String name;
 	@Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$")
 	String nickname;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	LocalDate birthday;
+
+	String birthYear;
+	String birthMonth;
+	String birthday;
 }
