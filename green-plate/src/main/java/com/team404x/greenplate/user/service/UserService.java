@@ -41,7 +41,7 @@ public class UserService {
 
 		String birthYear = userSignupReq.getBirthYear();
 		String birthMonth = userSignupReq.getBirthMonth();
-		String birthDay = userSignupReq.getBirthday();
+		String birthDay = userSignupReq.getBirthDay();
 
 		String birthDateStr = birthYear + "-" + birthMonth + "-" + birthDay;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -51,7 +51,7 @@ public class UserService {
 			.email(userSignupReq.getEmail())
 			.password(passwordEncoder.encode(userSignupReq.getPassword()))
 			.role(GlobalMessage.ROLE_USER.getMessage())
-			.name(userSignupReq.getName())
+			.name(userSignupReq.getUsername())
 			.nickName(userSignupReq.getNickname())
 			.birthday(birthdayFormat)
 			.build();
