@@ -1,6 +1,7 @@
 package com.team404x.greenplate.cart.controller;
 
 import com.team404x.greenplate.cart.model.request.CartAddReq;
+import com.team404x.greenplate.cart.model.request.CartDeleteListReq;
 import com.team404x.greenplate.cart.model.request.CartUpdateReq;
 import com.team404x.greenplate.cart.model.response.CartListRes;
 import com.team404x.greenplate.cart.service.CartService;
@@ -60,5 +61,35 @@ public class CartController {
             return new BaseResponse<>(BaseResponseMessage.CART_LIST_FAIL);
         }
         return new BaseResponse<>(BaseResponseMessage.CART_LIST_SUCCESS,result);
+    }
+    @SecuredOperation
+    @Operation(summary = "[유저] 장바구니에 상품 삭제하기 API")
+    @DeleteMapping("/{id}/delete")
+    public BaseResponse<String> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long id) {
+        try {
+            cartService.deleteItemFromCart(customUserDetails.getId(), id);
+            return new BaseResponse<>(BaseResponseMessage.CART_DELETE_SUCCESS);
+        } catch (Exception e) {
+            if (e.getMessage().equals("본인아님")){
+                return new BaseResponse<>(BaseResponseMessage.CART_DELETE_FAIL_NOT_USER);
+            }
+            return new BaseResponse<>(BaseResponseMessage.CART_DELETE_FAIL);
+        }
+    }
+    @SecuredOperation
+    @Operation(summary = "[유저] 장바구니에 여러 상품 삭제하기 API")
+    @RequestMapping (method = RequestMethod.POST, value = "/delete/list")
+    public BaseResponse<String> deleteCartList(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CartDeleteListReq request) {
+        try {
+            cartService.deleteListFromCart(customUserDetails.getId(), request);
+            return new BaseResponse<>(BaseResponseMessage.CART_DELETE_SUCCESS);
+        } catch (Exception e) {
+            if (e.getMessage().equals("본인아님")){
+                return new BaseResponse<>(BaseResponseMessage.CART_DELETE_FAIL_NOT_USER);
+            } else if (e.getMessage().equals("장바구니 항목이 존재 안함")) {
+                return new BaseResponse<>(BaseResponseMessage.CART_DELETE_FAIL_NOT_USER);
+            }
+            return new BaseResponse<>(BaseResponseMessage.CART_DELETE_FAIL);
+        }
     }
 }
