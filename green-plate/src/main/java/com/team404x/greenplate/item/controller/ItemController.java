@@ -117,6 +117,20 @@ public class ItemController {
         }
     }
 
+    @Operation(summary = "[전체] 상품 이름으로 목록을 조회하는 API")
+    @RequestMapping(method = RequestMethod.GET, value = "/search/word")
+    public BaseResponse list(String name, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            Page<ItemRes> itemResList = itemService.list(name, pageable);
+            return itemResList.getSize() == 0 ?
+                new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_FAIL_NOT_FOUND) :
+                new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_FAIL);
+        }
+    }
+
+
     @Operation(summary = "[전체] 상품 상세 정보를 조회하기 위한 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
     public BaseResponse list(Long id) {
