@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ItemCreateReq {
-   private Long companyId;
    private String name;
    private String contents;
    private int price;
@@ -18,7 +17,6 @@ public class ItemCreateReq {
    private int calorie;
    private String state;
 
-   private String imageUrl;
    private int discountPrice;
    private String mainCategory;
    private String subCategory;

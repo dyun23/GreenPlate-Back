@@ -38,14 +38,12 @@ public class ItemController {
             itemService.create(company.getId(), request, file);
             return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
         } catch (Exception e) {
-             if(request.getCompanyId() == null) {
-                return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_ISEMPTY);
-            } else if (request.getDiscountPrice() > request.getPrice()) {
+             if (request.getDiscountPrice() > request.getPrice()) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_PRICE);
             } else if (request.getStock() <= 0 || request.getPrice() <= 0) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_QUANTITYANDPRICE);
             } else {
-                 return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
+                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL);
              }
         }
     }

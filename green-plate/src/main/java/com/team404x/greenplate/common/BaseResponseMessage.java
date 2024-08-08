@@ -169,6 +169,11 @@ public enum BaseResponseMessage {
 	CART_LIST_SUCCESS(true, 3540, "장바구니에 상품을 불러오는데에 성공했습니다"),
 	CART_LIST_FAIL(false, 3541, "장바구니에서 상품을 불러오는데 실패했습니다"),
 
+	CART_DELETE_SUCCESS(true, 3560, "상품이 장바구니에서 삭제되었습니다."),
+	CART_DELETE_FAIL(false, 3561, "상품을 삭제하는데 실패했습니다"),
+	CART_DELETE_FAIL_NOT_USER(false, 3562, "본인의 장바구니만 삭제할 수 있습니다"),
+	CART_DELETE_FAIL_NULL(false, 3562, "해당 장바구니 항목이 존재하지 않습니다"),
+
 	IMAGE_UPLOAD_SUCCESS(true, 8000, "이미지 업로드에 성공했습니다"),
 
 	CATEGORY_LIST_SUCCESS(true, 9000, "카테고리를 불러오는데 성공했습니다");

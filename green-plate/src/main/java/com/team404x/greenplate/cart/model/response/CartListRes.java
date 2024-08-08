@@ -13,6 +13,7 @@ public class CartListRes {
     private Long cartId;
     private Long itemId;
     private String itemName;
+    private Integer price;
     private Integer discountPrice;
     private String imageUrl;
     private Integer quantity;
