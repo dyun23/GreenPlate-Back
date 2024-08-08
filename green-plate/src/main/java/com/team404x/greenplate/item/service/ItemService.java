@@ -3,6 +3,7 @@ package com.team404x.greenplate.item.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.s3.S3FileUploadSevice;
@@ -16,6 +17,7 @@ import com.team404x.greenplate.item.model.response.*;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -105,9 +107,13 @@ public class ItemService {
         return itemResPage;
     }
 
-
     public List<ItemRes> list(String name) throws Exception {
         List<Item> items = itemRepository.findByNameContaining(name);
+        return getItemRes(items);
+    }
+
+    public Page<ItemRes> list(String name, Pageable pageable) throws Exception {
+        Page<Item> items = itemRepository.findByNameContaining(name, pageable);
         return getItemRes(items);
     }
 
@@ -126,6 +132,22 @@ public class ItemService {
             .build();
     }
 
+    private Page<ItemRes> getItemRes(Page<Item> items) throws Exception {
+        List<ItemRes> itemResList = items.getContent().stream()
+            .map(item -> ItemRes.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .price(item.getPrice())
+                .calorie(item.getCalorie())
+                .imageUrl(item.getImageUrl())
+                .discountPrice(item.getDiscountPrice())
+                .companyName(item.getCompany().getName())
+                .build()
+            )
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(itemResList, items.getPageable(), items.getTotalElements());
+    }
 
     private List<ItemRes> getItemRes(List<Item> items) throws Exception {
         List<ItemRes> itemResList = new ArrayList<>();
