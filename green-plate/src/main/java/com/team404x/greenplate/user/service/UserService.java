@@ -12,14 +12,18 @@ import org.springframework.stereotype.Service;
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
+import com.team404x.greenplate.keyword.entity.Keyword;
+import com.team404x.greenplate.keyword.repository.KeywordRepository;
 import com.team404x.greenplate.user.address.entity.Address;
 import com.team404x.greenplate.user.address.repository.AddressRepository;
+import com.team404x.greenplate.user.keyword.entity.UserKeyword;
 import com.team404x.greenplate.user.model.request.UserAddressRegisterReq;
 import com.team404x.greenplate.user.model.request.UserLoginReq;
 import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.model.response.UserDetailsAddressRes;
 import com.team404x.greenplate.user.model.response.UserDetailsRes;
+import com.team404x.greenplate.user.repository.UserKeywordRepository;
 import com.team404x.greenplate.user.repository.UserRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
@@ -34,6 +38,8 @@ public class UserService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
+	private final KeywordRepository keywordRepository;
+	private final UserKeywordRepository userKeywordRepository;
 
 	public void signup(UserSignupReq userSignupReq) throws Exception {
 		User user = User.builder()
@@ -118,6 +124,28 @@ public class UserService {
 				address.setDefultAddr(true);
 				addressRepository.save(address);
 			}
+		}
+	}
+
+	public List<String> getUserKeyword(Long userId) throws Exception{
+		User user = userRepository.findById(userId).orElseThrow();
+		List<UserKeyword> keywords = user.getUserKeywords();
+		List<String> result = new ArrayList<>();
+		for (UserKeyword keyword : keywords) {
+			result.add(keyword.getKeyword().getName());
+		}
+		return result;
+	}
+
+	public void createUserKeyword(Long userId, String[] keywords) throws Exception{
+		for (String keyword : keywords) {
+			Keyword k = keywordRepository.findByName(keyword);
+			userKeywordRepository.save(UserKeyword.builder()
+				.user(User.builder()
+					.id(userId)
+					.build())
+				.keyword(k)
+				.build());
 		}
 	}
 }

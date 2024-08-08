@@ -1,5 +1,7 @@
 package com.team404x.greenplate.user.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,4 +98,28 @@ public class UserController {
 			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_FAIL);
 		}
 	}
+
+	@Operation(summary = "[유저] 키워드 불러오기 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/keyword/list")
+	public BaseResponse getUserKeyword(@AuthenticationPrincipal CustomUserDetails user) {
+		try {
+			List<String> keywords = userService.getUserKeyword(user.getId());
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS, keywords);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
+	@Operation(summary = "[유저] 키워드 저장 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/create")
+	public BaseResponse createUserKeyword(@AuthenticationPrincipal CustomUserDetails user, String keyword) {
+		try {
+			String[] keywords = keyword.split(",");
+			userService.createUserKeyword(user.getId(), keywords);
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
 }
