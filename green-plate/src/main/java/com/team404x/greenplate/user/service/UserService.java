@@ -1,5 +1,7 @@
 package com.team404x.greenplate.user.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,18 +12,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
+import com.team404x.greenplate.keyword.entity.Keyword;
+import com.team404x.greenplate.keyword.repository.KeywordRepository;
 import com.team404x.greenplate.user.address.entity.Address;
 import com.team404x.greenplate.user.address.repository.AddressRepository;
+import com.team404x.greenplate.user.keyword.entity.UserKeyword;
 import com.team404x.greenplate.user.model.request.UserAddressRegisterReq;
 import com.team404x.greenplate.user.model.request.UserLoginReq;
 import com.team404x.greenplate.user.model.request.UserSignupReq;
 import com.team404x.greenplate.user.model.entity.User;
 import com.team404x.greenplate.user.model.response.UserDetailsAddressRes;
 import com.team404x.greenplate.user.model.response.UserDetailsRes;
+import com.team404x.greenplate.user.repository.UserKeywordRepository;
 import com.team404x.greenplate.user.repository.UserRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,15 +40,26 @@ public class UserService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
+	private final KeywordRepository keywordRepository;
+	private final UserKeywordRepository userKeywordRepository;
 
 	public void signup(UserSignupReq userSignupReq) throws Exception {
+
+		String birthYear = userSignupReq.getBirthYear();
+		String birthMonth = userSignupReq.getBirthMonth();
+		String birthDay = userSignupReq.getBirthDay();
+
+		String birthDateStr = birthYear + "-" + birthMonth + "-" + birthDay;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate birthdayFormat = LocalDate.parse(birthDateStr, formatter);
+
 		User user = User.builder()
 			.email(userSignupReq.getEmail())
 			.password(passwordEncoder.encode(userSignupReq.getPassword()))
-			.role("ROLE_USER")
-			.name(userSignupReq.getName())
+			.role(GlobalMessage.ROLE_USER.getMessage())
+			.name(userSignupReq.getUsername())
 			.nickName(userSignupReq.getNickname())
-			.birthday(userSignupReq.getBirthday())
+			.birthday(birthdayFormat)
 			.build();
 
 		userRepository.save(user);
@@ -52,8 +71,8 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public String login(UserLoginReq userLoginReq) throws Exception {
-		String email = userLoginReq.getEmail() + "_user";
+	public Cookie login(UserLoginReq userLoginReq) throws Exception {
+		String email = userLoginReq.getEmail() + GlobalMessage.USER_SUFFIX.getMessage();
 		String password = userLoginReq.getPassword();
 
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
@@ -62,7 +81,7 @@ public class UserService {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 			var role = authentication.getAuthorities().iterator().next().getAuthority();
 			String token = jwtUtil.createToken(userDetails.getId(), email, role);
-			return token;
+			return jwtUtil.createCookie(token);
 		}
 		return null;
 	}
@@ -116,6 +135,28 @@ public class UserService {
 				address.setDefultAddr(true);
 				addressRepository.save(address);
 			}
+		}
+	}
+
+	public List<String> getUserKeyword(Long userId) throws Exception{
+		User user = userRepository.findById(userId).orElseThrow();
+		List<UserKeyword> keywords = user.getUserKeywords();
+		List<String> result = new ArrayList<>();
+		for (UserKeyword keyword : keywords) {
+			result.add(keyword.getKeyword().getName());
+		}
+		return result;
+	}
+
+	public void createUserKeyword(Long userId, String[] keywords) throws Exception{
+		for (String keyword : keywords) {
+			Keyword k = keywordRepository.findByName(keyword);
+			userKeywordRepository.save(UserKeyword.builder()
+				.user(User.builder()
+					.id(userId)
+					.build())
+				.keyword(k)
+				.build());
 		}
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.team404x.greenplate.cart.model.entity.Cart;
 import com.team404x.greenplate.cart.repository.CartRepository;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.category.entity.Category;
@@ -92,7 +93,7 @@ public class InitDb {
 				.enabled(true)
 				.nickName("user"+i)
 				.name("user"+i)
-				.role("ROLE_USER")
+				.role(GlobalMessage.ROLE_USER.getMessage())
 				.build();
 			userRepository.save(user);
 		}
@@ -107,7 +108,7 @@ public class InitDb {
 				.name("company" + i)
 				.comNum("comNum" + i)
 				.telNum("010-" + (i-1) + (i-1) + (i-1) + (i-1) + "-" + (i-1) + (i-1) + (i-1) + (i-1))
-				.role("ROLE_COMPANY")
+				.role(GlobalMessage.ROLE_COMPANY.getMessage())
 				.build();
 			companyRepository.save(company);
 		}
@@ -122,9 +123,9 @@ public class InitDb {
 	}
 
 	private void createCategory() {
-		List<String> mains = List.of("채소", "과일", "수산", "정육", "커피", "베이커리", "건강식품");
-		List<String> subs1 = List.of("친환경", "고구마,감자,당근", "시금치,쌈채소,나물", "냉동,간편채소");
-		List<String> subs2 = List.of("친환경", "국산과일", "수입과일", "간편과일");
+		List<String> mains = List.of("채소", "과일", "수산", "커피", "베이커리", "건강식품");
+		List<String> subs1 = List.of("고구마,감자,당근", "시금치,쌈채소,나물", "냉동,간편채소");
+		List<String> subs2 = List.of("국산과일", "수입과일", "간편과일");
 		List<String> subs3 = List.of("제철수산", "생선류", "갑각류", "젓갈류");
 		List<String> subs4 = List.of("스페셜티 원두", "드립백", "캡슐커피", "콜드브루", "인스턴트커피");
 		List<String> subs5 = List.of("잼,스프레드", "식빵,모닝빵,베이글", "타르트", "디저트", "케이크");
@@ -132,15 +133,14 @@ public class InitDb {
 
 		List<List<String>> subs = List.of(subs1, subs2, subs3, subs4, subs5, subs6);
 
-		for (String main : mains) {
-			for (List<String> sub : subs) {
-				for (String elem : sub) {
-					Category category = Category.builder()
-						.mainCategory(main)
-						.subCategory(elem)
-						.build();
-					categoryRepository.save(category);
-				}
+		for (int i = 0; i < mains.size(); i++) {
+			List<String> sub = subs.get(i);
+			for (String elem : sub) {
+				Category category = Category.builder()
+					.mainCategory(mains.get(i))
+					.subCategory(elem)
+					.build();
+				categoryRepository.save(category);
 			}
 		}
 	}

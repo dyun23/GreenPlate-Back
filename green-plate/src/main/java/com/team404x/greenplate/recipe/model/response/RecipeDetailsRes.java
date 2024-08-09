@@ -19,6 +19,8 @@ public class RecipeDetailsRes {
     private Integer totalCalorie;
     private List<RecipeDetailsItemRes> itemList;
     private List<String> keywords;
+    private String memberName;
     private Long memberId;
     private String role;
+    private String date;
 }

@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/item")
@@ -31,19 +32,18 @@ public class ItemController {
     @SecuredOperation
     @Operation(summary = "[사업자] 상품 등록을 위한 API")
     @RequestMapping(method= RequestMethod.POST, value="/create")
-    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails company, @RequestBody ItemCreateReq itemCreateReq) {
+    public BaseResponse create(@AuthenticationPrincipal CustomUserDetails company, @RequestPart ItemCreateReq request,
+        @RequestPart MultipartFile file) {
         try {
-            itemService.create(company.getId(), itemCreateReq);
+            itemService.create(company.getId(), request, file);
             return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
         } catch (Exception e) {
-             if(itemCreateReq.getCompanyId() == null) {
-                return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_ISEMPTY);
-            } else if (itemCreateReq.getDiscountPrice() > itemCreateReq.getPrice()) {
+             if (request.getDiscountPrice() > request.getPrice()) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_PRICE);
-            } else if (itemCreateReq.getStock() <= 0 || itemCreateReq.getPrice() <= 0) {
+            } else if (request.getStock() <= 0 || request.getPrice() <= 0) {
                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL_QUANTITYANDPRICE);
             } else {
-                 return new BaseResponse(BaseResponseMessage.USER_CREATE_SUCCESS);
+                 return new BaseResponse(BaseResponseMessage.USER_CREATE_FAIL);
              }
         }
     }
@@ -73,7 +73,7 @@ public class ItemController {
     @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
     @GetMapping("/list")
     public BaseResponse<Page<ItemRes>> list(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         try {
             Page<ItemRes> itemResPage = itemService.list(pageable);
             return new BaseResponse<>(BaseResponseMessage.ITEM_LIST_SUCCESS, itemResPage);
@@ -84,9 +84,20 @@ public class ItemController {
 
     @Operation(summary = "[전체] 카테고리에 해당하는 상품 목록을 조회하는 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list/category")
-    public BaseResponse list(String main, String sub) {
+    public BaseResponse<List<ItemRes>> list(String main, String sub) {
         try {
             List<ItemRes> itemResList = itemService.list(main, sub);
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_FAIL);
+        }
+    }
+
+    @Operation(summary = "[전체] 카테고리에 해당하는 상품 목록을 조회하는 API")
+    @RequestMapping(method = RequestMethod.GET, value = "/category")
+    public BaseResponse<Page<ItemRes>> getCategoryPage(String main, String sub, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            Page<ItemRes> itemResList = itemService.getCategoryPage(main, sub, pageable);
             return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_SUCCESS, itemResList);
         } catch (Exception e) {
             return new BaseResponse(BaseResponseMessage.ITEM_LIST_CATEGORY_FAIL);
@@ -106,6 +117,20 @@ public class ItemController {
         }
     }
 
+    @Operation(summary = "[전체] 상품 이름으로 목록을 조회하는 API")
+    @RequestMapping(method = RequestMethod.GET, value = "/search/word")
+    public BaseResponse list(String name, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            Page<ItemRes> itemResList = itemService.list(name, pageable);
+            return itemResList.getSize() == 0 ?
+                new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_FAIL_NOT_FOUND) :
+                new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_SUCCESS, itemResList);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.ITEM_LIST_NAME_FAIL);
+        }
+    }
+
+
     @Operation(summary = "[전체] 상품 상세 정보를 조회하기 위한 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
     public BaseResponse list(Long id) {
@@ -116,7 +141,7 @@ public class ItemController {
             return new BaseResponse(BaseResponseMessage.ITEM_DETAILS_FAIL);
         }
     }
-    @Operation(summary = "[전체] 상품 목록 정보를 조회하기 위한 API")
+    @Operation(summary = "[사업자] 상품을 검색하기 위한 API")
     @RequestMapping(method=RequestMethod.GET,value="/company")
     public BaseResponse listCompanyItem(@AuthenticationPrincipal CustomUserDetails company){
         try {
@@ -127,7 +152,8 @@ public class ItemController {
         }
 
     }
-    @Operation(summary = "[사업자] 상품을 검색하기 위한 API")
+
+    @Operation(summary = "[전체] 상품 목록 정보를 조회하기 위한 API")
     @RequestMapping(method=RequestMethod.POST,value="/search")
     public BaseResponse search(@RequestBody ItemSearchReq itemSearchReq) {
         try {

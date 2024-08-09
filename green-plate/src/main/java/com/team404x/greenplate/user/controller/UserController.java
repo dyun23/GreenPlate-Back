@@ -1,5 +1,7 @@
 package com.team404x.greenplate.user.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.SecuredOperation;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.email.service.EmailVerifyService;
@@ -18,7 +21,9 @@ import com.team404x.greenplate.user.model.response.UserDetailsRes;
 import com.team404x.greenplate.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -33,9 +38,9 @@ public class UserController {
 
 	@Operation(summary = "[전체] 유저 회원가입 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/signup")
-	public BaseResponse signup(@RequestBody UserSignupReq userSignupReq) {
+	public BaseResponse signup(@Valid @RequestBody UserSignupReq userSignupReq) {
 		try {
-			emailVerifyService.sendEmail(userSignupReq.getEmail(), "user");
+			emailVerifyService.saveEmail(userSignupReq.getEmail(), GlobalMessage.EMAIL_ROLE_USER.getMessage());
 			userService.signup(userSignupReq);
 			return new BaseResponse<>(BaseResponseMessage.USER_SIGNUP_SUCCESS);
 		} catch (Exception e) {
@@ -45,10 +50,10 @@ public class UserController {
 
 	@Operation(summary = "[전체] 유저 로그인 API")
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
-	public BaseResponse login(@RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
+	public BaseResponse login(@Valid @RequestBody UserLoginReq userLoginReq, HttpServletResponse response) {
 		try {
-			String jwtToken = userService.login(userLoginReq);
-			response.setHeader("Authorization", "Bearer " + jwtToken);
+			Cookie jwtCookie = userService.login(userLoginReq);
+			response.addCookie(jwtCookie);
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_FAIL);
@@ -60,7 +65,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
 	public BaseResponse details(@AuthenticationPrincipal CustomUserDetails user) {
 		try {
-			String email = user.getUsername().split("_user")[0];
+			String email = user.getUsername().split(GlobalMessage.USER_SUFFIX.getMessage())[0];
 			UserDetailsRes userDetailsRes = userService.details(email);
 			return new BaseResponse(BaseResponseMessage.USER_DETAILS_SUCCESS, userDetailsRes);
 		} catch (Exception e) {
@@ -93,4 +98,28 @@ public class UserController {
 			return new BaseResponse(BaseResponseMessage.USER_ADDRESS_REGISTER_FAIL);
 		}
 	}
+
+	@Operation(summary = "[유저] 키워드 불러오기 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/keyword/list")
+	public BaseResponse getUserKeyword(@AuthenticationPrincipal CustomUserDetails user) {
+		try {
+			List<String> keywords = userService.getUserKeyword(user.getId());
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS, keywords);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
+	@Operation(summary = "[유저] 키워드 저장 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/create")
+	public BaseResponse createUserKeyword(@AuthenticationPrincipal CustomUserDetails user, String keyword) {
+		try {
+			String[] keywords = keyword.split(",");
+			userService.createUserKeyword(user.getId(), keywords);
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
 }

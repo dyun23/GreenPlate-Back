@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.model.request.CompanyLoginReq;
 import com.team404x.greenplate.company.model.request.CompanySignupReq;
@@ -14,6 +15,7 @@ import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -29,7 +31,7 @@ public class CompanyService {
 			.email(companySignupReq.getEmail())
 			.password(passwordEncoder.encode(companySignupReq.getPassword()))
 			.comNum(companySignupReq.getComNum())
-			.role("ROLE_COMPANY")
+			.role(GlobalMessage.ROLE_COMPANY.getMessage())
 			.name(companySignupReq.getName())
 			.address(companySignupReq.getAddress())
 			.telNum(companySignupReq.getTelNum())
@@ -38,8 +40,8 @@ public class CompanyService {
 		companyRepository.save(company);
 	}
 
-	public String login(CompanyLoginReq companyLoginReq) throws Exception {
-		String email = companyLoginReq.getEmail() + "_company";
+	public Cookie login(CompanyLoginReq companyLoginReq) throws Exception {
+		String email = companyLoginReq.getEmail() + GlobalMessage.COMPANY_SUFFIX.getMessage();
 		String password = companyLoginReq.getPassword();
 
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
@@ -48,8 +50,7 @@ public class CompanyService {
 			CustomUserDetails companyDetails = (CustomUserDetails) authentication.getPrincipal();
 			var role = authentication.getAuthorities().iterator().next().getAuthority();
 			String token = jwtUtil.createToken(companyDetails.getId(), email, role);
-			System.out.println(token);
-			return token;
+			return jwtUtil.createCookie(token);
 		}
 		return null;
 	}

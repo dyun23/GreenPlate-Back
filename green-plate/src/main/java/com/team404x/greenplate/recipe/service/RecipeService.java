@@ -1,5 +1,6 @@
 package com.team404x.greenplate.recipe.service;
 
+import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class RecipeService {
         }
         Recipe recipe;
         Long id = customUserDetails.getId();
-        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals(GlobalMessage.ROLE_COMPANY.getMessage())) {
             recipe = Recipe.builder()
                     .title(request.getTitle())
                     .contents(request.getContents())
@@ -73,7 +75,7 @@ public class RecipeService {
         }
         Long id = customUserDetails.getId();
         Recipe recipe;
-        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals("ROLE_COMPANY")) {
+        if (customUserDetails.getAuthorities().iterator().next().getAuthority().equals(GlobalMessage.ROLE_COMPANY.getMessage())) {
             if (!recipeRepository.findById(request.getRecipeId()).get().getCompany().getId().equals(id)) {
                 throw new Exception("본인아님");
             }
@@ -151,7 +153,7 @@ public class RecipeService {
                         .keywords(keywordNames)
                         .memberId(recipe.getCompany().getId())
                         .memberName(recipe.getCompany().getName())
-                        .role("ROLE_COMPANY")
+                        .role(GlobalMessage.ROLE_COMPANY.getMessage())
                         .build();
             } else {
                 res = RecipeListRes.builder()
@@ -161,12 +163,31 @@ public class RecipeService {
                         .keywords(keywordNames)
                         .memberId(recipe.getUser().getId())
                         .memberName(recipe.getUser().getName())
-                        .role("ROLE_USER")
+                        .role(GlobalMessage.ROLE_USER.getMessage())
                         .build();
             }
             recipeListRes.add(res);
         }
         return recipeListRes;
+    }
+
+    public Page<RecipeListRes> list (Pageable pageable) {
+        Page<Recipe> recipeList = recipeRepository.findAll(pageable);
+        // 함수 마저 만들기
+        return recipeList.map(recipe -> {
+            List<String> keywordNames = recipe.getRecipeKeywords().stream()
+                .map(recipeKeyword -> recipeKeyword.getKeyword().getName())
+                .toList();
+
+            return RecipeListRes.builder()
+                .recipeId(recipe.getId())
+                .title(recipe.getTitle())
+                .imageUrl(recipe.getImageUrl())
+                .keywords(keywordNames)
+                .memberId(recipe.getUser().getId())
+                .memberName(recipe.getUser().getName())
+                .build();
+        });
     }
 
     public RecipeDetailsRes readRecipe(Long recipeId) {
@@ -176,6 +197,7 @@ public class RecipeService {
         }
         List<Item> itemList = itemRepository.findByRecipeItemsRecipeId(recipe.getId());
         List<RecipeDetailsItemRes> recipeDetailsItemResList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         for (Item item : itemList) {
             RecipeDetailsItemRes detailsItem = RecipeDetailsItemRes.builder()
                     .itemId(item.getId())
@@ -191,11 +213,13 @@ public class RecipeService {
                     .title(recipe.getTitle())
                     .contents(recipe.getContents())
                     .imageUrl(recipe.getImageUrl())
+                    .date(recipe.getCreatedDate().format(formatter))
                     .totalCalorie(recipe.getTotalCalorie())
                     .itemList(recipeDetailsItemResList)
                     .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                     .memberId(recipe.getCompany().getId())
-                    .role("ROLE_COMPANY")
+                    .memberName(recipe.getCompany().getName())
+                    .role(GlobalMessage.ROLE_COMPANY.getMessage())
                     .build();
         } else {
             return RecipeDetailsRes.builder()
@@ -203,11 +227,13 @@ public class RecipeService {
                     .title(recipe.getTitle())
                     .contents(recipe.getContents())
                     .imageUrl(recipe.getImageUrl())
+                    .date(recipe.getCreatedDate().format(formatter))
                     .totalCalorie(recipe.getTotalCalorie())
                     .itemList(recipeDetailsItemResList)
                     .keywords(keywordRepository.findByRecipeKeywordsRecipeId(recipe.getId()))
                     .memberId(recipe.getUser().getId())
-                    .role("ROLE_USER")
+                    .memberName(recipe.getUser().getName())
+                    .role(GlobalMessage.ROLE_USER.getMessage())
                     .build();
         }
     }

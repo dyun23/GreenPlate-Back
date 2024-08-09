@@ -151,23 +151,26 @@ public class OrdersService {
 
     //유저 주문 상품 목록 조회
     @Transactional
-    public BaseResponse searchForUser(Long userId, int page, int size) throws Exception {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Orders> ordersPage = ordersRepository.findOrdersByUserId(userId, pageable);
-        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<>();
+    public BaseResponse searchForUser(Long userId, Pageable page) throws Exception {
 
-        for(Orders order : ordersPage){
-            OrderUserSearchRes res = OrderUserSearchRes.builder()
-                    .order_id(order.getId())
-                    .order_state(order.getOrderState())
-                    .total_price(order.getTotalPrice())
-                    .total_cnt(order.getTotalQuantity())
-                    .refund_yn(order.isRefundYn())
-                    .order_date(order.getOrderDate())
-                    .build();
-            orderUserSearchResList.add(res);
-        }
-        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST ,orderUserSearchResList);
+        Page<OrdersQueryProjection> ordersList = orderQueryRepository.getOrdersUser(userId, page);
+        return new BaseResponse<>(ordersList);
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+//        Page<Orders> ordersPage = ordersRepository.findOrdersByUserId(userId, pageable);
+//        List<OrderUserSearchRes> orderUserSearchResList = new ArrayList<>();
+//
+//        for(Orders order : ordersPage){
+//            OrderUserSearchRes res = OrderUserSearchRes.builder()
+//                    .order_id(order.getId())
+//                    .order_state(order.getOrderState())
+//                    .total_price(order.getTotalPrice())
+//                    .total_cnt(order.getTotalQuantity())
+//                    .refund_yn(order.isRefundYn())
+//                    .order_date(order.getOrderDate())
+//                    .build();
+//            orderUserSearchResList.add(res);
+//        }
+//        return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST ,orderUserSearchResList);
     }
 
     //유저 주문 상품 상세조회
@@ -180,12 +183,14 @@ public class OrdersService {
         Orders orders = user.getOrders().get(0);
 
         List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<>();
-
         for (OrderDetail orderDetail : orders.getOrderDetails()) {
             OrderUserSearchDetailRes res = OrderUserSearchDetailRes.builder()
                 .order_id(orders.getId())
                 .orderDetail_id(orderDetail.getId())
+                .order_totalPrice(orders.getTotalPrice())
                 .order_state(orders.getOrderState())
+                .itemName(orderDetail.getItem().getName())
+                .itemImageUrl(orderDetail.getItem().getImageUrl())
                 .price(orderDetail.getPrice())
                 .cnt(orderDetail.getCnt())
                 .refund_yn(orders.isRefundYn())
@@ -196,7 +201,6 @@ public class OrdersService {
                 .invoice(orders.getInvoice())
                 .build();
             orderUserSearchResList.add(res);
-
         }
         return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST, orderUserSearchResList);
     }

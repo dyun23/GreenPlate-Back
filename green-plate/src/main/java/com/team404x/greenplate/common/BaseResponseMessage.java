@@ -2,52 +2,59 @@ package com.team404x.greenplate.common;
 
 
 public enum BaseResponseMessage {
+	REQUEST_SUCCESS(true, 200, "요청에 성공했습니다"),
+	REQUEST_FAIL(false, 500, "요청에 실패하였습니다"),
 	// company signup
-	COMPANY_SIGNUP_SUCCESS(true, 1000, "정상적으로 회원가입되었습니다."),
-	COMPANY_SIGNUP_FAIL_PASSWORD(false, 1001, "올바르게 비밀번호를 입력하세요."),
-	COMPANY_SIGNUP_FAIL_EMPTY_NICKNAME(false, 1002, "닉네임을 입력해주세요."),
-	COMPANY_SIGNUP_FAIL_EMPTY_PASSWORD(false, 1003, "패스워드를 입력해주세요."),
-	COMPANY_SIGNUP_FAIL_EXISTING_EMAIL(false, 1004, "이미 존재하는 이메일 주소입니다."),
-	COMPANY_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1005, "인증번호를 확인해주세요."),
-	COMPANY_SIGNUP_FAIL_EXPIRED_CODE(false, 1006, "만료된 인증번호입니다."),
-	COMPANY_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1007,"입력값을 확인해주세요."),
+	COMPANY_SIGNUP_SUCCESS(true, 1000, "[사업자/회원가입] 정상적으로 회원가입되었습니다."),
+	COMPANY_SIGNUP_FAIL_EMAIL(false, 1001, "[사업자/회원가입] 올바르게 이메일을 입력하세요."),
+	COMPANY_SIGNUP_FAIL_PASSWORD(false, 1002, "[사업자/회원가입] 올바르게 비밀번호를 입력하세요."),
+	COMPANY_SIGNUP_FAIL_COMNUM(false, 1003, "[사업자/회원가입] 올바르게 사업자 번호를 입력하세요."),
+	COMPANY_SIGNUP_FAIL_NAME(false, 1004, "[사업자/회원가입] 올바르게 이름을 입력하세요."),
+	COMPANY_SIGNUP_FAIL_ADDRESS(false, 1005, "[사업자/회원가입] 올바르게 주소를 입력하세요."),
+	COMPANY_SIGNUP_FAIL_TELNUM(false, 1006, "[사업자/회원가입] 올바르게 번호를 입력하세요."),
+	COMPANY_SIGNUP_FAIL_EXISTING_EMAIL(false, 1007, "[사업자/회원가입] 이미 존재하는 이메일 주소입니다."),
+	COMPANY_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1008, "[사업자/회원가입] 인증번호를 확인해주세요."),
+	COMPANY_SIGNUP_FAIL_EXPIRED_CODE(false, 1009, "[사업자/회원가입] 만료된 인증번호입니다."),
+	COMPANY_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1010,"[사업자/회원가입] 입력값을 확인해주세요."),
 	// company login
-	COMPANY_LOGIN_SUCCESS(true, 1050, "정상적으로 로그인되었습니다."),
-	COMPANY_LOGIN_FAIL(false, 1051, "로그인에 실패했습니다."),
-	COMPANY_LOGIN_FAIL_EMAIL(false, 1052, "이메일을 정확히 입력하세요."),
-	COMPANY_LOGIN_FAIL_PASSWORD(false, 1053, "비밀번호를 정확히 입력하세요."),
+	COMPANY_LOGIN_SUCCESS(true, 1050, "[사업자/로그인] 정상적으로 로그인되었습니다."),
+	COMPANY_LOGIN_FAIL(false, 1051, "[사업자/로그인] 로그인에 실패했습니다."),
+	COMPANY_LOGIN_FAIL_EMAIL(false, 1052, "[사업자/로그인] 이메일을 정확히 입력하세요."),
+	COMPANY_LOGIN_FAIL_PASSWORD(false, 1053, "[사업자/로그인] 비밀번호를 정확히 입력하세요."),
 
-	COMPANY_DETAILS_SUCCESS(true, 1100, "상세 정보를 성공적으로 불러왔습니다"),
-	COMPANY_DETAILS_FAIL(false, 1100, "상세 정보를 불러오는데 실패했습니다"),
+	COMPANY_DETAILS_SUCCESS(true, 1100, "[사업자] 상세 정보를 성공적으로 불러왔습니다"),
+	COMPANY_DETAILS_FAIL(false, 1100, "[사업자] 상세 정보를 불러오는데 실패했습니다"),
 
 	// user signup
-	USER_SIGNUP_SUCCESS(true, 1010, "정상적으로 회원가입 되었습니다."),
-	USER_SIGNUP_FAIL_PASSWORD(false, 1200, "올바르게 비밀번호를 입력하세요."),
-	USER_SIGNUP_FAIL_EMPTY_NICKNAME(false, 1201, "닉네임을 입력해주세요."),
-	USER_SIGNUP_FAIL_EMPTY_PASSWORD(false, 1202, "패스워드를 입력해주세요."),
-	USER_SIGNUP_FAIL_EMPTY_KEYWORD(false, 1203,"키워드를 입력해주세요."),
-	USER_SIGNUP_FAIL_EXISTING_EMAIL(false, 1204, "이미 존재하는 이메일 주소입니다."),
-	USER_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1205, "인증번호를 확인해주세요."),
-	USER_SIGNUP_FAIL_EXPIRED_CODE(false, 1206, "만료된 인증번호입니다."),
-	USER_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1207,"입력값을 확인해주세요."),
+	USER_SIGNUP_SUCCESS(true, 1010, "[유저/회원가입] 정상적으로 회원가입 되었습니다."),
+	USER_SIGNUP_FAIL_EMAIL(false, 1119, "[유저/회원가입] 올바르게 이메일을 입력해주세요"),
+	USER_SIGNUP_FAIL_PASSWORD(false, 1200, "[유저/회원가입] 올바르게 비밀번호를 입력하세요."),
+	USER_SIGNUP_FAIL_NAME(false, 1201, "[유저/회원가입] 올바르게 이름을 입력해주세요."),
+	USER_SIGNUP_FAIL_NICKNAME(false, 1202, "[유저/회원가입] 올바르게 닉네임을 입력해주세요."),
+	USER_SIGNUP_FAIL_BIRTHDAY(false, 1203, "[유저/회원가입] 올바르게 생일을 입력해주세요."),
+	USER_SIGNUP_FAIL_EMPTY_KEYWORD(false, 1204,"[유저/회원가입] 키워드를 입력해주세요."),
+	USER_SIGNUP_FAIL_EXISTING_EMAIL(false, 1205, "[유저/회원가입] 이미 존재하는 이메일 주소입니다."),
+	USER_SIGNUP_FAIL_NOT_CONFIRMED_CODE(false, 1206, "[유저/회원가입] 인증번호를 확인해주세요."),
+	USER_SIGNUP_FAIL_EXPIRED_CODE(false, 1207, "[유저/회원가입] 만료된 인증번호입니다."),
+	USER_SIGNUP_FAIL_PAYLOAD_INVALID(false, 1208,"[유저/회원가입] 입력값을 확인해주세요."),
 
 	// user login
-	USER_LOGIN_SUCCESS(true, 1070, "정상적으로 로그인되었습니다."),
-	USER_LOGIN_FAIL(false, 1300, "로그인에 실패했습니다."),
-	USER_LOGIN_FAIL_EMAIL(false, 1301, "이메일을 정확히 입력하세요."),
-	USER_LOGIN_FAIL_PASSWORD(false, 1302, "비밀번호를 정확히 입력하세요."),
+	USER_LOGIN_SUCCESS(true, 1070, "[유저/로그인] 정상적으로 로그인되었습니다."),
+	USER_LOGIN_FAIL(false, 1300, "[유저/로그인] 로그인에 실패했습니다."),
+	USER_LOGIN_FAIL_EMAIL(false, 1301, "[유저/로그인] 이메일을 정확히 입력하세요."),
+	USER_LOGIN_FAIL_PASSWORD(false, 1302, "[유저/로그인] 비밀번호를 정확히 입력하세요."),
 
 	// user details
-	USER_DETAILS_SUCCESS(true, 1400, "유저 상세 정보를 성공적으로 불러왔습니다"),
-	USER_DETAILS_FAIL(true, 1401, "유저 상세 정보를 불러오는데 실패했습니다"),
+	USER_DETAILS_SUCCESS(true, 1400, "[유저] 상세 정보를 성공적으로 불러왔습니다"),
+	USER_DETAILS_FAIL(true, 1401, "[유저] 상세 정보를 불러오는데 실패했습니다"),
 
 	// user email verify
-	EMAIL_VERIFY_SUCCESS(true, 1500, "이메일 인증에 성공했습니다."),
-	EMAIL_VERIFY_FAIL(false, 1550, "이메일 인증에 실패했습니다."),
+	EMAIL_VERIFY_SUCCESS(true, 1500, "[유저] 이메일 인증에 성공했습니다."),
+	EMAIL_VERIFY_FAIL(false, 1550, "[유저] 이메일 인증에 실패했습니다."),
 
 	// user address
-	USER_ADDRESS_REGISTER_SUCCESS(true, 1600, "주소 등록에 성공했습니다."),
-	USER_ADDRESS_REGISTER_FAIL(false, 1650, "주소 등록에 실패했습니다"),
+	USER_ADDRESS_REGISTER_SUCCESS(true, 1600, "[유저] 주소 등록에 성공했습니다."),
+	USER_ADDRESS_REGISTER_FAIL(false, 1650, "[유저] 주소 등록에 실패했습니다"),
 
 
 	// item 조회
@@ -161,8 +168,16 @@ public enum BaseResponseMessage {
 	CART_UPDATE_FAIL_NOT_USER(false, 3522, "본인의 장바구니만 수정할 수 있습니다"),
 
 	CART_LIST_SUCCESS(true, 3540, "장바구니에 상품을 불러오는데에 성공했습니다"),
-	CART_LIST_FAIL(false, 3541, "장바구니에서 상품을 불러오는데 실패했습니다");
+	CART_LIST_FAIL(false, 3541, "장바구니에서 상품을 불러오는데 실패했습니다"),
 
+	CART_DELETE_SUCCESS(true, 3560, "상품이 장바구니에서 삭제되었습니다."),
+	CART_DELETE_FAIL(false, 3561, "상품을 삭제하는데 실패했습니다"),
+	CART_DELETE_FAIL_NOT_USER(false, 3562, "본인의 장바구니만 삭제할 수 있습니다"),
+	CART_DELETE_FAIL_NULL(false, 3562, "해당 장바구니 항목이 존재하지 않습니다"),
+
+	IMAGE_UPLOAD_SUCCESS(true, 8000, "이미지 업로드에 성공했습니다"),
+
+	CATEGORY_LIST_SUCCESS(true, 9000, "카테고리를 불러오는데 성공했습니다");
 
 	private Boolean success;
 	private Integer code;
@@ -185,6 +200,4 @@ public enum BaseResponseMessage {
 	public String getMessage() {
 		return message;
 	}
-
-
 }

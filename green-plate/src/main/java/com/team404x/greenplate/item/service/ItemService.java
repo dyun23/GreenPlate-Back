@@ -3,8 +3,10 @@ package com.team404x.greenplate.item.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.team404x.greenplate.common.BaseResponse;
+import com.team404x.greenplate.common.s3.S3FileUploadSevice;
 import com.team404x.greenplate.company.model.entity.Company;
 import com.team404x.greenplate.company.repository.CompanyRepository;
 import com.team404x.greenplate.item.category.entity.Category;
@@ -15,9 +17,12 @@ import com.team404x.greenplate.item.model.response.*;
 import com.team404x.greenplate.item.repository.ItemRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.team404x.greenplate.item.model.request.ItemUpdateReq;
 
 @Service
@@ -26,7 +31,9 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
     private final CompanyRepository companyRepository;
-    public void create(Long id, ItemCreateReq itemCreateReq) {
+    private final S3FileUploadSevice s3FileUploadSevice;
+
+    public void create(Long id, ItemCreateReq itemCreateReq, MultipartFile file) {
         Category category = categoryRepository.findCategoryBySubCategory(itemCreateReq.getSubCategory());
         Item item = Item.builder()
                 .name(itemCreateReq.getName())
@@ -35,7 +42,7 @@ public class ItemService {
                 .stock(itemCreateReq.getStock())
                 .calorie(itemCreateReq.getCalorie())
                 .state(itemCreateReq.getState())
-                .imageUrl(itemCreateReq.getImageUrl())
+                .imageUrl(s3FileUploadSevice.upload("item", id, file))
                 .discountPrice(itemCreateReq.getDiscountPrice())
                 .category(category)
                 .company(Company.builder().id(id).build())
@@ -81,8 +88,32 @@ public class ItemService {
         return getItemRes(items);
     }
 
+
+    public Page<ItemRes> getCategoryPage(String main, String sub, Pageable pageable) throws Exception {
+        Category category = categoryRepository.findCategoryByMainCategoryAndSubCategory(main, sub);
+
+        Page<Item> itemsPage = itemRepository.findByCategory(category, pageable);
+
+        Page<ItemRes> itemResPage = itemsPage.map(item -> ItemRes.builder()
+            .id(item.getId())
+            .name(item.getName())
+            .price(item.getPrice())
+            .calorie(item.getCalorie())
+            .imageUrl(item.getImageUrl())
+            .discountPrice(item.getDiscountPrice())
+            .companyName(item.getCompany().getName())
+            .build());
+
+        return itemResPage;
+    }
+
     public List<ItemRes> list(String name) throws Exception {
         List<Item> items = itemRepository.findByNameContaining(name);
+        return getItemRes(items);
+    }
+
+    public Page<ItemRes> list(String name, Pageable pageable) throws Exception {
+        Page<Item> items = itemRepository.findByNameContaining(name, pageable);
         return getItemRes(items);
     }
 
@@ -101,6 +132,22 @@ public class ItemService {
             .build();
     }
 
+    private Page<ItemRes> getItemRes(Page<Item> items) throws Exception {
+        List<ItemRes> itemResList = items.getContent().stream()
+            .map(item -> ItemRes.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .price(item.getPrice())
+                .calorie(item.getCalorie())
+                .imageUrl(item.getImageUrl())
+                .discountPrice(item.getDiscountPrice())
+                .companyName(item.getCompany().getName())
+                .build()
+            )
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(itemResList, items.getPageable(), items.getTotalElements());
+    }
 
     private List<ItemRes> getItemRes(List<Item> items) throws Exception {
         List<ItemRes> itemResList = new ArrayList<>();

@@ -36,11 +36,12 @@ public class SecurityConfig {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
-//  카카오페이 테스트시 필요하여 넣음
+	//  카카오페이 테스트시 필요하여 넣음
 	@Bean
 	public CorsFilter corsFilter() {
 		CorsConfiguration config = new CorsConfiguration();
 
+		config.addAllowedOrigin("http://localhost:8081");
 		config.addAllowedOrigin("http://localhost:63342"); // 허용할 출처
 		config.addAllowedOrigin("http://localhost:8080"); // 허용할 출처
 		config.addAllowedMethod("*"); // 허용할 메서드 (GET, POST, PUT 등)
@@ -62,11 +63,11 @@ public class SecurityConfig {
 		http.formLogin(Customizer.withDefaults());
 
 		http.authorizeHttpRequests((auth) ->
-				auth.requestMatchers( "/**").permitAll()
-					.anyRequest().authenticated()
+			auth.requestMatchers( "/**").permitAll()
+				.anyRequest().authenticated()
 		);
 
-		http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterAt(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
