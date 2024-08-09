@@ -138,8 +138,12 @@ public class UserService {
 	}
 
 	public void createUserKeyword(Long userId, String[] keywords) throws Exception{
+
 		for (String keyword : keywords) {
 			Keyword k = keywordRepository.findByName(keyword);
+			UserKeyword userKeyword = userKeywordRepository.findByUserIdAndKeywordId(userId,k.getId());
+			if (userKeyword != null)
+				continue;
 			userKeywordRepository.save(UserKeyword.builder()
 				.user(User.builder()
 					.id(userId)

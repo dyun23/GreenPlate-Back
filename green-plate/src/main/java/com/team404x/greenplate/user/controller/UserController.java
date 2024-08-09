@@ -114,7 +114,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, value = "/create")
 	public BaseResponse createUserKeyword(@AuthenticationPrincipal CustomUserDetails user, String keyword) {
 		try {
-			String[] keywords = keyword.split(",");
+			String[] keywords = keyword.split("/");
 			userService.createUserKeyword(user.getId(), keywords);
 			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
 		} catch (Exception e) {
