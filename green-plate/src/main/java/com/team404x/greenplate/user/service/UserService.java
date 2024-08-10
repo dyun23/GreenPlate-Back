@@ -94,6 +94,8 @@ public class UserService {
 				.zipcode(address.getZipcode())
 				.address(address.getAddress())
 				.addressDetail(address.getAddressDetail())
+				.phoneNum(address.getPhoneNum())
+				.defaultAddr(address.getDefultAddr())
 				.build());
 		}
 
