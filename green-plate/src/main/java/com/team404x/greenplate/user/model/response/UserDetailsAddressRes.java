@@ -11,4 +11,6 @@ public class UserDetailsAddressRes {
 	private String zipcode;
 	private String address;
 	private String addressDetail;
+	private String phoneNum;
+	private Boolean defaultAddr;
 }
