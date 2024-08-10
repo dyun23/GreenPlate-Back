@@ -56,6 +56,8 @@ public enum BaseResponseMessage {
 	USER_ADDRESS_REGISTER_SUCCESS(true, 1600, "[유저] 주소 등록에 성공했습니다."),
 	USER_ADDRESS_REGISTER_FAIL(false, 1650, "[유저] 주소 등록에 실패했습니다"),
 
+	EMAIL_DUPLICATE_SUCCESS(true, 1700, "사용 가능한 이메일 입니다"),
+	EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL(false, 1701, "이미 존재하는 이메일입니다"),
 
 	// item 조회
 	ITEM_LIST_SUCCESS(true, 3000, "전체 상품 목록을 성공적으로 불러왔습니다"),

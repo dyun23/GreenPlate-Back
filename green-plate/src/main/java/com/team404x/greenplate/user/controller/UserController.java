@@ -122,4 +122,15 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "[유저] 이메일 중복 확인 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/email")
+	public BaseResponse findEmail(String email) {
+		boolean duplicateEmail = userService.duplicateEmail(email);
+		if (duplicateEmail) {
+			return new BaseResponse<>(BaseResponseMessage.EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL);
+		} else {
+			return new BaseResponse<>(BaseResponseMessage.EMAIL_DUPLICATE_SUCCESS);
+		}
+	}
+
 }

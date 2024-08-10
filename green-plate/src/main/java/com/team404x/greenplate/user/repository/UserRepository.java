@@ -3,8 +3,6 @@ package com.team404x.greenplate.user.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		"JOIN FETCH u.orders o " +
 		"WHERE u.id = :userId AND o.id = :ordersId")
 	Optional<User> findUserWithSpecificOrder(@Param("userId") Long userId, @Param("ordersId") Long ordersId);
+
+	Optional<User> findByEmail(String email);
 }
