@@ -185,21 +185,21 @@ public class OrdersService {
         List<OrderUserSearchDetailRes> orderUserSearchResList = new ArrayList<>();
         for (OrderDetail orderDetail : orders.getOrderDetails()) {
             OrderUserSearchDetailRes res = OrderUserSearchDetailRes.builder()
-                .order_id(orders.getId())
-                .orderDetail_id(orderDetail.getId())
-                .order_totalPrice(orders.getTotalPrice())
-                .order_state(orders.getOrderState())
-                .itemName(orderDetail.getItem().getName())
-                .itemImageUrl(orderDetail.getItem().getImageUrl())
-                .price(orderDetail.getPrice())
-                .cnt(orderDetail.getCnt())
-                .refund_yn(orders.isRefundYn())
-                .order_date(orders.getOrderDate())
-                .zipCode(orders.getZipCode())
-                .address(orders.getAddress())
-                .phoneNum(orders.getPhoneNum())
-                .invoice(orders.getInvoice())
-                .build();
+                    .order_id(orders.getId())
+                    .orderDetail_id(orderDetail.getId())
+                    .order_totalPrice(orders.getTotalPrice())
+                    .order_state(orders.getOrderState())
+                    .itemName(orderDetail.getItem().getName())
+                    .itemImageUrl(orderDetail.getItem().getImageUrl())
+                    .price(orderDetail.getPrice())
+                    .cnt(orderDetail.getCnt())
+                    .refund_yn(orders.isRefundYn())
+                    .order_date(orders.getOrderDate())
+                    .zipCode(orders.getZipCode())
+                    .address(orders.getAddress())
+                    .phoneNum(orders.getPhoneNum())
+                    .invoice(orders.getInvoice())
+                    .build();
             orderUserSearchResList.add(res);
         }
         return new BaseResponse<>(ORDERS_USER_SUCCESS_LIST, orderUserSearchResList);
@@ -222,8 +222,8 @@ public class OrdersService {
     @Transactional
     public BaseResponse changeDeliveryState(OrderSearchReq orderSearchReq) {
         if(!orderSearchReq.getStatus().equals(OrderStatus.ready.toString())
-            && !orderSearchReq.getStatus().equals(OrderStatus.shipped.toString())
-            && !orderSearchReq.equals(OrderStatus.completed.toString()))
+                && !orderSearchReq.getStatus().equals(OrderStatus.shipped.toString())
+                && !orderSearchReq.equals(OrderStatus.completed.toString()))
         {
             return new BaseResponse<>(ORDERS_UPDATE_FAIL_CHANGE);
         }
@@ -378,8 +378,13 @@ public class OrdersService {
         Map<String, List> data = gson.fromJson(customData, Map.class);
         //List list = data.get("list");
         //Map<String, Double> products = (LinkedTreeMap<String, Double>) list.get(0);
+
         List<Map<String, Double>> list = data.get("list");
         Map<String, Double> products = new HashMap<>();
+
+        for (Map<String, Double> map : list) {
+            products.putAll(map);
+        }
 
         List<Long> itemIdList = new ArrayList<>();
         for (String key : products.keySet()) {
