@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.keyword.entity.Keyword;
@@ -162,5 +161,8 @@ public class UserService {
 				.keyword(k)
 				.build());
 		}
+	}
+	public boolean duplicateEmail(String email) {
+		return userRepository.findByEmail(email).isPresent();
 	}
 }
