@@ -3,10 +3,7 @@ package com.team404x.greenplate.user.controller;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
@@ -124,12 +121,12 @@ public class UserController {
 
 	@Operation(summary = "[유저] 이메일 중복 확인 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/email")
-	public BaseResponse findEmail(String email) {
+	public BaseResponse findEmail(@RequestParam String email) {
 		boolean duplicateEmail = userService.duplicateEmail(email);
 		if (duplicateEmail) {
-			return new BaseResponse<>(BaseResponseMessage.EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL);
+			return new BaseResponse<>(BaseResponseMessage.USER_EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL);
 		} else {
-			return new BaseResponse<>(BaseResponseMessage.EMAIL_DUPLICATE_SUCCESS);
+			return new BaseResponse<>(BaseResponseMessage.USER_EMAIL_DUPLICATE_SUCCESS);
 		}
 	}
 

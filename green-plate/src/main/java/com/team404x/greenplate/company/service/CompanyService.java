@@ -65,4 +65,7 @@ public class CompanyService {
 			.telNum(company.getTelNum())
 			.build();
 	}
+	public boolean duplicateEmail(String email) {
+		return companyRepository.findByEmail(email).isPresent();
+	}
 }

@@ -25,6 +25,10 @@ public enum BaseResponseMessage {
 	COMPANY_DETAILS_SUCCESS(true, 1100, "[사업자] 상세 정보를 성공적으로 불러왔습니다"),
 	COMPANY_DETAILS_FAIL(false, 1100, "[사업자] 상세 정보를 불러오는데 실패했습니다"),
 
+	COMPANY_EMAIL_DUPLICATE_SUCCESS(true, 1120, "사용 가능한 이메일 입니다"),
+	COMPANY_EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL(false, 1121, "이미 존재하는 이메일입니다"),
+
+
 	// user signup
 	USER_SIGNUP_SUCCESS(true, 1010, "[유저/회원가입] 정상적으로 회원가입 되었습니다."),
 	USER_SIGNUP_FAIL_EMAIL(false, 1119, "[유저/회원가입] 올바르게 이메일을 입력해주세요"),
@@ -56,8 +60,8 @@ public enum BaseResponseMessage {
 	USER_ADDRESS_REGISTER_SUCCESS(true, 1600, "[유저] 주소 등록에 성공했습니다."),
 	USER_ADDRESS_REGISTER_FAIL(false, 1650, "[유저] 주소 등록에 실패했습니다"),
 
-	EMAIL_DUPLICATE_SUCCESS(true, 1700, "사용 가능한 이메일 입니다"),
-	EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL(false, 1701, "이미 존재하는 이메일입니다"),
+	USER_EMAIL_DUPLICATE_SUCCESS(true, 1700, "사용 가능한 이메일 입니다"),
+	USER_EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL(false, 1701, "이미 존재하는 이메일입니다"),
 
 	// item 조회
 	ITEM_LIST_SUCCESS(true, 3000, "전체 상품 목록을 성공적으로 불러왔습니다"),

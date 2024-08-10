@@ -1,10 +1,7 @@
 package com.team404x.greenplate.company.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
@@ -68,4 +65,18 @@ public class CompanyController {
 			return new BaseResponse(BaseResponseMessage.COMPANY_DETAILS_FAIL);
 		}
 	}
+
+	@Operation(summary = "[사업자] 이메일 중복 확인 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/email")
+	public BaseResponse findEmail(@RequestParam String email) {
+		boolean duplicateEmail = companyService.duplicateEmail(email);
+		if (duplicateEmail) {
+			return new BaseResponse<>(BaseResponseMessage.COMPANY_EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL);
+		} else {
+			return new BaseResponse<>(BaseResponseMessage.COMPANY_EMAIL_DUPLICATE_SUCCESS);
+		}
+	}
+
+
+
 }
