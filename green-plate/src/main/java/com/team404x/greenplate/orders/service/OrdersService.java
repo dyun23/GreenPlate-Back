@@ -376,8 +376,10 @@ public class OrdersService {
 
         Gson gson = new Gson();
         Map<String, List> data = gson.fromJson(customData, Map.class);
-        List list = data.get("list");
-        Map<String, Double> products = (LinkedTreeMap<String, Double>) list.get(0);
+        //List list = data.get("list");
+        //Map<String, Double> products = (LinkedTreeMap<String, Double>) list.get(0);
+        List<Map<String, Double>> list = data.get("list");
+        Map<String, Double> products = new HashMap<>();
 
         List<Long> itemIdList = new ArrayList<>();
         for (String key : products.keySet()) {
