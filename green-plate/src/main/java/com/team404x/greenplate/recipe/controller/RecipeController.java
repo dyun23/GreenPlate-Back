@@ -82,7 +82,7 @@ public class RecipeController {
 
     @Operation(summary = "[전체] 레시피 페이징 조회 API")
     @RequestMapping(method = RequestMethod.GET, value = "/list")
-    public BaseResponse<Page<RecipeListRes>> list(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public BaseResponse<Page<RecipeListRes>> list(@PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         try {
             Page<RecipeListRes> recipeResPage = recipeService.list(pageable);
             return new BaseResponse<>(BaseResponseMessage.RECIPE_LIST_SUCCESS, recipeResPage);
