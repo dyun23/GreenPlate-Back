@@ -69,6 +69,28 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    public void update(Long companyId, Long itemId, int price, int stock) throws Exception{
+        Item item = itemRepository.findById(itemId).orElseThrow();
+        Item newItem = Item.builder()
+            .id(itemId)
+            .name(item.getName())
+            .contents(item.getContents())
+            .price(price)
+            .stock(stock)
+            .calorie(item.getCalorie())
+            .state(item.getState())
+            .imageUrl(item.getImageUrl())
+            .discountPrice(item.getDiscountPrice())
+            .category(item.getCategory())
+            .company(Company.builder().id(companyId).build())
+            .build();
+        itemRepository.save(newItem);
+    }
+
+    public void delete(Long id) {
+        itemRepository.deleteById(id);
+    }
+
     public Page<ItemRes> list(Pageable pageable) throws Exception {
         Page<Item> itemsPage = itemRepository.findAll(pageable);
         return itemsPage.map(item -> ItemRes.builder()

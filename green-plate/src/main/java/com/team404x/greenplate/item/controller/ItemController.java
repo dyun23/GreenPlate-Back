@@ -70,6 +70,37 @@ public class ItemController {
         }
     }
 
+    @SecuredOperation
+    @Operation(summary = "[사업자] 상품 수정을 위한 API")
+    @RequestMapping(method= RequestMethod.GET, value="/update/simple")
+    public BaseResponse updateItem(@AuthenticationPrincipal CustomUserDetails company, Long id, int price, int stock) {
+        try {
+            itemService.update(company.getId(), id, price, stock);
+            return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
+        } catch (Exception e) {
+                return new BaseResponse(BaseResponseMessage.USER_UPDATE_FAIL);
+            }
+    }
+
+    /*
+    TODO
+    연관관계 때문에 제대로 삭제 안됨 -> 상품 상세 내역을 지워야 하는데.. 애매하다..?
+    * */
+    @SecuredOperation
+    @Operation(summary = "[사업자] 상품 삭제를 위한 API")
+    @RequestMapping(method= RequestMethod.GET, value="/delete")
+    public BaseResponse delete(@AuthenticationPrincipal CustomUserDetails company, Long id) {
+        try {
+            if (company.getId() == null)
+                throw new Exception();
+            itemService.delete(id);
+            return new BaseResponse(BaseResponseMessage.USER_UPDATE_SUCCESS);
+        } catch (Exception e) {
+            return new BaseResponse(BaseResponseMessage.USER_UPDATE_FAIL);
+        }
+    }
+
+
     @Operation(summary = "[전체] 상품 전체 목록 조회를 위한 API")
     @GetMapping("/list")
     public BaseResponse<Page<ItemRes>> list(
