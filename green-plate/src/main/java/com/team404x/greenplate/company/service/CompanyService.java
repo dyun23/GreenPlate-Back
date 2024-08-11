@@ -55,6 +55,10 @@ public class CompanyService {
 		return null;
 	}
 
+	public Cookie logout() throws Exception {
+		return jwtUtil.removeCookie();
+	}
+
 	public CompanyDetailsRes details(String email) throws Exception {
 		Company company = companyRepository.findCompanyByEmail(email);
 		return CompanyDetailsRes.builder()

@@ -53,6 +53,18 @@ public class CompanyController {
 		}
 	}
 
+	@Operation(summary = "[사업자] 사업자 로그아웃 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/logout")
+	public BaseResponse logout(@AuthenticationPrincipal CustomUserDetails company, HttpServletResponse response) {
+		try {
+			Cookie jwtCookie = companyService.logout();
+			response.addCookie(jwtCookie);
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
 	@SecuredOperation
 	@Operation(summary = "[사업자] 사업자 상세정보 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")

@@ -59,7 +59,7 @@ public class UserController {
 
 	@Operation(summary = "[유저] 유저 로그아웃 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/logout")
-	public BaseResponse logout(HttpServletResponse response) {
+	public BaseResponse logout(@AuthenticationPrincipal CustomUserDetails user, HttpServletResponse response) {
 		try {
 			Cookie jwtCookie = userService.logout();
 			response.addCookie(jwtCookie);
