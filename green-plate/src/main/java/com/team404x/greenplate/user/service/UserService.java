@@ -85,6 +85,10 @@ public class UserService {
 		return null;
 	}
 
+	public Cookie logout() throws Exception {
+		return jwtUtil.removeCookie();
+	}
+
 	public UserDetailsRes details(String email) throws Exception {
 		User user = userRepository.findUserByEmail(email);
 		List<Address> addresses = user.getAddresses();

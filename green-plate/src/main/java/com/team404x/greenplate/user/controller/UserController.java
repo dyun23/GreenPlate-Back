@@ -57,6 +57,18 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "[유저] 유저 로그아웃 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/logout")
+	public BaseResponse logout(HttpServletResponse response) {
+		try {
+			Cookie jwtCookie = userService.logout();
+			response.addCookie(jwtCookie);
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
 	@SecuredOperation
 	@Operation(summary = "[유저] 유저 상세 정보 조회 API")
 	@RequestMapping(method = RequestMethod.GET, value = "/details")
