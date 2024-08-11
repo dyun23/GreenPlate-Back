@@ -6,4 +6,5 @@ import com.team404x.greenplate.user.keyword.entity.UserKeyword;
 
 public interface UserKeywordRepository extends JpaRepository<UserKeyword, Long> {
 	UserKeyword findByUserIdAndKeywordId(Long userId, Long keywordId);
+	void deleteByUserId(Long userId);
 }

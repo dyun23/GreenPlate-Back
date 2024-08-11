@@ -127,6 +127,7 @@ public class UserController {
 			userService.createUserKeyword(user.getId(), keywords);
 			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
 		} catch (Exception e) {
+			System.out.println(e);
 			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
 		}
 	}
