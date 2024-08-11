@@ -3,6 +3,7 @@ package com.team404x.greenplate.user.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ import com.team404x.greenplate.user.repository.UserRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -153,13 +155,13 @@ public class UserService {
 		return result;
 	}
 
+	@Transactional
 	public void createUserKeyword(Long userId, String[] keywords) throws Exception{
+
+		userKeywordRepository.deleteByUserId(userId);
 
 		for (String keyword : keywords) {
 			Keyword k = keywordRepository.findByName(keyword);
-			UserKeyword userKeyword = userKeywordRepository.findByUserIdAndKeywordId(userId,k.getId());
-			if (userKeyword != null)
-				continue;
 			userKeywordRepository.save(UserKeyword.builder()
 				.user(User.builder()
 					.id(userId)
