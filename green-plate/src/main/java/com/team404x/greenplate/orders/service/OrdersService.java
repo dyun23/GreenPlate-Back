@@ -248,6 +248,9 @@ public class OrdersService {
             return new BaseResponse<>(ORDERS_SEARCH_FAIL_ORDERED);
         }else{
             Orders orders2 = orders.get();
+            if(orders2.getOrderState().equals(OrderStatus.ready.toString())){
+                orders2.orderState(OrderStatus.shipped.toString());
+            }
             orders2.invoice(orderInvoiceReq.getInvoiceNum());
             ordersRepository.save(orders2);
         }
