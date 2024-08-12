@@ -67,33 +67,6 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
         });
     }
 
-    public List<OrderDetailQueryProjection> getOrderDetailUser(Long orderId) {
-        QOrders orders = QOrders.orders;
-        QOrderDetail orderDetail = QOrderDetail.orderDetail;
-        QItem item = QItem.item;
-
-        return queryFactory
-                .select(new QOrderDetailQueryProjection(
-                        orders.id,
-                        item.id,
-                        item.name,
-                        orderDetail.price,
-                        orderDetail.cnt,
-                        orders.orderDate,
-                        orders.orderState,
-                        orders.refundYn,
-                        orders.zipCode,
-                        orders.address,
-                        orders.phoneNum,
-                        orders.invoice
-                ))
-                .from(orders)
-                .leftJoin(orderDetail).on(orderDetail.orders.eq(orders))
-                .leftJoin(item).on(orderDetail.item.eq(item))
-                .where(orders.id.eq(orderId))
-                .fetch();
-    }
-
     public Page<OrdersQueryProjection> getOrders(Long companyId, OrderSearchListReq searchReq, Pageable pageable) {
         QOrders orders = QOrders.orders;
         QOrderDetail orderDetail = QOrderDetail.orderDetail;
@@ -139,6 +112,7 @@ public class OrderQueryRepository extends Querydsl4RepositorySupport {
                         orders.id,
                         item.id,
                         item.name,
+                        item.imageUrl,
                         orderDetail.price,
                         orderDetail.cnt,
                         orders.orderDate,
