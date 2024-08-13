@@ -39,17 +39,21 @@ public class JwtFilter extends OncePerRequestFilter {
 		if (request.getCookies() != null) {
 			for (Cookie cookie : request.getCookies()) {
 				if (cookie.getName().equals(GlobalMessage.ACCESS_TOKEN.getMessage())) {
+					if (jwtUtil.isExpired(cookie.getValue())) {
+						Cookie expiredCookie = jwtUtil.removeCookie();
+						response.addCookie(expiredCookie);
+						response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+						// response.getWriter().write("Unauthorized");
+						// return;
+						filterChain.doFilter(request, response);
+						continue;
+					}
 					authorization = cookie.getValue();
 				}
 			}
 		}
 
 		if (authorization == null) {
-			filterChain.doFilter(request, response);
-			return;
-		}
-
-		if (jwtUtil.isExpired(authorization)) {
 			filterChain.doFilter(request, response);
 			return;
 		}

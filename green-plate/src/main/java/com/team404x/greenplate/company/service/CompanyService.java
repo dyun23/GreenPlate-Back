@@ -55,6 +55,10 @@ public class CompanyService {
 		return null;
 	}
 
+	public Cookie logout() throws Exception {
+		return jwtUtil.removeCookie();
+	}
+
 	public CompanyDetailsRes details(String email) throws Exception {
 		Company company = companyRepository.findCompanyByEmail(email);
 		return CompanyDetailsRes.builder()
@@ -64,5 +68,8 @@ public class CompanyService {
 			.address(company.getAddress())
 			.telNum(company.getTelNum())
 			.build();
+	}
+	public boolean duplicateEmail(String email) {
+		return companyRepository.findByEmail(email).isPresent();
 	}
 }

@@ -3,10 +3,7 @@ package com.team404x.greenplate.user.controller;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.BaseResponseMessage;
@@ -57,6 +54,18 @@ public class UserController {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_SUCCESS);
 		} catch (Exception e) {
 			return new BaseResponse(BaseResponseMessage.USER_LOGIN_FAIL);
+		}
+	}
+
+	@Operation(summary = "[유저] 유저 로그아웃 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/logout")
+	public BaseResponse logout(@AuthenticationPrincipal CustomUserDetails user, HttpServletResponse response) {
+		try {
+			Cookie jwtCookie = userService.logout();
+			response.addCookie(jwtCookie);
+			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
+		} catch (Exception e) {
+			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
 		}
 	}
 
@@ -114,11 +123,23 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, value = "/create")
 	public BaseResponse createUserKeyword(@AuthenticationPrincipal CustomUserDetails user, String keyword) {
 		try {
-			String[] keywords = keyword.split(",");
+			String[] keywords = keyword.split("/");
 			userService.createUserKeyword(user.getId(), keywords);
 			return new BaseResponse(BaseResponseMessage.REQUEST_SUCCESS);
 		} catch (Exception e) {
+			System.out.println(e);
 			return new BaseResponse(BaseResponseMessage.REQUEST_FAIL);
+		}
+	}
+
+	@Operation(summary = "[유저] 이메일 중복 확인 API")
+	@RequestMapping(method = RequestMethod.GET, value = "/email")
+	public BaseResponse findEmail(@RequestParam String email) {
+		boolean duplicateEmail = userService.duplicateEmail(email);
+		if (duplicateEmail) {
+			return new BaseResponse<>(BaseResponseMessage.USER_EMAIL_DUPLICATE_FAIL_EXISTING_EMAIL);
+		} else {
+			return new BaseResponse<>(BaseResponseMessage.USER_EMAIL_DUPLICATE_SUCCESS);
 		}
 	}
 

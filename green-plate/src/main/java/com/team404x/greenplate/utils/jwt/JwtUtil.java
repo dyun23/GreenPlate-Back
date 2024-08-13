@@ -7,6 +7,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import com.team404x.greenplate.common.GlobalMessage;
@@ -39,8 +40,11 @@ public class JwtUtil {
 	}
 
 	public Boolean isExpired(String token) {
-
-		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+		try {
+			return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+		} catch (Exception e) {
+			return true;
+		}
 	}
 
 	public String createToken(Long id, String email, String role) {
@@ -59,6 +63,15 @@ public class JwtUtil {
 		cookie.setHttpOnly(true);
 		cookie.setSecure(true);
 		cookie.setPath("/");
+		return cookie;
+	}
+
+	public Cookie removeCookie() {
+		Cookie cookie = new Cookie(GlobalMessage.ACCESS_TOKEN.getMessage(), null);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
 		return cookie;
 	}
 }

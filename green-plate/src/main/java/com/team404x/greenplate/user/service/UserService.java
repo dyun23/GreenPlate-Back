@@ -3,6 +3,7 @@ package com.team404x.greenplate.user.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.team404x.greenplate.common.BaseResponse;
 import com.team404x.greenplate.common.GlobalMessage;
 import com.team404x.greenplate.config.filter.login.CustomUserDetails;
 import com.team404x.greenplate.keyword.entity.Keyword;
@@ -30,6 +30,7 @@ import com.team404x.greenplate.user.repository.UserRepository;
 import com.team404x.greenplate.utils.jwt.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -86,6 +87,10 @@ public class UserService {
 		return null;
 	}
 
+	public Cookie logout() throws Exception {
+		return jwtUtil.removeCookie();
+	}
+
 	public UserDetailsRes details(String email) throws Exception {
 		User user = userRepository.findUserByEmail(email);
 		List<Address> addresses = user.getAddresses();
@@ -95,6 +100,8 @@ public class UserService {
 				.zipcode(address.getZipcode())
 				.address(address.getAddress())
 				.addressDetail(address.getAddressDetail())
+				.phoneNum(address.getPhoneNum())
+				.defaultAddr(address.getDefultAddr())
 				.build());
 		}
 
@@ -148,7 +155,11 @@ public class UserService {
 		return result;
 	}
 
+	@Transactional
 	public void createUserKeyword(Long userId, String[] keywords) throws Exception{
+
+		userKeywordRepository.deleteByUserId(userId);
+
 		for (String keyword : keywords) {
 			Keyword k = keywordRepository.findByName(keyword);
 			userKeywordRepository.save(UserKeyword.builder()
@@ -158,5 +169,8 @@ public class UserService {
 				.keyword(k)
 				.build());
 		}
+	}
+	public boolean duplicateEmail(String email) {
+		return userRepository.findByEmail(email).isPresent();
 	}
 }
